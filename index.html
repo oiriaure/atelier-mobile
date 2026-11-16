@@ -403,7 +403,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.1.1';
+const VERSION = '3.1.2';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -480,7 +480,7 @@ const APPS_DEFAUT = [
   {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', icone:'icones/boussole.png', couleur:'#14b8a6', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
   {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', icone:'icones/trousseau.png', couleur:'#3b5bfd', donnees:'', etat:''}
 ];
-let L = Object.assign({ghToken:'', geminiKey:'', device:'', cloud:'oiriaure/atelier-donnees', nomAppareil:''}, LS.get('atelier.local', {}));
+let L = Object.assign({ghToken:'', geminiKey:'', device:'', cloud:'oiriaure/atelier-donnees', nomAppareil:'', jetons:[]}, LS.get('atelier.local', {}));
 if(!L.device) L.device = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 let SH = LS.get('atelier.shared', {});
 let C = Object.assign({apps:{}, pending:[], lastSync:0, blocked:{}, models:null, modelsAt:0, noThink:{}, remote:{}}, LS.get('atelier.cache', {}));
@@ -520,9 +520,10 @@ const busy = {};
    GitHub
 ================================================================ */
 const API = 'https://api.github.com';
-function ghHeaders(extra){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; if(L.ghToken) h.Authorization = 'Bearer ' + L.ghToken; return Object.assign(h, extra||{}); }
+function jetonPour(path){ const m = String(path||'').match(/^\/repos\/([^/]+\/[^/?]+)/), r = m && m[1]; const x = r && (L.jetons||[]).find(j => (j.repos||[]).includes(r)); return x ? x.t : L.ghToken; }
+function ghHeaders(extra, path){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; const t = jetonPour(path); if(t) h.Authorization = 'Bearer ' + t; return Object.assign(h, extra||{}); }
 async function gh(path, opts={}){
-  const headers = ghHeaders(opts.body ? {'Content-Type':'application/json'} : null);
+  const headers = ghHeaders(opts.body ? {'Content-Type':'application/json'} : null, path);
   const r = await fetch(API + path, {method:opts.method||'GET', headers, body:opts.body ? JSON.stringify(opts.body) : undefined, cache:'no-store'});
   if(r.status === 404 && opts.allow404) return null;
   if(!r.ok){
@@ -535,7 +536,7 @@ async function gh(path, opts={}){
   return r.status === 204 ? null : r.json();
 }
 async function ghRaw(repo, path){
-  const r = await fetch(`${API}/repos/${repo}/contents/${encPath(path)}`, {headers:ghHeaders({'Accept':'application/vnd.github.raw+json'}), cache:'no-store'});
+  const r = await fetch(`${API}/repos/${repo}/contents/${encPath(path)}`, {headers:ghHeaders({'Accept':'application/vnd.github.raw+json'}, `/repos/${repo}/`), cache:'no-store'});
   if(r.status === 404) return null;
   if(!r.ok) throw new Error(`GitHub ${r.status} sur ${repo}/${path}`);
   return r.text();
@@ -739,22 +740,26 @@ async function cleAES(){
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(L.ghToken), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey({name:'PBKDF2', salt:new TextEncoder().encode('atelier-cles-v1'), iterations:120000, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
 }
+async function chiffrer(txt){
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, await cleAES(), new TextEncoder().encode(txt)));
+  const all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
+  return btoa(String.fromCharCode(...all));
+}
+async function dechiffrer(b){ const all = Uint8Array.from(atob(b), x => x.charCodeAt(0)); return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:all.slice(0,12)}, await cleAES(), all.slice(12))); }
 async function partagerCle(){
-  if(!L.ghToken || !L.geminiKey || !window.crypto?.subtle) return;
+  if(!L.ghToken || !window.crypto?.subtle) return;
   try{
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, await cleAES(), new TextEncoder().encode(L.geminiKey)));
-    const all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
-    put('cles', {g:btoa(String.fromCharCode(...all))});
+    const v = {};
+    if(L.geminiKey) v.g = await chiffrer(L.geminiKey);
+    v.j = await chiffrer(JSON.stringify(L.jetons||[]));
+    put('cles', v);
   }catch(e){ console.warn(e); }
 }
 async function adopterCles(){
-  const c = get('cles', null); if(!c?.g || !L.ghToken || !window.crypto?.subtle) return;
-  try{
-    const all = Uint8Array.from(atob(c.g), x => x.charCodeAt(0));
-    const k = new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:all.slice(0,12)}, await cleAES(), all.slice(12)));
-    if(k && k !== L.geminiKey){ L.geminiKey = k; saveL(); }
-  }catch{}
+  const c = get('cles', null); if(!c || !L.ghToken || !window.crypto?.subtle) return;
+  try{ if(c.g){ const k = await dechiffrer(c.g); if(k && k !== L.geminiKey){ L.geminiKey = k; saveL(); } } }catch{}
+  try{ if(c.j){ const j = JSON.parse(await dechiffrer(c.j)); if(Array.isArray(j) && JSON.stringify(j) !== JSON.stringify(L.jetons||[])){ L.jetons = j; saveL(); } } }catch{}
 }
 
 /* ================================================================
@@ -899,7 +904,7 @@ const ST = {ok:{ic:'check', cls:'ok', l:'OK'}, att:{ic:'alert', cls:'att', l:'À
 function dureeTxt(ms){ const m = Math.round(ms/60000); if(m < 1) return 'moins d\'une minute'; if(m < 60) return m + ' min'; const hh = Math.round(m/60); if(hh < 48) return hh + ' h'; return Math.round(hh/24) + ' jours'; }
 function serie24(dates){ const out = Array(24).fill(0), now = Date.now(); for(const d of dates){ const x = Math.floor((now - new Date(d))/3600e3); if(x >= 0 && x < 24) out[23 - x]++; } return out; }
 const dateCommit = c => c.commit?.committer?.date || c.commit?.author?.date;
-const appareilDe = msg => ((msg||'').match(/depuis\s+(.+)$/i)||[])[1]?.trim();
+function appareilDe(msg){ const m = (msg||'').match(/^(.*?)\s+depuis\s+(.+)$/i); if(!m) return null; const qui = m[1].trim(), ou = m[2].trim(); return qui && qui.length < 25 && !/^atelier$/i.test(qui) ? `${ou} · ${qui}` : ou; }
 async function chkDonnees(s){
   const since = new Date(Date.now() - 24*3600e3).toISOString(), q = s.chemin ? `&path=${encodeURIComponent(s.chemin)}` : '';
   const id = 'd:' + s.repo + (s.chemin||'');
@@ -1257,6 +1262,7 @@ function ligneSante(it, repo, couleur){
     <div class="sm muted">${esc(it.detail || '')}</div>
     ${it.serie ? `<div class="tl" title="Envois des dernières 24 h (une barre par heure)">${it.serie.map(v => `<i class="${v ? '' : 'z'}" style="height:${v ? 5 + Math.min(v, 12)/12*19 : 3}px"></i>`).join('')}</div><div class="tlx xs muted"><span>il y a 24 h</span><span>maintenant</span></div>` : ''}
     ${it.appareils && Object.keys(it.appareils).length ? `<div class="kv">${Object.entries(it.appareils).sort((x, y) => new Date(y[1]) - new Date(x[1])).map(([k, t]) => `<span class="pill">${ic(/iPhone|iPad|Android|Mobile|téléphone/i.test(k) ? 'phone' : 'desk','s')} ${esc(k)} · ${esc(ago(t))}</span>`).join('')}</div>` : ''}
+    ${/n'a pas accès/.test(it.detail||'') ? `<button class="btn sm primary" style="margin-top:8px;margin-right:6px" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button>` : ''}
     ${(it.statut === 'pb' || it.statut === 'att') && L.geminiKey ? `<button class="btn sm ghost" style="margin-top:8px" data-action="askFix" data-repo="${esc(repo)}" data-msg="${esc(it.nom + ' : ' + it.detail)}">${ic('chef','s')} Demander au chef</button>` : ''}
   </div></div>`;
 }
@@ -1316,6 +1322,9 @@ function vSettings(){
     <label class="f">Token GitHub</label>
     <input type="password" data-local="ghToken" value="${esc(L.ghToken)}" placeholder="github_pat_…" autocomplete="off">
     <p class="help">Il donne accès à tes apps et au cloud. C'est la seule chose à coller sur un nouvel appareil.</p>
+    <label class="f">Tokens supplémentaires</label>
+    ${(L.jetons||[]).map((j, i) => `<div class="dev">${ic('link')}<div style="flex:1;min-width:0"><b>${esc(j.nom || 'Token')}</b><div class="xs muted clamp1">${esc(j.t.slice(0, 15))}… · accès : ${esc((j.repos||[]).map(r => r.split('/')[1]).join(', ') || 'aucun dépôt')}</div></div><button class="ibtn" data-action="delJeton" data-i="${i}" aria-label="Retirer">${ic('trash','s')}</button></div>`).join('') || '<p class="help" style="margin-top:0">Aucun. Utile quand un dépôt a son propre token (par exemple revisions-sync).</p>'}
+    <div class="btns"><button class="btn sm" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button></div>
     <div class="btns"><button class="btn sm" data-action="testGh">Tester GitHub</button><button class="btn sm" data-action="pairPhone">${ic('phone','s')} Connecter un autre appareil</button></div>
   </section>
 
@@ -1733,6 +1742,29 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     await envoyer(`Atelier a détecté ceci sur ${nomApp(repo)} : « ${msg} ». Explique simplement ce qui se passe, si c'est grave, et ce que je dois faire (avec la consigne pour Claude si c'est du code).`, d);
   },
   verifier(){ return verifierTout(true); },
+  ajoutJeton(){
+    SHEET = null;
+    modal(`<h2>Ajouter un token</h2><p class="help" style="margin-top:0">Pour un dépôt que le token Atelier ne voit pas (par exemple <code>revisions-sync</code>). Atelier repère tout seul les dépôts qu'il ouvre et ne s'en sert que pour eux. Il est partagé chiffré avec tes autres appareils.</p>
+      <label class="f">Token GitHub</label><input id="njT" type="password" placeholder="github_pat_…" autocomplete="off">
+      <label class="f">Nom (facultatif)</label><input id="njN" placeholder="Ex. : Révisions sync">
+      <div class="btns"><button class="btn primary" data-action="ajoutJetonGo" id="njB">Ajouter</button></div><p class="err" id="njE" hidden></p>`);
+    setTimeout(() => $('#njT')?.focus(), 60);
+  },
+  async ajoutJetonGo(){
+    const t = $('#njT').value.trim(), btn = $('#njB'), err = $('#njE'); if(!t) return;
+    if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(t)){ err.textContent = 'Ce n\'est pas un token GitHub (il commence par « github_pat_ »).'; err.hidden = false; return; }
+    btn.disabled = true; btn.innerHTML = spin('Recherche des dépôts accessibles…'); err.hidden = true;
+    const owner = (tracked()[0]?.repo || 'oiriaure/x').split('/')[0];
+    const cands = [...new Set([...tracked().flatMap(a => [a.repo, a.donnees, ...suiviDe(a).filter(s => s.repo).map(s => s.repo)]), ...tracked().map(a => a.repo + '-mobile'), ...tracked().map(a => a.repo + '-sync'), ...tracked().map(a => a.repo + '-donnees')].filter(validRepo))];
+    const H = x => ({Accept:'application/vnd.github+json', Authorization:'Bearer ' + x});
+    const essai = async (r, x) => { try{ return (await fetch(`${API}/repos/${r}`, {headers:H(x), cache:'no-store'})).ok; }catch{ return false; } };
+    const res = await Promise.all(cands.map(async r => ({r, nouveau:await essai(r, t), principal:await essai(r, L.ghToken)})));
+    const repos = res.filter(x => x.nouveau && !x.principal).map(x => x.r);
+    if(!repos.length){ btn.disabled = false; btn.textContent = 'Ajouter'; err.textContent = res.some(x => x.nouveau) ? 'Ce token n\'ouvre que des dépôts déjà accessibles avec le token Atelier : inutile de l\'ajouter.' : 'Ce token n\'ouvre aucun des dépôts suivis (ou il est invalide).'; err.hidden = false; return; }
+    L.jetons = [...(L.jetons||[]).filter(j => j.t !== t), {t, nom:$('#njN').value.trim() || 'Token ' + repos[0].split('/')[1], repos}]; saveL();
+    await partagerCle(); closeModal(); toast(`Token ajouté : accès à ${repos.map(r => r.split('/')[1]).join(', ')}`); render(); verifierTout(true);
+  },
+  async delJeton(el){ const j = L.jetons[+el.dataset.i]; if(!j || !confirm(`Retirer « ${j.nom} » de tous tes appareils ?`)) return; L.jetons.splice(+el.dataset.i, 1); saveL(); await partagerCle(); render(); },
   clearInc(){ if(confirm('Vider le journal des incidents (sur tous tes appareils) ?')){ put('incidents', (get('incidents', [])||[]).filter(x => !x.fin)); render(); } },
 
   capture(el){
@@ -1771,7 +1803,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
   delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${appsAll()[i].name} d'Atelier ? (le dépôt GitHub n'est pas touché)`)){ setReg({apps:appsAll().filter((_, k) => k !== i)}); render(); } },
   async testGh(){
     const u = await gh('/user');
-    const res = await Promise.all([...tracked().map(a => ({n:a.name, r:a.repo})), {n:'Cloud', r:Cloud.repo}].map(x => gh(`/repos/${x.r}`).then(r => `✓ ${x.n}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${x.n} : ${e.message}`)));
+    const res = await Promise.all([...tracked().map(a => ({n:a.name, r:a.repo})), {n:'Cloud', r:Cloud.repo}, ...(L.jetons||[]).flatMap(j => j.repos.map(r => ({n:r.split('/')[1] + ' (' + j.nom + ')', r})))].map(x => gh(`/repos/${x.r}`).then(r => `✓ ${x.n}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${x.n} : ${e.message}`)));
     textModal('GitHub', `Connecté en tant que ${u.login}\n\n${res.join('\n')}`);
   },
   async testGemini(){ const t0 = performance.now(); const t = await gemini('Réponds uniquement : OK', {tier:'rapide'}); toast(`« ${t.slice(0,12)} » en ${((performance.now() - t0)/1000).toFixed(1)} s avec ${C.lastModel}`); },
@@ -1930,7 +1962,7 @@ render();
 if(!L.ghToken) showOnboarding();
 else {
   Cloud.start();
-  adopterCles().then(() => { if(L.geminiKey && !get('cles', null)) partagerCle(); });
+  adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
 }
