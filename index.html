@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Atelier — mes projets</title>
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Atelier">
+<style>
+:root{
+  --bg:#f5f6f8;--bg2:#fff;--bg3:#eceef2;--tx:#14161b;--mu:#6b7280;--bd:#e2e5ea;
+  --ac:#5b5bf0;--ac2:#ececff;--ok:#16a34a;--wa:#d97706;--ko:#dc2626;--gr:#9ca3af;
+  --r:16px;--sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f1115;--bg2:#171a21;--bg3:#20242d;--tx:#eef0f4;--mu:#9aa1ad;--bd:#2a2f3a;
+  --ac:#8b8bff;--ac2:#25264a;--sh:none;
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+a{color:var(--ac);text-decoration:none}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.brand{display:flex;gap:10px;align-items:center}
+.brand img{width:34px;height:34px;border-radius:9px}
+h1{font-size:19px;margin:0;line-height:1.1}
+#lastsync{color:var(--mu);font-size:12px}
+main{max-width:760px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bottom) + 110px)}
+.icon{border:0;background:var(--bg3);color:var(--tx);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;flex:none}
+.icon.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-around;
+  padding:6px 4px calc(env(safe-area-inset-bottom) + 6px);background:var(--bg2);border-top:1px solid var(--bd)}
+nav button{flex:1;border:0;background:none;color:var(--mu);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer}
+nav button span{font-size:20px;line-height:1}
+nav button.on{color:var(--ac);font-weight:600}
+#fab{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:7;width:56px;height:56px;border-radius:18px;border:0;
+  background:var(--ac);color:#fff;font-size:30px;box-shadow:0 6px 20px rgba(91,91,240,.4);cursor:pointer}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin:12px 0;box-shadow:var(--sh)}
+.card h2{margin:0 0 4px;font-size:18px}
+.muted{color:var(--mu)} .sm{font-size:12px}
+.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:22px 4px 8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.stats div{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px;text-align:center}
+.stats b{display:block;font-size:24px}
+.stats span{font-size:12px;color:var(--mu)}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--tx);display:inline-block}
+.btn.primary{background:var(--ac);color:#fff}
+.btn.sm{padding:7px 11px;font-size:13px;font-weight:500}
+.btn:disabled{opacity:.6}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.list{display:flex;flex-direction:column;gap:6px}
+.row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;color:var(--tx)}
+.row .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.em{font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:8px}
+.app{cursor:pointer;margin:0}
+.app .top{display:flex;align-items:center;gap:10px}
+.app .em{font-size:28px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.green{background:var(--ok)}.orange{background:var(--wa)}.red{background:var(--ko)}.grey{background:var(--gr)}
+.pill{display:inline-block;background:var(--bg3);border-radius:99px;padding:2px 9px;font-size:12px;margin:2px 4px 2px 0}
+.action{border-left:4px solid var(--ac);background:var(--bg3);border-radius:12px;padding:12px;margin-top:10px}
+.action h4{margin:0 0 4px;font-size:15px}
+.err{color:var(--ko);font-size:13px}
+.ok{color:var(--ok)}
+label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical}
+.chk{display:flex;gap:8px;align-items:flex-start;color:var(--tx)} .chk input{width:auto;margin-top:4px}
+.appedit{border-top:1px solid var(--bd);padding-top:10px;margin-top:10px}
+.approw{display:grid;grid-template-columns:52px 1fr 1.4fr 40px;gap:6px;margin-top:6px}
+.approw2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.approw input,.approw2 input{padding:9px 8px;font-size:14px}
+#modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+#modal[hidden]{display:none}
+.sheet{background:var(--bg2);width:100%;max-width:760px;max-height:90vh;overflow:auto;border-radius:20px 20px 0 0;
+  padding:18px 18px calc(env(safe-area-inset-bottom) + 18px)}
+@media (min-width:800px){#modal{align-items:center}.sheet{border-radius:20px}}
+.sheet h2{margin:0 0 6px;padding-right:44px}
+.sheet .close{float:right}
+pre,.pre{white-space:pre-wrap;word-break:break-word;background:var(--bg3);border-radius:10px;padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace;max-height:50vh;overflow:auto}
+details{margin-top:10px} summary{cursor:pointer;color:var(--mu)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 140px);z-index:30;
+  background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;max-width:90vw}
+#toast.bad{background:var(--ko);color:#fff}
+.empty{text-align:center;padding:40px 16px}
+.md p{margin:6px 0}.md h4{margin:14px 0 4px;font-size:15px}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
+.md code{background:var(--bg3);border-radius:5px;padding:1px 5px;font-size:13px}
+.live{border-left:4px solid var(--ok)}
+.live .t{font-weight:600}
+.kv{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chat{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.msg{max-width:92%;padding:10px 13px;border-radius:16px}
+.msg.u{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px;white-space:pre-wrap}
+.msg.m{align-self:flex-start;background:var(--bg2);border:1px solid var(--bd);border-bottom-left-radius:4px}
+.msg .btns{margin-top:6px}
+.composer{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 70px);display:flex;gap:8px;margin-top:12px;background:var(--bg);padding:8px 0}
+.composer textarea{min-height:46px;max-height:140px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-top:6px}
+.chips .btn{white-space:nowrap}
+.qr{background:#fff;border-radius:14px;padding:12px;width:min(260px,70vw);margin:10px auto}
+.qr svg{display:block;width:100%;height:auto}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><img src="icon.svg" alt=""><div><h1>Atelier</h1><small id="lastsync"></small></div></div>
+  <button id="syncBtn" class="icon" data-action="sync" aria-label="Synchroniser">⟳</button>
+</header>
+<main id="main"></main>
+<button id="fab" data-action="capture" aria-label="Nouvelle idée">+</button>
+<nav>
+  <button data-go="today"><span>☀︎</span>Aujourd'hui</button>
+  <button data-go="apps"><span>▦</span>Apps</button>
+  <button data-go="tasks"><span>☑︎</span>Tâches</button>
+  <button data-go="chef"><span>✦</span>Chef</button>
+  <button data-go="settings"><span>⚙︎</span>Réglages</button>
+</nav>
+<div id="modal" hidden><div class="sheet"></div></div>
+<div id="toast" hidden></div>
+<script src="lib/qrcode.js"></script>
+<script>
+"use strict";
+const VERSION = '2.0.1';
+/* ================= Utilitaires ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch{ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.warn('stockage plein', e); } }
+};
+const rtf = new Intl.RelativeTimeFormat('fr', {numeric:'auto'});
+function ago(d){
+  if(!d) return '';
+  const s = (new Date(d) - Date.now())/1000, a = Math.abs(s);
+  if(a < 60) return "à l'instant";
+  if(a < 3600) return rtf.format(Math.round(s/60), 'minute');
+  if(a < 86400) return rtf.format(Math.round(s/3600), 'hour');
+  if(a < 86400*30) return rtf.format(Math.round(s/86400), 'day');
+  return rtf.format(Math.round(s/(86400*30)), 'month');
+}
+const dateFR = d => new Date(d).toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+let toastT;
+function toast(msg, bad=false){
+  const t = $('#toast'); t.textContent = msg; t.className = bad ? 'bad' : ''; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, bad ? 6000 : 2600);
+}
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); }
+  catch{ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('Copié ✓');
+}
+function parseJSON(t){
+  try{ return JSON.parse(t); }
+  catch{ const m = String(t).match(/[\[{][\s\S]*[\]}]/); if(m) return JSON.parse(m[0]); throw new Error('Réponse JSON illisible'); }
+}
+const normRepo = r => (r||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/,'').replace(/^\/+|\/+$/g,'');
+const validRepo = r => /^[\w.-]+\/[\w.-]+$/.test(r);
+const encPath = p => p.split('/').map(encodeURIComponent).join('/');
+function b64utf8(b64){ const bin = atob(b64.replace(/\s/g,'')); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
+function utf8b64(s){ const b = new TextEncoder().encode(s); let bin = ''; for(let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i+0x8000)); return btoa(bin); }
+const b64url = s => utf8b64(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64url = s => b64utf8(s.replace(/-/g,'+').replace(/_/g,'/'));
+const clip = (s, n) => { s = String(s||''); return s.length > n ? s.slice(0, n) + '\n[…coupé]' : s; };
+
+/* Markdown minimal et sûr (on échappe d'abord) */
+function md(src){
+  const inline = s => s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<i>$2</i>');
+  let out = '', list = null, inCode = false, code = '';
+  const close = () => { if(list){ out += `</${list}>`; list = null; } };
+  for(const l of esc(src).split('\n')){
+    if(/^\s*```/.test(l)){ if(inCode){ out += `<pre>${code}</pre>`; code = ''; inCode = false; } else { close(); inCode = true; } continue; }
+    if(inCode){ code += l + '\n'; continue; }
+    let m;
+    if((m = l.match(/^\s*[-*•]\s+(.*)/))){ if(list !== 'ul'){ close(); out += '<ul>'; list = 'ul'; } out += `<li>${inline(m[1])}</li>`; continue; }
+    if((m = l.match(/^\s*\d+[.)]\s+(.*)/))){ if(list !== 'ol'){ close(); out += '<ol>'; list = 'ol'; } out += `<li>${inline(m[1])}</li>`; continue; }
+    close();
+    if((m = l.match(/^#{1,6}\s+(.*)/))){ out += `<h4>${inline(m[1])}</h4>`; continue; }
+    if(l.trim()) out += `<p>${inline(l)}</p>`;
+  }
+  close(); if(inCode) out += `<pre>${code}</pre>`;
+  return `<div class="md">${out}</div>`;
+}
+
+/* ================= État ================= */
+const APPS_DEFAUT = [
+  {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', donnees:'', etat:''},
+  {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
+  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', donnees:'', etat:''}
+];
+const DEFAULT_SETTINGS = {ghToken:'', geminiKey:'', model:'auto', apps:APPS_DEFAUT};
+let S = Object.assign({}, DEFAULT_SETTINGS, LS.get('atelier.settings', {}));
+// Migration V1 → V2 : on complète les apps connues dont le dépôt n'était pas encore rempli
+S.apps = S.apps.map(a => {
+  const x = Object.assign({donnees:'', etat:''}, a);
+  const d = APPS_DEFAUT.find(k => k.repo === x.repo || k.name.toLowerCase().startsWith((x.name||'?').toLowerCase().replace(/s$/,'')));
+  if(d && !x.repo) Object.assign(x, {repo:d.repo, donnees:d.donnees, etat:d.etat});
+  return x;
+});
+if(S.model === 'gemini-2.5-flash') S.model = 'auto';
+let C = Object.assign({apps:{}, today:null, pending:[], lastSync:0, ai:{}, weekly:[], chat:[], dups:null, blocked:{}}, LS.get('atelier.cache', {}));
+let view = LS.get('atelier.view', 'today');
+const busy = {};
+const saveS = () => LS.set('atelier.settings', S);
+const saveC = () => LS.set('atelier.cache', C);
+const tracked = () => S.apps.filter(a => validRepo(a.repo));
+const appBy = repo => S.apps.find(a => a.repo === repo) || {name:repo, emoji:'📦', repo};
+const aiOf = repo => (C.ai[repo] ||= {});
+
+/* Activation par lien / QR code (comme Boussole) : …/atelier/#a=<code> */
+const EPINGLEE = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+(function activation(){
+  const m = location.hash.match(/[#&]a=([A-Za-z0-9_-]+)/);
+  if(!m) return;
+  try{
+    const j = JSON.parse(unb64url(m[1]));
+    if(j && (j.t || j.g)){
+      S.ghToken = j.t || S.ghToken; S.geminiKey = j.g || S.geminiKey; if(j.m) S.model = j.m;
+      if(Array.isArray(j.a) && j.a.length) S.apps = j.a;
+      saveS(); setTimeout(() => toast('Atelier connecté ✓'), 300);
+    }
+  }catch{}
+  // On garde le code dans l'adresse tant que la page n'est pas épinglée : l'icône de l'écran d'accueil l'emporte avec elle.
+  if(EPINGLEE) history.replaceState(null, '', location.pathname);
+})();
+addEventListener('hashchange', () => { if(/[#&]a=/.test(location.hash)) location.reload(); });
+
+/* ================= GitHub ================= */
+const API = 'https://api.github.com';
+function ghHeaders(extra){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; if(S.ghToken) h.Authorization = 'Bearer ' + S.ghToken; return Object.assign(h, extra||{}); }
+async function gh(path, opts={}){
+  const headers = ghHeaders(opts.body ? {'Content-Type':'application/json'} : null);
+  const r = await fetch(API + path, {method:opts.method||'GET', headers, body:opts.body ? JSON.stringify(opts.body) : undefined, cache:'no-store'});
+  if(r.status === 404 && opts.allow404) return null;
+  if(!r.ok){
+    let m = ''; try{ m = (await r.json()).message; }catch{}
+    if(r.status === 401) m = 'token GitHub invalide ou expiré';
+    if(r.status === 403 && /Resource not accessible/.test(m)) m = 'le token n\'a pas la permission pour ça (voir Réglages)';
+    if(r.status === 404) m = 'introuvable, ou le token n\'a pas accès à ce dépôt';
+    throw new Error(`GitHub ${r.status} : ${m}`);
+  }
+  return r.status === 204 ? null : r.json();
+}
+async function ghRaw(repo, path){
+  const r = await fetch(`${API}/repos/${repo}/contents/${encPath(path)}`, {headers:ghHeaders({'Accept':'application/vnd.github.raw+json'}), cache:'no-store'});
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error(`GitHub ${r.status} sur ${repo}/${path}`);
+  return r.text();
+}
+const mapIssue = i => ({number:i.number, title:i.title, body:(i.body||'').slice(0,2000), url:i.html_url, labels:(i.labels||[]).map(l => l.name||l), created:i.created_at});
+const BRAINS = ['CLAUDE.md', 'CERVEAU.md', 'AGENTS.md'];
+async function readBrain(repo){
+  for(const p of BRAINS){ const t = await ghRaw(repo, p).catch(() => null); if(t != null) return {path:p, text:t}; }
+  return null;
+}
+function resumeEtat(j){
+  if(!j || typeof j !== 'object') return null;
+  const s = {t:j.envoi || j.t || j.date || null};
+  if(j.climat) s.climat = {titre:j.climat.titre, resume:clip(j.climat.resume, 500)};
+  if(j.compteurs) s.compteurs = j.compteurs;
+  if(j.resultats) s.resultats = {totalTxt:j.resultats.totalTxt, termines:j.resultats.termines, gagnants:j.resultats.gagnants};
+  if(j.risque) s.risque = j.risque;
+  const byT = arr => arr.slice().sort((x, y) => (y.t||0) - (x.t||0));
+  if(Array.isArray(j.alertes)) s.alertes = byT(j.alertes).slice(0,3).map(x => ({t:x.t, texte:x.texte}));
+  if(Array.isArray(j.bureau)) s.bureau = byT(j.bureau).slice(0,5).map(x => ({t:x.t, de:x.de, texte:x.texte}));
+  if(j.bilan) s.bilan = {titre:j.bilan.titre};
+  if(Object.keys(s).length <= 1) s.cles = Object.keys(j).slice(0,20);
+  return s;
+}
+async function syncApp(a){
+  const repo = a.repo;
+  let issuesErr = null;
+  const [info, verTxt, projetTxt, brain, commits, issues, etatTxt] = await Promise.all([
+    gh(`/repos/${repo}`),
+    ghRaw(repo, 'publication/version.json').catch(() => null),
+    ghRaw(repo, 'projet.json').catch(() => null),
+    readBrain(repo),
+    gh(`/repos/${repo}/commits?per_page=10`).catch(() => []),
+    gh(`/repos/${repo}/issues?state=open&per_page=50`).catch(e => { issuesErr = e.message; return []; }),
+    validRepo(a.donnees) && a.etat ? ghRaw(a.donnees, a.etat).catch(e => JSON.stringify({__err:e.message})) : null
+  ]);
+  let version = null, projet = null, live = null, liveErr = null;
+  try{ if(verTxt){ const v = JSON.parse(verTxt); version = {version:v.version, date:v.date, notes:(v.notes||[]).slice(0,8)}; } }catch{}
+  try{ if(projetTxt) projet = JSON.parse(projetTxt); }catch{}
+  try{ if(etatTxt){ const j = JSON.parse(etatTxt); if(j.__err) liveErr = j.__err; else live = resumeEtat(j); } }catch{ liveErr = 'données illisibles'; }
+  return {
+    info:{pushed_at:info.pushed_at, html_url:info.html_url, homepage:info.homepage, description:info.description, private:info.private, default_branch:info.default_branch||'main', has_issues:info.has_issues},
+    version, projet, brain, live, liveErr, issuesErr,
+    commits:(commits||[]).map(c => ({sha:c.sha, msg:c.commit.message.split('\n')[0], date:c.commit.author?.date, url:c.html_url})),
+    issues:issues.filter(i => !i.pull_request).map(mapIssue),
+    fetchedAt:Date.now(), error:null
+  };
+}
+async function flushPending(){
+  const left = [];
+  for(const p of C.pending||[]){ try{ await postIssue(p.repo, p.title, p.body); }catch{ left.push(p); } }
+  C.pending = left;
+}
+async function syncAll(quiet=false){
+  const apps = tracked();
+  if(!apps.length){ toast('Ajoute au moins un dépôt dans les Réglages', true); go('settings'); return; }
+  if(!S.ghToken){ toast('Colle ton token GitHub dans les Réglages', true); go('settings'); return; }
+  if(busy.sync) return;
+  busy.sync = true; $('#syncBtn').classList.add('spin');
+  try{
+    if((C.pending||[]).length) await flushPending();
+    const res = await Promise.allSettled(apps.map(syncApp));
+    let errs = 0;
+    res.forEach((r, i) => {
+      const repo = apps[i].repo;
+      if(r.status === 'fulfilled') C.apps[repo] = r.value;
+      else { errs++; C.apps[repo] = Object.assign({}, C.apps[repo]||{}, {error:r.reason.message}); }
+    });
+    C.lastSync = Date.now(); saveC();
+    if(!quiet || errs) toast(errs ? `Synchro terminée (${errs} erreur${errs>1?'s':''}, voir Apps)` : 'Synchro terminée ✓', !!errs);
+  }finally{
+    busy.sync = false; $('#syncBtn').classList.remove('spin'); render();
+  }
+}
+async function postIssue(repo, title, body){
+  let iss;
+  try{ iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body, labels:['idée']}}); }
+  catch(e){ if(/422/.test(e.message)) iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body}}); else throw e; }
+  const d = C.apps[repo] || (C.apps[repo] = {issues:[]});
+  (d.issues ||= []).unshift(mapIssue(iss)); saveC();
+  return iss;
+}
+async function createIssue(repo, title, body, silent=false){
+  try{ await postIssue(repo, title, body); if(!silent) toast('Tâche ajoutée à ' + appBy(repo).name + ' ✓'); }
+  catch(e){
+    if(!navigator.onLine || e instanceof TypeError){ (C.pending ||= []).push({repo, title, body, at:Date.now()}); saveC(); toast('Hors ligne : gardé, envoyé à la prochaine synchro'); }
+    else throw e;
+  }
+}
+/* Fichiers de code d'un dépôt (pour les doublons) */
+async function tree(repo, branch){
+  const t = await gh(`/repos/${repo}/git/trees/${encodeURIComponent(branch||'HEAD')}?recursive=1`);
+  return (t.tree||[]).filter(x => x.type === 'blob' && /\.(js|ts|html|css|json|sh|py|md)$/i.test(x.path) && !/node_modules|^lib\/|\.min\.|publication\//.test(x.path)).map(x => `${x.path} (${Math.round((x.size||0)/1024)} ko)`).slice(0, 150);
+}
+/* Commits récents avec leurs modifications (pour la revue) */
+async function recentDiffs(repo, n=5, maxChars=45000){
+  const list = await gh(`/repos/${repo}/commits?per_page=${n}`);
+  let out = '', used = 0;
+  for(const c of list){
+    const d = await gh(`/repos/${repo}/commits/${c.sha}`);
+    let block = `\n### Commit ${c.sha.slice(0,7)} — ${c.commit.message.split('\n')[0]} (${c.commit.author?.date})\n`;
+    for(const f of d.files||[]){
+      if(/\.(png|ico|icns|jpg|ttf|woff2?)$|^lib\/|publication\/|lightweight-charts|qrcode/i.test(f.filename)) continue;
+      block += `\n--- ${f.filename} (${f.status}, +${f.additions}/-${f.deletions})\n${clip(f.patch||'(pas de diff)', 6000)}\n`;
+    }
+    if(used + block.length > maxChars){ out += `\n[${list.length} commits demandés, la suite est coupée pour rester dans la limite]`; break; }
+    out += block; used += block.length;
+  }
+  return out;
+}
+
+/* ================= Gemini ================= */
+const GEM = 'https://generativelanguage.googleapis.com/v1beta';
+const today = () => new Date().toISOString().slice(0,10);
+function gemErr(status, d){
+  const m = d?.error?.message || '';
+  if(status === 429) return 'Quota Gemini gratuit atteint, réessaie dans une minute';
+  if(status === 400 && /API key/i.test(m)) return 'Clé Gemini refusée : vérifie-la dans les Réglages';
+  if(status === 403) return 'Clé Gemini refusée (403) : ' + m;
+  return `Gemini ${status} ${m}`.trim();
+}
+async function listModels(force=false){
+  if(!force && C.models?.length && Date.now() - (C.modelsAt||0) < 864e5) return C.models;
+  const r = await fetch(GEM + '/models?pageSize=200', {headers:{'x-goog-api-key':S.geminiKey}});
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(gemErr(r.status, d));
+  C.models = (d.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes('generateContent')).map(m => m.name.replace(/^models\//,''));
+  C.modelsAt = Date.now(); saveC();
+  return C.models;
+}
+/* Le plus récent « flash » stable d'abord, puis les « flash-lite », puis les préversions. Jamais « pro » (rarement gratuit). */
+function rankModels(list){
+  const P = n => { const m = n.match(/^gemini-(\d+(?:\.\d+)?)-(flash|pro)(-lite)?(.*)$/); if(!m || m[2] === 'pro') return null;
+    if(/tts|image|live|audio|embed|thinking|exp|computer|native/i.test(m[4])) return null;
+    return {n, v:parseFloat(m[1]), lite:!!m[3], pre:/preview/.test(m[4]), alias:/latest/.test(m[4])}; };
+  return list.map(P).filter(Boolean).sort((a, b) => (a.pre - b.pre) || (a.lite - b.lite) || (b.v - a.v) || (a.alias - b.alias) || a.n.length - b.n.length).map(x => x.n).slice(0, 5);
+}
+async function modelChain(){
+  if(S.model && S.model !== 'auto') return [S.model.replace(/^models\//,'')];
+  let list = [];
+  try{ list = rankModels(await listModels()); }catch{}
+  if(!list.length) list = ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+  const ok = list.filter(m => C.blocked?.[m] !== today());
+  return ok.length ? ok : list;
+}
+async function gemini(input, {json=false, system=null, temperature=0.5}={}){
+  if(!S.geminiKey) throw new Error('Clé Gemini manquante (onglet Réglages)');
+  const contents = typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input;
+  const body = {contents, generationConfig:{temperature}};
+  if(system) body.systemInstruction = {parts:[{text:system}]};
+  if(json) body.generationConfig.responseMimeType = 'application/json';
+  let last = null;
+  for(const m of await modelChain()){
+    let r, d;
+    try{
+      r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:generateContent`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':S.geminiKey}, body:JSON.stringify(body)});
+      d = await r.json().catch(() => ({}));
+    }catch(e){ throw new Error('Pas de réseau pour joindre Gemini'); }
+    if(r.ok){
+      const text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('').trim();
+      if(!text){ last = new Error('Réponse vide de Gemini (' + m + ')'); continue; }
+      C.lastModel = m; saveC();
+      return json ? parseJSON(text) : text;
+    }
+    last = new Error(gemErr(r.status, d));
+    if(r.status === 429){ if(/day|PerDay|daily/i.test(JSON.stringify(d))){ C.blocked[m] = today(); saveC(); } continue; }
+    if([404, 500, 503].includes(r.status)) continue;
+    throw last;
+  }
+  throw last || new Error('Aucun modèle Gemini disponible');
+}
+
+/* ================= Contexte donné à Gemini ================= */
+const ROLE_CHEF = `Tu es le chef de projet et directeur technique de Clément, un étudiant qui développe seul plusieurs apps (Electron pour Mac/Windows, avec une version téléphone sur GitHub Pages, mises à jour publiées sur GitHub). Le code est écrit par une IA (Claude Code) à qui Clément donne des consignes : ton rôle est de l'aider à décider quoi faire, à comprendre son code et à rédiger des consignes claires pour l'IA qui code.
+Tu réponds en français, de façon directe et concrète, sans blabla. Tu t'appuies sur les faits fournis (cerveau des apps, commits, tâches) et tu dis quand une information te manque au lieu d'inventer.`;
+function ficheApp(a, brainChars=2500){
+  const d = C.apps[a.repo] || {}, v = d.version || {}, p = d.projet || {};
+  const l = d.live;
+  return `## ${a.name} (${a.repo})
+Version publiée : ${v.version || p.version || '?'}${v.date ? ' du ' + new Date(v.date).toLocaleDateString('fr-FR') : ''} · Dernier commit : ${d.info?.pushed_at || '?'}
+Notes de la dernière version : ${(v.notes||[]).join(' | ') || '—'}
+Derniers commits : ${(d.commits||[]).slice(0,5).map(c => c.msg).join(' | ') || '—'}
+Tâches ouvertes : ${(d.issues||[]).slice(0,15).map(i => '#'+i.number+' '+i.title).join(' | ') || 'aucune'}
+${l ? `État en direct (envoyé par l'app ${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => x.texte).join(' | ') || ''}\n` : ''}Cerveau (${d.brain?.path || 'absent'}) :
+${clip(d.brain?.text || '(pas de cerveau)', brainChars)}`;
+}
+const contexteGlobal = (n=2500) => tracked().map(a => ficheApp(a, n)).join('\n\n');
+
+/* ================= Vues ================= */
+function allCommits(){
+  return tracked().flatMap(a => (C.apps[a.repo]?.commits||[]).map(c => Object.assign({app:a.name, emoji:a.emoji}, c)))
+    .sort((x, y) => new Date(y.date) - new Date(x.date));
+}
+function health(d){
+  if(!d || !d.info) return {cls:'grey', label:d?.error ? 'erreur' : 'pas encore synchro'};
+  const days = (Date.now() - new Date(d.info.pushed_at)) / 864e5;
+  if(days < 7) return {cls:'green', label:'actif'};
+  if(days < 30) return {cls:'orange', label:'ralenti'};
+  return {cls:'red', label:'à l\'arrêt'};
+}
+const empty = (t, s, goTo) => `<div class="empty"><h2>${esc(t)}</h2><p class="muted">${esc(s)}</p>${goTo?`<button class="btn primary" data-go="${goTo}">Ouvrir les Réglages</button>`:''}</div>`;
+const spin = t => `<span class="spinner"></span>${esc(t)}`;
+function liveCard(a, compact=false){
+  const d = C.apps[a.repo]; if(!d) return '';
+  if(d.liveErr) return `<div class="err sm">Données en direct : ${esc(d.liveErr)}</div>`;
+  const l = d.live; if(!l) return '';
+  const old = l.t && Date.now() - l.t > 3*3600e3;
+  const head = `<div class="sm ${old?'err':'muted'}"><span class="dot ${old?'orange':'green'}"></span>${a.emoji} ${esc(a.name)} · envoyé ${esc(ago(l.t))}${old?' (l\'ordinateur est peut-être éteint)':''}</div>`;
+  if(compact) return `${head}${l.climat ? `<div class="t">${esc(l.climat.titre)}</div>` : ''}`;
+  return `${head}
+    ${l.climat ? `<div class="t" style="margin-top:6px">${esc(l.climat.titre)}</div><div class="sm muted">${esc(l.climat.resume)}</div>` : ''}
+    ${l.compteurs ? `<div class="kv">${l.compteurs.opp!=null?`<span class="pill">${l.compteurs.opp} opportunité(s)</span>`:''}${l.compteurs.surv!=null?`<span class="pill">${l.compteurs.surv} à surveiller</span>`:''}${l.compteurs.pos!=null?`<span class="pill">${l.compteurs.pos} position(s)</span>`:''}${l.resultats?.totalTxt?`<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>`:''}</div>` : ''}
+    ${(l.alertes||[]).map(x => `<div class="sm">⚠︎ ${esc(x.texte)}</div>`).join('')}
+    ${(l.bureau||[]).length ? `<details><summary>Derniers mots de l'équipe</summary>${l.bureau.map(x => `<div class="sm" style="margin-top:6px"><b>${esc(x.de||'')}</b> · ${esc(x.texte)} <span class="muted">${esc(ago(x.t))}</span></div>`).join('')}</details>` : ''}
+    ${l.cles ? `<div class="sm muted">Champs : ${esc(l.cles.join(', '))}</div>` : ''}`;
+}
+
+function vToday(){
+  const apps = tracked();
+  if(!apps.length || !S.ghToken) return empty('Bienvenue dans Atelier', 'Commence par les Réglages : ton token GitHub et ta clé Gemini.', 'settings');
+  const open = apps.reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0);
+  const week = allCommits().filter(c => Date.now() - new Date(c.date) < 7*864e5).length;
+  const t = C.today, w = C.weekly?.[0];
+  const lives = apps.filter(a => C.apps[a.repo]?.live || C.apps[a.repo]?.liveErr);
+  const lundi = new Date().getDay() === 1 && (!w || Date.now() - w.at > 5*864e5);
+  return `
+  <section class="stats">
+    <div><b>${apps.length}</b><span>apps</span></div>
+    <div><b>${open}</b><span>tâches ouvertes</span></div>
+    <div><b>${week}</b><span>commits · 7 j</span></div>
+  </section>
+  ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
+  <section class="card">
+    <h2>Que faire maintenant ?</h2>
+    <p class="muted" style="margin:0 0 10px">Le chef lit l'état de toutes tes apps et choisit les 3 actions les plus utiles.</p>
+    <button class="btn primary" data-action="advise" ${busy.advise?'disabled':''}>${busy.advise?spin('Analyse en cours…'):'✨ Analyser mes projets'}</button>
+    ${t ? `<p class="muted sm" style="margin-top:12px">Analyse ${ago(t.at)}</p>${t.data.resume?`<p>${esc(t.data.resume)}</p>`:''}
+      ${(t.data.actions||[]).map((a, i) => `<div class="action">
+        <h4>${esc(a.app)} · ${esc(a.titre)}</h4>
+        <div class="muted sm">${esc(a.pourquoi)}${a.duree_min?` · ~${esc(a.duree_min)} min`:''}</div>
+        <div class="btns">
+          <button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">🧠 Prompt de code</button>
+          <button class="btn sm" data-action="adviceIssue" data-i="${i}">＋ En faire une tâche</button>
+        </div></div>`).join('')}` : ''}
+  </section>
+  <section class="card">
+    <h2>Bilan de la semaine</h2>
+    ${w ? `<p class="muted sm" style="margin:0">Fait ${ago(w.at)}</p>${md(w.text)}` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne, et le cap de la semaine prochaine.</p>`}
+    ${lundi && !busy.weekly ? '<p class="sm ok">On est lundi : c\'est le bon moment pour faire le bilan.</p>' : ''}
+    <div class="btns"><button class="btn ${w?'':'primary'}" data-action="weekly" ${busy.weekly?'disabled':''}>${busy.weekly?spin('Rédaction…'):(w?'Refaire le bilan':'📊 Faire le bilan')}</button>
+    ${w ? '<button class="btn sm" data-action="tasksFrom" data-src="weekly">＋ En tirer des tâches</button>' : ''}</div>
+  </section>
+  ${(C.pending||[]).length ? `<section class="card"><b>${C.pending.length} idée(s) en attente d'envoi</b><div class="muted sm">Elles partiront sur GitHub à la prochaine synchro en ligne.</div></section>` : ''}
+  <h3 class="sec">Activité récente</h3>
+  <div class="list">${allCommits().slice(0,8).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener">
+    <span class="em">${esc(c.emoji)}</span><span class="grow"><b>${esc(c.app)}</b> · ${esc(c.msg)}</span><span class="muted sm">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted">Aucune activité pour l\'instant. Lance une synchro avec ⟳.</p>'}</div>`;
+}
+
+function vApps(){
+  const apps = tracked();
+  if(!apps.length) return empty('Aucune app suivie', 'Renseigne le dépôt GitHub de chaque app dans les Réglages.', 'settings');
+  return `<h3 class="sec">Mes apps</h3><div class="grid">${apps.map(a => {
+    const d = C.apps[a.repo], h = health(d), v = d?.version || {}, p = d?.projet || {};
+    return `<div class="card app" data-action="openApp" data-repo="${esc(a.repo)}">
+      <div class="top"><span class="em">${esc(a.emoji)}</span><div><b>${esc(a.name)}</b><div class="muted sm">${esc(v.version ? 'version ' + v.version : (p.version ? 'v' + p.version : a.repo))}</div></div></div>
+      <p class="sm" style="margin:10px 0 6px">${esc((v.notes||[])[0] || p.description || d?.info?.description || '—')}</p>
+      <div class="sm"><span class="dot ${h.cls}"></span>${esc(h.label)}${d?.info ? ' · modifié ' + esc(ago(d.info.pushed_at)) : ''}</div>
+      <div class="sm muted">${(d?.issues||[]).length} tâche(s) · cerveau : ${d?.brain ? esc(d.brain.path) : '<span class="err">absent</span>'}</div>
+      ${d?.live ? `<div class="sm" style="margin-top:6px">${liveCard(a, true)}</div>` : ''}
+      ${d?.error ? `<div class="err">${esc(d.error)}</div>` : ''}
+    </div>`; }).join('')}</div>
+  <section class="card">
+    <h2>Code en commun entre les apps</h2>
+    <p class="muted" style="margin:0">Le chef compare la structure et le cerveau de chaque app pour repérer ce qui est codé plusieurs fois (mises à jour GitHub, démarrage, stockage…) et ce qui pourrait être partagé.</p>
+    ${C.dups ? `<p class="muted sm">Analyse ${ago(C.dups.at)}</p>${md(C.dups.text)}` : ''}
+    <div class="btns"><button class="btn ${C.dups?'':'primary'}" data-action="dups" ${busy.dups?'disabled':''}>${busy.dups?spin('Comparaison…'):(C.dups?'Refaire l\'analyse':'🔗 Comparer mes apps')}</button>
+    ${C.dups ? '<button class="btn sm" data-action="tasksFrom" data-src="dups">＋ En tirer des tâches</button>' : ''}</div>
+  </section>`;
+}
+
+function vTasks(){
+  const apps = tracked();
+  if(!apps.length) return empty('Aucune tâche', 'Ajoute tes dépôts dans les Réglages.', 'settings');
+  return apps.map(a => {
+    const d = C.apps[a.repo] || {}, is = d.issues || [];
+    return `<h3 class="sec">${esc(a.emoji)} ${esc(a.name)} · ${is.length}</h3>
+      ${d.issuesErr ? `<p class="err">${esc(d.issuesErr)}</p>` : ''}
+      ${d.info && d.info.has_issues === false ? '<p class="err sm">Les Issues sont désactivées sur ce dépôt (GitHub › Settings › Features › Issues).</p>' : ''}
+      <div class="list">${is.map(i => `
+      <div class="row"><span class="grow"><a href="${esc(i.url)}" target="_blank" rel="noopener" class="muted sm">#${i.number}</a> ${esc(i.title)}
+        ${i.labels.map(l => `<span class="pill">${esc(l)}</span>`).join('')}</span>
+        <button class="btn sm" data-action="issuePrompt" data-repo="${esc(a.repo)}" data-n="${i.number}" title="Générer le prompt de code">🧠</button>
+        <button class="btn sm" data-action="closeIssue" data-repo="${esc(a.repo)}" data-n="${i.number}" title="Marquer comme fait">✓</button>
+      </div>`).join('') || '<p class="muted sm" style="margin:0 4px">Rien à faire ici.</p>'}</div>`;
+  }).join('');
+}
+
+function vChef(){
+  if(!S.geminiKey) return empty('Le chef de projet', 'Ajoute ta clé Gemini dans les Réglages pour discuter avec lui.', 'settings');
+  const msgs = C.chat || [];
+  return `<section class="card" style="margin-bottom:4px">
+    <h2>Le chef de projet</h2>
+    <p class="muted sm" style="margin:0">Il connaît le cerveau, les commits et les tâches de toutes tes apps. Demande-lui quoi coder, comment marche une partie, ou fais-lui rédiger une consigne pour Claude.</p>
+    <div class="chips">
+      ${['Sur quelle app je devrais passer du temps cette semaine ?','Explique-moi simplement comment Boussole se met à jour depuis GitHub','Quels risques vois-tu dans mes apps en ce moment ?','Rédige une consigne pour Claude : la prochaine amélioration la plus utile'].map(q => `<button class="btn sm" data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}
+    </div>
+  </section>
+  <div class="chat">${msgs.map((m, i) => m.role === 'user' ? `<div class="msg u">${esc(m.text)}</div>` : `<div class="msg m">${md(m.text)}
+      <div class="btns"><button class="btn sm" data-action="copyMsg" data-i="${i}">Copier</button><button class="btn sm" data-action="tasksFrom" data-src="chat" data-i="${i}">＋ En faire des tâches</button></div></div>`).join('')}
+    ${busy.chat ? `<div class="msg m">${spin('Le chef réfléchit…')}</div>` : ''}
+  </div>
+  <div class="composer"><textarea id="chatIn" rows="1" placeholder="Écris au chef…"></textarea><button class="icon" data-action="send" aria-label="Envoyer" style="background:var(--ac);color:#fff">↑</button></div>
+  ${msgs.length ? '<div class="btns"><button class="btn sm" data-action="newChat">Nouvelle conversation</button></div>' : ''}`;
+}
+
+const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
+
+## À quoi sert l'app
+(2-3 phrases)
+
+## Comment elle est construite
+- Fichiers principaux et leur rôle
+- Où sont stockées les données
+- API utilisées
+
+## Règles à respecter quand on modifie le code
+- Compatible téléphone
+- Ne pas casser …
+
+## Ce qui reste à faire
+- `;
+
+function vSettings(){
+  const chain = S.model === 'auto' && C.models?.length ? rankModels(C.models) : null;
+  return `
+  <h3 class="sec">Connexions</h3>
+  <section class="card">
+    <label>Token GitHub (fine-grained)</label>
+    <input type="password" data-set="ghToken" value="${esc(S.ghToken)}" placeholder="github_pat_…" autocomplete="off">
+    <label>Clé API Gemini (compte gratuit)</label>
+    <input type="password" data-set="geminiKey" value="${esc(S.geminiKey)}" placeholder="AIza…" autocomplete="off">
+    <label>Modèle Gemini</label>
+    <input data-set="model" value="${esc(S.model)}" list="models" placeholder="auto">
+    <datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>
+    <p class="muted sm">« auto » prend le plus récent modèle flash disponible et passe au suivant si le quota gratuit est épuisé.${chain ? ' Ordre actuel : ' + esc(chain.join(' → ')) : ''}${C.lastModel ? ' · Dernier utilisé : ' + esc(C.lastModel) : ''}</p>
+    <div class="btns">
+      <button class="btn sm" data-action="testGh">Tester GitHub</button>
+      <button class="btn sm" data-action="testGemini">Tester Gemini</button>
+      <button class="btn sm" data-action="listModels">Voir les modèles</button>
+    </div>
+    <details><summary>Quelles permissions pour le token ?</summary>
+      <div class="sm" style="margin-top:6px">GitHub › Settings › Developer settings › Fine-grained tokens. <b>Repository access</b> : boussole, boussole-donnees, revisions, trousseau. <b>Permissions</b> : Contents <b>Read and write</b> (lire le code, proposer les mises à jour du cerveau), Issues <b>Read and write</b> (les tâches), Pull requests <b>Read and write</b> (cerveau). Expiration : comme pour Boussole.</div>
+    </details>
+    <p class="muted sm">Les clés restent sur cet appareil. Elles ne sont jamais écrites dans le code ni sur GitHub.</p>
+  </section>
+
+  <h3 class="sec">Téléphone</h3>
+  <section class="card">
+    <p class="sm" style="margin-top:0">Comme pour Boussole : scanne le QR code avec l'iPhone, puis Partager › « Sur l'écran d'accueil ». Le téléphone reçoit les clés et la liste des apps.</p>
+    <div class="btns"><button class="btn primary" data-action="pairPhone">📱 Afficher le QR code</button></div>
+  </section>
+
+  <h3 class="sec">Apps suivies</h3>
+  <section class="card">
+    ${S.apps.map((a, i) => `<div class="appedit">
+      <div class="approw">
+        <input data-app="${i}" data-field="emoji" value="${esc(a.emoji)}" aria-label="Emoji">
+        <input data-app="${i}" data-field="name" value="${esc(a.name)}" aria-label="Nom">
+        <input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code">
+        <button class="btn sm" data-action="delApp" data-i="${i}" aria-label="Retirer">✕</button></div>
+      <div class="approw2">
+        <input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Dépôt de données (facultatif)" aria-label="Dépôt de données">
+        <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état, ex. telephone/etat.json" aria-label="Fichier d'état">
+      </div></div>`).join('')}
+    <div class="btns"><button class="btn sm" data-action="addApp">＋ Ajouter une app</button></div>
+    <p class="muted sm">Atelier lit dans chaque dépôt <code>publication/version.json</code> (version et notes), le cerveau (<code>CLAUDE.md</code>, sinon <code>CERVEAU.md</code>), les commits et les Issues. Le dépôt de données sert à afficher l'état en direct (comme le téléphone de Boussole).</p>
+  </section>
+
+  <h3 class="sec">Données</h3>
+  <section class="card">
+    <div class="btns" style="margin-top:0">
+      <button class="btn sm" data-action="exportCfg">Exporter la config</button>
+      <button class="btn sm" data-action="importCfg">Importer une config</button>
+      <button class="btn sm" data-action="clearCache">Vider le cache</button>
+    </div>
+    <p class="muted sm">Atelier ${VERSION}</p>
+  </section>`;
+}
+
+function go(v){ view = v; LS.set('atelier.view', v); render(); window.scrollTo(0, v === 'chef' ? document.body.scrollHeight : 0); }
+function render(){
+  const keep = $('#chatIn')?.value;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.go === view));
+  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, settings:vSettings}[view] || vToday)();
+  if(keep && $('#chatIn')) $('#chatIn').value = keep;
+  $('#lastsync').textContent = C.lastSync ? 'synchro ' + ago(C.lastSync) : 'jamais synchronisé';
+  $('#fab').hidden = view === 'settings' || view === 'chef';
+}
+function modal(html){ $('#modal .sheet').innerHTML = `<button class="icon close" data-action="closeModal" aria-label="Fermer">✕</button>` + html; $('#modal').hidden = false; }
+function closeModal(){ $('#modal').hidden = true; }
+function textModal(title, text, extra=''){
+  modal(`<h2>${esc(title)}</h2>${extra}<div class="pre" id="mtext">${esc(text)}</div>
+    <div class="btns"><button class="btn primary" data-action="copyModal">Copier</button></div>`);
+}
+let MODAL_REPO = null;
+
+/* ================= Fiche d'une app ================= */
+function appSheet(repo){
+  MODAL_REPO = repo;
+  const a = appBy(repo), d = C.apps[repo] || {}, v = d.version || {}, ai = aiOf(repo);
+  const site = d.projet?.url || d.info?.homepage;
+  modal(`<h2>${esc(a.emoji)} ${esc(a.name)}</h2>
+    <div class="muted sm">${esc(repo)}${v.version ? ' · version ' + esc(v.version) : ''}${v.date ? ' publiée ' + esc(ago(v.date)) : ''}</div>
+    <div class="btns">
+      ${d.info ? `<a class="btn sm" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">Dépôt GitHub</a>` : ''}
+      ${site ? `<a class="btn sm" href="${esc(site)}" target="_blank" rel="noopener">Ouvrir le site</a>` : ''}
+    </div>
+    ${d.error ? `<p class="err">${esc(d.error)}</p>` : ''}
+    ${(v.notes||[]).length ? `<h3 class="sec">Dernière version</h3>${md(v.notes.map(n => '- ' + n).join('\n'))}` : ''}
+    ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a)}</div>` : ''}
+
+    <h3 class="sec">Intelligence</h3>
+    <div class="btns" style="margin-top:0">
+      <button class="btn sm" data-action="review" ${busy['review'+repo]?'disabled':''}>${busy['review'+repo]?spin('Revue…'):'🔍 Revue du code récent'}</button>
+      <button class="btn sm" data-action="ideas" ${busy['ideas'+repo]?'disabled':''}>${busy['ideas'+repo]?spin('Réflexion…'):'💡 5 améliorations'}</button>
+      <button class="btn sm" data-action="brain" ${busy['brain'+repo]?'disabled':''}>${busy['brain'+repo]?spin('Lecture…'):(d.brain?'🧠 Mettre à jour le cerveau':'🧠 Créer le cerveau')}</button>
+    </div>
+    ${ai.review ? `<div class="card"><b>Revue du code</b> <span class="muted sm">${ago(ai.review.at)}</span>${md(ai.review.text)}
+      <div class="btns"><button class="btn sm" data-action="tasksFrom" data-src="review">＋ En tirer des tâches</button></div></div>` : ''}
+    ${ai.ideas ? `<div class="card"><b>Améliorations proposées</b> <span class="muted sm">${ago(ai.ideas.at)}</span>
+      ${ai.ideas.list.map((x, i) => `<div class="action"><h4>${esc(x.titre)}</h4><div class="sm muted">${esc(x.pourquoi)} · effort ${esc(x.effort||'?')} · impact ${esc(x.impact||'?')}</div>
+        <div class="btns"><button class="btn sm" data-action="ideaIssue" data-i="${i}">＋ Créer la tâche</button></div></div>`).join('')}</div>` : ''}
+    ${(d.brain?.pr) ? `<p class="sm">Proposition de cerveau en attente : <a href="${esc(d.brain.pr)}" target="_blank" rel="noopener">voir la pull request</a></p>` : ''}
+
+    <h3 class="sec">Tâches ouvertes · ${(d.issues||[]).length}</h3>
+    <div class="list">${(d.issues||[]).map(i => `<div class="row"><span class="grow">#${i.number} ${esc(i.title)}</span><button class="btn sm" data-action="issuePrompt" data-repo="${esc(repo)}" data-n="${i.number}">🧠</button></div>`).join('') || '<p class="muted sm">Aucune</p>'}</div>
+    <h3 class="sec">Derniers commits</h3>
+    <div class="list">${(d.commits||[]).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener"><span class="grow">${esc(c.msg)}</span><span class="muted sm">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">—</p>'}</div>
+    ${d.brain ? `<details><summary>Cerveau : ${esc(d.brain.path)} (${d.brain.text.split('\n').length} lignes)</summary>${md(d.brain.text)}</details>` : `<p class="muted sm">Pas de cerveau (CLAUDE.md) dans ce dépôt.</p>`}`);
+}
+
+/* ================= Extraction de tâches depuis un texte ================= */
+let TASK_DRAFT = [];
+async function tasksFromText(text, defaultRepo){
+  const apps = tracked();
+  const r = await gemini(`Voici un texte (analyse, revue ou conversation) au sujet des apps de Clément :
+"""
+${clip(text, 12000)}
+"""
+Apps : ${apps.map(a => `${a.name} = ${a.repo}`).join(' ; ')}${defaultRepo ? `\nApp concernée par défaut : ${defaultRepo}` : ''}
+Extrais les tâches de développement concrètes qui en découlent (5 au maximum, uniquement des choses à faire dans le code). Chaque tâche : titre court à l'infinitif, corps de 2 à 5 lignes avec le critère de réussite.
+JSON strict : {"taches":[{"repo":"pseudo/depot","titre":"…","corps":"…"}]}`, {json:true, system:ROLE_CHEF});
+  TASK_DRAFT = (r.taches||[]).filter(t => apps.some(a => a.repo === t.repo));
+  if(!TASK_DRAFT.length) throw new Error('Aucune tâche concrète trouvée dans ce texte');
+  modal(`<h2>Tâches proposées</h2><p class="muted sm">Coche celles à créer dans GitHub.</p>
+    ${TASK_DRAFT.map((t, i) => `<label class="chk card" style="margin:8px 0"><input type="checkbox" data-td="${i}" checked><span><b>${esc(appBy(t.repo).emoji)} ${esc(t.titre)}</b><br><span class="sm muted">${esc(t.corps)}</span></span></label>`).join('')}
+    <div class="btns"><button class="btn primary" data-action="createDraft">Créer les tâches cochées</button></div>`);
+}
+
+/* ================= Actions ================= */
+const ACTIONS = {
+  sync: () => syncAll(),
+  closeModal,
+  copyModal(){ copy($('#mtext').textContent); },
+
+  async advise(){
+    if(!tracked().length) return go('settings');
+    if(!C.lastSync) await syncAll(true);
+    busy.advise = true; render();
+    try{
+      const data = await gemini(`Nous sommes le ${dateFR(Date.now())}. Voici l'état de toutes les apps :
+
+${contexteGlobal(2500)}
+
+Choisis les 3 actions les plus utiles à faire maintenant, toutes apps confondues. Privilégie les tâches déjà ouvertes, les problèmes visibles dans l'état en direct, les petites actions qui débloquent beaucoup.
+Pour chaque action, rédige "prompt_code" : une consigne complète, autonome, en français, prête à coller dans Claude Code (contexte de l'app, résultat attendu, contraintes : respecter les règles du cerveau, ne pas casser l'existant, publier une nouvelle version comme d'habitude ; critères de vérification).
+JSON strict : {"resume":"2 phrases sur l'état global","actions":[{"app":"nom exact","repo":"pseudo/depot","titre":"action courte","pourquoi":"1 phrase","duree_min":30,"prompt_code":"…"}]}`, {json:true, system:ROLE_CHEF});
+      C.today = {at:Date.now(), data}; saveC();
+    }finally{ busy.advise = false; render(); }
+  },
+  showAdvicePrompt(el){
+    const a = C.today?.data?.actions?.[+el.dataset.i]; if(!a) return;
+    textModal('Consigne pour Claude', a.prompt_code || '(vide)', `<p class="muted sm">${esc(a.app)} · ${esc(a.titre)}</p>`);
+  },
+  async adviceIssue(el){
+    const a = C.today?.data?.actions?.[+el.dataset.i]; if(!a) return;
+    const repo = tracked().find(t => t.repo === a.repo)?.repo || tracked().find(t => t.name === a.app)?.repo;
+    if(!repo) throw new Error('App introuvable : ' + a.app);
+    await createIssue(repo, a.titre, `${a.pourquoi||''}\n\n### Consigne pour Claude\n${a.prompt_code||''}`);
+    render();
+  },
+
+  async weekly(){
+    busy.weekly = true; render();
+    try{
+      const since = new Date(Date.now() - 7*864e5).toISOString();
+      const parts = await Promise.all(tracked().map(async a => {
+        const [cm, closed] = await Promise.all([
+          gh(`/repos/${a.repo}/commits?since=${since}&per_page=60`).catch(() => []),
+          gh(`/repos/${a.repo}/issues?state=closed&since=${since}&per_page=30`).catch(() => [])
+        ]);
+        const v = C.apps[a.repo]?.version;
+        return `## ${a.name}
+Commits de la semaine (${cm.length}) : ${cm.map(c => c.commit.message.split('\n')[0]).join(' | ') || 'aucun'}
+Tâches terminées : ${closed.filter(i => !i.pull_request && i.closed_at > since).map(i => i.title).join(' | ') || 'aucune'}
+Tâches encore ouvertes : ${(C.apps[a.repo]?.issues||[]).map(i => i.title).slice(0,10).join(' | ') || 'aucune'}
+Version actuelle : ${v?.version || '?'} — ${(v?.notes||[]).join(' | ')}`;
+      }));
+      const text = await gemini(`Nous sommes le ${dateFR(Date.now())}. Fais le bilan de la semaine écoulée pour l'ensemble des apps :
+
+${parts.join('\n\n')}
+
+Format (Markdown court, 15 lignes maximum) :
+### Ce qui a avancé
+### Ce qui stagne
+### Le cap de la semaine prochaine (3 objectifs concrets et mesurables, toutes apps confondues)
+Termine par une phrase d'encouragement honnête, sans flatterie.`, {system:ROLE_CHEF});
+      C.weekly = [{at:Date.now(), text}, ...(C.weekly||[])].slice(0, 8); saveC();
+    }finally{ busy.weekly = false; render(); }
+  },
+
+  async dups(){
+    busy.dups = true; render();
+    try{
+      const parts = await Promise.all(tracked().map(async a => {
+        const d = C.apps[a.repo] || {};
+        const files = await tree(a.repo, d.info?.default_branch).catch(e => ['(arborescence illisible : ' + e.message + ')']);
+        return `## ${a.name} (${a.repo})\nFichiers :\n${files.join('\n')}\nCerveau (extrait) :\n${clip(d.brain?.text || '(absent)', 7000)}`;
+      }));
+      const text = await gemini(`Compare ces apps et repère le code ou les mécanismes réalisés plusieurs fois (même nom de fichier, même rôle : mises à jour depuis GitHub, démarrage avec retour arrière, stockage chiffré des clés, client Gemini, site téléphone, QR code…).
+
+${parts.join('\n\n')}
+
+Réponds en Markdown :
+### Ce qui est en double
+(pour chaque point : quelles apps, quels fichiers, à quel point c'est identique selon ce que tu vois)
+### Ce que je propose de partager
+(par ordre d'intérêt : quoi, comment — par exemple un dépôt « commun » copié par un script de publication —, le gain, le risque)
+### À ne PAS mutualiser
+Sois honnête sur ce que tu ne peux pas vérifier à partir des noms de fichiers et des cerveaux.`, {system:ROLE_CHEF});
+      C.dups = {at:Date.now(), text}; saveC();
+    }finally{ busy.dups = false; render(); }
+  },
+
+  openApp(el){ appSheet(el.dataset.repo); },
+
+  async review(){
+    const repo = MODAL_REPO, a = appBy(repo), d = C.apps[repo] || {};
+    busy['review'+repo] = true; appSheet(repo);
+    try{
+      const diffs = await recentDiffs(repo, 5);
+      const text = await gemini(`Fais la revue de code des derniers commits de ${a.name}.
+Règles de l'app (cerveau, extrait) :
+${clip(d.brain?.text || '(absent)', 12000)}
+
+Modifications récentes :
+${diffs}
+
+Réponds en Markdown, court et concret, en citant fichier et commit :
+### Bugs probables
+### Risques (sécurité, perte de données, mises à jour, téléphone)
+### Écarts avec les règles du cerveau
+### Améliorations simples
+Si tout va bien dans une rubrique, écris « RAS ». N'invente rien que le diff ne montre pas.`, {system:ROLE_CHEF, temperature:0.3});
+      aiOf(repo).review = {at:Date.now(), text}; saveC();
+    }finally{ busy['review'+repo] = false; if(!$('#modal').hidden && MODAL_REPO === repo) appSheet(repo); }
+  },
+  async ideas(){
+    const repo = MODAL_REPO, a = appBy(repo);
+    busy['ideas'+repo] = true; appSheet(repo);
+    try{
+      const r = await gemini(`${ficheApp(a, 15000)}
+
+Propose les 5 améliorations les plus utiles pour ${a.name} maintenant, en partant de ce que l'app fait déjà et de ses règles. Évite ce qui est déjà fait ou déjà en tâche ouverte. Mélange petites améliorations rapides et une idée plus ambitieuse.
+JSON strict : {"idees":[{"titre":"…","pourquoi":"1 phrase","effort":"petit|moyen|gros","impact":"faible|moyen|fort","consigne":"consigne complète pour Claude Code"}]}`, {json:true, system:ROLE_CHEF, temperature:0.7});
+      aiOf(repo).ideas = {at:Date.now(), list:(r.idees||[]).slice(0,5)}; saveC();
+    }finally{ busy['ideas'+repo] = false; if(!$('#modal').hidden && MODAL_REPO === repo) appSheet(repo); }
+  },
+  async ideaIssue(el){
+    const repo = MODAL_REPO, x = aiOf(repo).ideas?.list?.[+el.dataset.i]; if(!x) return;
+    await createIssue(repo, x.titre, `${x.pourquoi}\n\nEffort : ${x.effort} · Impact : ${x.impact}\n\n### Consigne pour Claude\n${x.consigne||''}`);
+    el.disabled = true; el.textContent = 'Créée ✓';
+  },
+
+  async brain(){
+    const repo = MODAL_REPO, a = appBy(repo), d = C.apps[repo] || {};
+    busy['brain'+repo] = true; appSheet(repo);
+    try{
+      if(d.brain){
+        const last = await gh(`/repos/${repo}/commits?path=${encodeURIComponent(d.brain.path)}&per_page=1`).catch(() => []);
+        const since = last[0]?.commit?.author?.date;
+        const cm = await gh(`/repos/${repo}/commits?per_page=40${since ? '&since=' + since : ''}`);
+        const after = cm.filter(c => !last[0] || c.sha !== last[0].sha);
+        const r = await gemini(`Voici le cerveau de ${a.name} (${d.brain.path}), le fichier de notes que lit l'IA qui code avant chaque modification :
+"""
+${clip(d.brain.text, 60000)}
+"""
+Commits faits depuis sa dernière mise à jour (${since || 'date inconnue'}) :
+${after.map(c => '- ' + c.commit.message.replace(/\n+/g, ' / ')).join('\n') || '(aucun)'}
+Notes de la version publiée : ${(d.version?.notes||[]).join(' | ')}
+
+Le cerveau est-il à jour ? Si non, rédige UNIQUEMENT une section à AJOUTER à la fin (pas de réécriture du reste), titre « ## Mise à jour du ${new Date().toLocaleDateString('fr-FR')} (proposée par Atelier) », qui consigne ce que les commits ont changé et que le cerveau ne dit pas encore (nouveaux fichiers, nouvelles règles, décisions). Style : identique au cerveau existant, précis, sans inventer.
+Signale aussi les incohérences éventuelles entre le cerveau et les commits.
+JSON strict : {"a_jour":true|false,"resume":"1-2 phrases","ajout":"markdown de la section, vide si à jour","incoherences":["…"]}`, {json:true, system:ROLE_CHEF, temperature:0.3});
+        modal(`<h2>🧠 Cerveau de ${esc(a.name)}</h2><p>${esc(r.resume||'')}</p>
+          ${(r.incoherences||[]).length ? `<h3 class="sec">Incohérences repérées</h3>${md(r.incoherences.map(x => '- ' + x).join('\n'))}` : ''}
+          ${r.a_jour && !r.ajout ? '<p class="ok">Le cerveau est à jour. Rien à ajouter.</p>' : `
+          <h3 class="sec">Section à ajouter à ${esc(d.brain.path)}</h3>
+          <textarea id="brainAdd" rows="12">${esc(r.ajout||'')}</textarea>
+          <p class="muted sm">Tu peux la modifier. Elle sera proposée en <b>pull request</b> : rien ne change dans l'app tant que tu ne l'as pas fusionnée (bouton ci-dessous ou sur GitHub). Si tu publies depuis un clone sur ton Mac, fais <code>git pull</code> après la fusion.</p>
+          <div class="btns"><button class="btn primary" data-action="brainPR" data-mode="append">Proposer l'ajout</button></div>`}`);
+      } else {
+        const files = await tree(repo, d.info?.default_branch).catch(() => []);
+        const readme = await ghRaw(repo, 'README.md').catch(() => null);
+        const text = await gemini(`L'app ${a.name} (${repo}) n'a pas encore de cerveau (fichier CLAUDE.md lu par l'IA qui code avant chaque modification).
+Fichiers : ${files.join(', ')}
+README : ${clip(readme || '(absent)', 6000)}
+Derniers commits : ${(d.commits||[]).map(c => c.msg).join(' | ')}
+Version : ${JSON.stringify(d.version||{})}
+Rédige un premier CLAUDE.md en suivant ce plan, en n'écrivant que ce qui se déduit des éléments ci-dessus (marque « à compléter » sinon) :
+${TPL_CERVEAU}`, {system:ROLE_CHEF, temperature:0.3});
+        modal(`<h2>🧠 Créer le cerveau de ${esc(a.name)}</h2>
+          <p class="muted sm">Brouillon rédigé à partir des fichiers et des commits. Complète-le, puis propose-le : il arrivera en pull request.</p>
+          <textarea id="brainAdd" rows="16">${esc(text)}</textarea>
+          <div class="btns"><button class="btn primary" data-action="brainPR" data-mode="create">Proposer CLAUDE.md</button></div>`);
+      }
+    }catch(e){ busy['brain'+repo] = false; appSheet(repo); throw e; }
+    finally{ busy['brain'+repo] = false; }
+  },
+  async brainPR(el){
+    const repo = MODAL_REPO, d = C.apps[repo] || {}, a = appBy(repo);
+    const add = $('#brainAdd').value.trim(); if(!add) return;
+    el.disabled = true; el.innerHTML = spin('Envoi sur GitHub…');
+    try{
+      const base = d.info?.default_branch || 'main';
+      const path = el.dataset.mode === 'create' ? 'CLAUDE.md' : d.brain.path;
+      const ref = await gh(`/repos/${repo}/git/ref/heads/${encodeURIComponent(base)}`);
+      const branch = `atelier/cerveau-${new Date().toISOString().slice(0,16).replace(/[-:T]/g,'')}`;
+      await gh(`/repos/${repo}/git/refs`, {method:'POST', body:{ref:'refs/heads/' + branch, sha:ref.object.sha}});
+      let content = add + '\n', sha;
+      if(el.dataset.mode !== 'create'){
+        const meta = await gh(`/repos/${repo}/contents/${encPath(path)}?ref=${encodeURIComponent(branch)}`);
+        sha = meta.sha;
+        const current = meta.content ? b64utf8(meta.content) : (await ghRaw(repo, path));
+        content = current.replace(/\s*$/, '') + '\n\n' + add + '\n';
+      }
+      await gh(`/repos/${repo}/contents/${encPath(path)}`, {method:'PUT', body:{message:`Cerveau : ${el.dataset.mode === 'create' ? 'création' : 'mise à jour'} proposée par Atelier`, content:utf8b64(content), branch, ...(sha ? {sha} : {})}});
+      const pr = await gh(`/repos/${repo}/pulls`, {method:'POST', body:{title:`Cerveau de ${a.name} : ${el.dataset.mode === 'create' ? 'création' : 'mise à jour'}`, head:branch, base, body:`Proposé par Atelier (Gemini), relu par Clément.\n\nFusionner cette PR ajoute la section au fichier \`${path}\`. Après la fusion, faire \`git pull\` dans les clones locaux avant de publier.`}});
+      modal(`<h2>Proposition envoyée ✓</h2><p>Pull request #${pr.number} ouverte sur ${esc(repo)}.</p>
+        <div class="btns"><a class="btn sm" href="${esc(pr.html_url)}" target="_blank" rel="noopener">Voir sur GitHub</a>
+        <button class="btn primary" data-action="mergePR" data-n="${pr.number}" data-branch="${esc(branch)}">Fusionner maintenant</button></div>`);
+      if(C.apps[repo]?.brain) C.apps[repo].brain.pr = pr.html_url; saveC();
+    }catch(e){ el.disabled = false; el.textContent = 'Réessayer'; throw e; }
+  },
+  async mergePR(el){
+    const repo = MODAL_REPO, n = +el.dataset.n;
+    if(!confirm(`Fusionner la PR #${n} dans ${repo} ? Le cerveau sera modifié sur la branche principale.`)) return;
+    el.disabled = true;
+    await gh(`/repos/${repo}/pulls/${n}/merge`, {method:'PUT', body:{merge_method:'squash'}});
+    await gh(`/repos/${repo}/git/refs/heads/${el.dataset.branch}`, {method:'DELETE'}).catch(() => {});
+    if(C.apps[repo]?.brain) delete C.apps[repo].brain.pr;
+    closeModal(); toast('Cerveau mis à jour ✓'); syncAll(true);
+  },
+
+  async tasksFrom(el){
+    const src = el.dataset.src; let text = '', repo = null;
+    if(src === 'weekly') text = C.weekly?.[0]?.text;
+    else if(src === 'dups') text = C.dups?.text;
+    else if(src === 'review'){ repo = MODAL_REPO; text = aiOf(repo).review?.text; }
+    else if(src === 'chat') text = C.chat?.[+el.dataset.i]?.text;
+    if(!text) return;
+    const old = el.innerHTML; el.disabled = true; el.innerHTML = spin('Extraction…');
+    try{ await tasksFromText(text, repo); } finally { if(el.isConnected){ el.disabled = false; el.innerHTML = old; } }
+  },
+  async createDraft(el){
+    const pick = [...document.querySelectorAll('[data-td]')].filter(x => x.checked).map(x => TASK_DRAFT[+x.dataset.td]);
+    if(!pick.length) return closeModal();
+    el.disabled = true; el.innerHTML = spin('Création…');
+    for(const t of pick) await createIssue(t.repo, t.titre, t.corps, true);
+    closeModal(); toast(`${pick.length} tâche(s) créée(s) ✓`); render();
+  },
+
+  async issuePrompt(el){
+    const repo = el.dataset.repo, n = +el.dataset.n, d = C.apps[repo] || {}, a = appBy(repo);
+    const issue = (d.issues||[]).find(i => i.number === n); if(!issue) return;
+    modal(`<h2>Consigne pour Claude</h2><p class="muted">#${n} ${esc(issue.title)}</p><p>${spin('Le chef rédige la consigne…')}</p>`);
+    try{
+      const text = await gemini(`Rédige UNE consigne complète, en français, prête à coller dans Claude Code, pour réaliser la tâche ci-dessous dans ${a.name}.
+La consigne doit : rappeler en 2-3 phrases ce qu'est l'app ; décrire précisément le résultat attendu ; rappeler les règles du cerveau qui s'appliquent (versions, publication, compatibilité Mac/Windows/téléphone) ; finir par des critères de vérification.
+Réponds uniquement avec la consigne, sans introduction.
+
+${ficheApp(a, 30000)}
+
+TÂCHE #${n} : ${issue.title}
+${issue.body||''}`, {system:ROLE_CHEF});
+      textModal('Consigne pour Claude', text, `<p class="muted sm">${esc(a.name)} · #${n} ${esc(issue.title)}</p>`);
+    }catch(e){ closeModal(); throw e; }
+  },
+  async closeIssue(el){
+    const repo = el.dataset.repo, n = +el.dataset.n;
+    if(!confirm(`Marquer la tâche #${n} comme faite ?`)) return;
+    await gh(`/repos/${repo}/issues/${n}`, {method:'PATCH', body:{state:'closed'}});
+    const d = C.apps[repo]; if(d) d.issues = (d.issues||[]).filter(i => i.number !== n);
+    saveC(); render(); toast('Bien joué ✓');
+  },
+
+  /* Chef de projet */
+  ask(el){ $('#chatIn').value = el.dataset.q; return ACTIONS.send(); },
+  async send(){
+    const box = $('#chatIn'); const q = box.value.trim(); if(!q || busy.chat) return;
+    box.value = '';
+    C.chat = [...(C.chat||[]), {role:'user', text:q}].slice(-30); saveC();
+    busy.chat = true; render(); window.scrollTo(0, document.body.scrollHeight);
+    try{
+      const ctx = `Contexte à jour (${dateFR(Date.now())}) :\n\n${contexteGlobal(8000)}`;
+      const hist = C.chat.slice(-12).map(m => ({role:m.role === 'user' ? 'user' : 'model', parts:[{text:m.text}]}));
+      const text = await gemini([{role:'user', parts:[{text:ctx}]}, {role:'model', parts:[{text:'Compris, j\'ai le contexte de toutes les apps.'}]}, ...hist], {system:ROLE_CHEF + `\nQuand Clément demande une consigne pour Claude, donne-la dans un bloc de code pour qu'il la copie facilement.`});
+      C.chat = [...C.chat, {role:'model', text}].slice(-30); saveC();
+    }catch(e){ C.chat.pop(); saveC(); box.value = q; throw e; }
+    finally{ busy.chat = false; render(); window.scrollTo(0, document.body.scrollHeight); }
+  },
+  copyMsg(el){ const t = C.chat?.[+el.dataset.i]?.text || ''; const m = t.match(/```[^\n]*\n([\s\S]*?)```/); copy(m ? m[1].trim() : t); },
+  newChat(){ if(confirm('Effacer la conversation ?')){ C.chat = []; saveC(); render(); } },
+
+  /* Capture rapide */
+  capture(){
+    const apps = tracked(); if(!apps.length) return go('settings');
+    modal(`<h2>Nouvelle idée</h2>
+      <textarea id="capText" rows="5" placeholder="Ex : dans Révisions, ajouter un chrono au QCM"></textarea>
+      <label>App</label>
+      <select id="capApp">${S.geminiKey ? '<option value="auto">🤖 Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}">${esc(a.emoji)} ${esc(a.name)}</option>`).join('')}</select>
+      ${S.geminiKey ? '<label class="chk"><input type="checkbox" id="capAI" checked> Reformuler en tâche claire</label>' : ''}
+      <div class="btns"><button class="btn primary" data-action="sendCapture" id="capBtn">Ajouter</button></div>`);
+    setTimeout(() => $('#capText')?.focus(), 50);
+  },
+  async sendCapture(){
+    const txt = $('#capText').value.trim(); if(!txt) return;
+    let repo = $('#capApp').value, title, body;
+    const useAI = navigator.onLine && S.geminiKey && ($('#capAI')?.checked || repo === 'auto');
+    const btn = $('#capBtn'); btn.disabled = true; btn.innerHTML = spin(useAI ? 'Le chef reformule…' : 'Envoi…');
+    try{
+      if(useAI){
+        const r = await gemini(`Transforme cette note en tâche de développement claire.
+Apps : ${tracked().map(a => `${a.name} = ${a.repo} (${(C.apps[a.repo]?.version?.notes||[])[0] || ''})`).join(' ; ')}
+${repo === 'auto' ? 'Choisis l\'app la plus probable.' : 'App imposée : ' + repo}
+Note : """${txt}"""
+JSON strict : {"repo":"pseudo/depot","titre":"titre court à l'infinitif","corps":"description précise en 2 à 5 lignes, avec critère de réussite"}`, {json:true, system:ROLE_CHEF});
+        if(repo === 'auto') repo = r.repo;
+        title = r.titre; body = `${r.corps||''}\n\n> Note d'origine : ${txt}`;
+      } else {
+        if(repo === 'auto') throw new Error('Hors ligne : choisis une app à la main');
+        const lines = txt.split('\n'); title = lines[0].slice(0,100); body = lines.slice(1).join('\n') || txt;
+      }
+      if(!tracked().some(a => a.repo === repo)) throw new Error('App inconnue : ' + repo);
+      await createIssue(repo, title, body);
+      closeModal(); render();
+    }finally{ if(btn.isConnected){ btn.disabled = false; btn.textContent = 'Ajouter'; } }
+  },
+
+  /* Réglages */
+  addApp(){ S.apps.push({name:'Nouvelle app', repo:'', emoji:'📦', donnees:'', etat:''}); saveS(); render(); },
+  delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${S.apps[i].name} d'Atelier ? (le dépôt GitHub n'est pas touché)`)){ S.apps.splice(i,1); saveS(); render(); } },
+  async testGh(){
+    if(!S.ghToken) throw new Error('Colle d\'abord ton token GitHub');
+    const u = await gh('/user');
+    const res = await Promise.all(tracked().map(a => gh(`/repos/${a.repo}`).then(r => `✓ ${a.name}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${a.name} : ${e.message}`)));
+    textModal('GitHub', `Connecté en tant que ${u.login}\n\n${res.join('\n')}`);
+  },
+  async testGemini(){ const t = await gemini('Réponds uniquement : OK'); toast(`Gemini répond « ${t.slice(0,20)} » avec ${C.lastModel}`); },
+  async listModels(){
+    if(!S.geminiKey) throw new Error('Clé Gemini manquante');
+    const ms = await listModels(true); render();
+    textModal('Modèles disponibles avec ta clé', `Ordre utilisé en « auto » :\n${rankModels(ms).join('\n')}\n\nTous :\n${ms.join('\n')}`);
+  },
+  pairPhone(){
+    if(!S.ghToken) throw new Error('Colle d\'abord ton token GitHub');
+    const code = b64url(JSON.stringify({t:S.ghToken, g:S.geminiKey, m:S.model, a:S.apps}));
+    const base = /\.github\.io$/.test(location.hostname) ? location.origin + location.pathname : `https://${(tracked()[0]?.repo||'pseudo/x').split('/')[0]}.github.io/atelier-mobile/`;
+    const lien = `${base}#a=${code}`;
+    let svg = '';
+    try{ const q = qrcode(0, 'L'); q.addData(lien); q.make(); svg = q.createSvgTag({cellSize:3, margin:2, scalable:true}); }catch{ svg = '<p class="err">Lien trop long pour un QR code : utilise « Copier le lien ».</p>'; }
+    window._lien = lien;
+    modal(`<h2>📱 Connecter le téléphone</h2>
+      <div class="qr">${svg}</div>
+      <ol class="sm"><li><b>Scanne ce QR code</b> avec l'appareil photo de l'iPhone : Safari s'ouvre sur Atelier.</li>
+      <li><b>Épingle-le</b> : Partager › « Sur l'écran d'accueil » › Ajouter.</li><li><b>Ouvre l'icône Atelier</b> : c'est fini.</li></ol>
+      <p class="err sm">Ce QR code contient tes clés : ne le photographie pas et ne le partage pas.</p>
+      <div class="btns"><button class="btn sm" data-action="copyLien">Copier le lien</button></div>`);
+  },
+  copyLien(){ copy(window._lien); },
+  exportCfg(){
+    textModal('Config à transférer', b64url(JSON.stringify(S)), `<p class="err">Contient tes clés : envoie-la-toi seulement par un canal privé, puis efface-la.</p>`);
+  },
+  importCfg(){
+    modal(`<h2>Importer une config</h2><textarea id="impText" rows="6" placeholder="Colle ici le texte exporté"></textarea>
+      <div class="btns"><button class="btn primary" data-action="doImport">Importer</button></div>`);
+  },
+  doImport(){
+    try{ S = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(unb64url($('#impText').value.trim()))); }
+    catch{ throw new Error('Texte de config invalide'); }
+    saveS(); closeModal(); render(); toast('Config importée ✓'); syncAll();
+  },
+  clearCache(){ if(confirm('Vider les données en cache ? (réglages et conversation gardés)')){ C = {apps:{}, today:null, pending:C.pending||[], lastSync:0, ai:{}, weekly:C.weekly||[], chat:C.chat||[], dups:null, blocked:{}}; saveC(); render(); } }
+};
+
+document.addEventListener('click', async e => {
+  if(e.target.id === 'modal') return closeModal();
+  const el = e.target.closest('[data-action],[data-go]'); if(!el) return;
+  if(el.dataset.go){ closeModal(); go(el.dataset.go); return; }
+  const fn = ACTIONS[el.dataset.action]; if(!fn) return;
+  e.preventDefault();
+  try{ await fn(el); }catch(err){ toast(err.message || String(err), true); console.error(err); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if(el.dataset.set){ S[el.dataset.set] = el.value.trim() || (el.dataset.set === 'model' ? 'auto' : ''); saveS(); if(el.dataset.set === 'model') render(); }
+  if(el.dataset.app !== undefined){
+    let v = el.value.trim(); if(el.dataset.field === 'repo' || el.dataset.field === 'donnees') v = el.value = normRepo(v);
+    S.apps[+el.dataset.app][el.dataset.field] = v; saveS();
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeModal();
+  if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn'){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); }
+});
+addEventListener('online', () => { if((C.pending||[]).length) syncAll(true); });
+document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && S.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
+
+/* ================= Démarrage ================= */
+render();
+if(navigator.onLine && S.ghToken && tracked().length && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true);
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
