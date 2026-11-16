@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://api.github.com">
 <link rel="preconnect" href="https://generativelanguage.googleapis.com">
@@ -120,7 +120,10 @@ main{max-width:1180px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bo
 .green{background:var(--ok)}.orange{background:var(--wa)}.red{background:var(--ko)}.grey{background:var(--gr)}
 .av{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:24px;background:color-mix(in srgb,var(--c,#5b5bf0) 16%,var(--s1));border:1px solid color-mix(in srgb,var(--c,#5b5bf0) 25%,transparent)}
 .av.s{width:28px;height:28px;border-radius:8px;font-size:15px}
+.av.xs{width:18px;height:18px;border-radius:5px;font-size:11px;display:inline-grid;vertical-align:-4px;box-shadow:none}
 .av.l{width:56px;height:56px;border-radius:16px;font-size:30px}
+.av.img{background:none;border:0;overflow:hidden;box-shadow:0 2px 8px rgba(16,24,40,.18)}
+.av.img img{width:100%;height:100%;display:block;border-radius:inherit}
 label.f{display:block;font-size:13px;font-weight:550;color:var(--tx2);margin:14px 0 6px}
 input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:border-color .15s,box-shadow .15s}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
@@ -335,7 +338,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <div id="onb" hidden></div>
 <div id="shell">
   <aside id="side">
-    <div class="brand"><img src="icon.svg" alt=""><div><b>Atelier</b><small id="sideCloud"></small></div></div>
+    <div class="brand"><img src="icones/atelier.png" alt=""><div><b>Atelier</b><small id="sideCloud"></small></div></div>
     <button class="btn primary block" data-action="capture"><svg class="i"><use href="#i-plus"/></svg>Nouvelle idée</button>
     <button class="searchbtn" data-action="palette"><svg class="i s"><use href="#i-search"/></svg>Rechercher…<span class="kbd" id="kbdK">Ctrl K</span></button>
     <div class="snav" id="snav"></div>
@@ -400,7 +403,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.1.0';
+const VERSION = '3.1.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -473,9 +476,9 @@ const spin = t => `<span class="spinner"></span>${t ? esc(t) : ''}`;
 ================================================================ */
 const COULEURS = ['#f59e0b','#0ea5e9','#10b981','#8b5cf6','#ef4444','#ec4899','#14b8a6','#6366f1'];
 const APPS_DEFAUT = [
-  {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', couleur:'#f59e0b', donnees:'', etat:''},
-  {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', couleur:'#0ea5e9', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
-  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', couleur:'#10b981', donnees:'', etat:''}
+  {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', icone:'icones/revisions.png', couleur:'#a855f7', donnees:'', etat:''},
+  {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', icone:'icones/boussole.png', couleur:'#14b8a6', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
+  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', icone:'icones/trousseau.png', couleur:'#3b5bfd', donnees:'', etat:''}
 ];
 let L = Object.assign({ghToken:'', geminiKey:'', device:'', cloud:'oiriaure/atelier-donnees', nomAppareil:''}, LS.get('atelier.local', {}));
 if(!L.device) L.device = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
@@ -503,7 +506,9 @@ const get = (k, d) => SH[k] ? SH[k].v : d;
 function put(k, v){ SH[k] = {t:Date.now(), v}; saveSH(); Cloud.schedule(); }
 const REG = () => Object.assign({apps:APPS_DEFAUT, model:'auto', vitesse:'equilibre', prenom:''}, get('reglages', {}));
 const setReg = patch => put('reglages', Object.assign(REG(), patch));
-const appsAll = () => REG().apps || [];
+const ICONES = {'oiriaure/revisions':'icones/revisions.png', 'oiriaure/boussole':'icones/boussole.png', 'oiriaure/trousseau':'icones/trousseau.png'};
+const COUL_V3 = {'oiriaure/revisions':['#f59e0b','#a855f7'], 'oiriaure/boussole':['#0ea5e9','#14b8a6'], 'oiriaure/trousseau':['#10b981','#3b5bfd']};
+const appsAll = () => (REG().apps || []).map(a => { const x = Object.assign({}, a); if(!x.icone && ICONES[x.repo]) x.icone = ICONES[x.repo]; const c = COUL_V3[x.repo]; if(c && (!x.couleur || x.couleur === c[0])) x.couleur = c[1]; return x; });
 const tracked = () => appsAll().filter(a => validRepo(a.repo));
 const appBy = repo => appsAll().find(a => a.repo === repo) || {name:repo, emoji:'📦', repo, couleur:'#6366f1'};
 const aiOf = repo => (get('ai', {})[repo] || {});
@@ -1076,7 +1081,7 @@ function serie(){
   return n;
 }
 const nbTaches = () => tracked().reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0);
-const avatar = (a, cls='') => `<span class="av ${cls}" style="--c:${esc(a.couleur||'#6366f1')}">${esc(a.emoji)}</span>`;
+const avatar = (a, cls='') => (a.icone || ICONES[a.repo]) ? `<span class="av img ${cls}"><img src="${esc(a.icone || ICONES[a.repo])}" alt="${esc(a.name||'')}" loading="lazy"></span>` : `<span class="av ${cls}" style="--c:${esc(a.couleur||'#6366f1')}">${esc(a.emoji)}</span>`;
 function salut(){ const h = new Date().getHours(), p = REG().prenom; return (h < 5 ? 'Bonne nuit' : h < 18 ? 'Bonjour' : 'Bonsoir') + (p ? ' ' + p : ''); }
 function cloudEtat(){
   if(!Cloud.on()) return {ic:'cloudx', txt:'Cloud non connecté', cls:'muted'};
@@ -1151,7 +1156,7 @@ function vToday(){
       ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi automatique dès le retour du réseau.</div></section>` : ''}
       <section class="card">
         <div class="hd"><h2>${ic('git')} Activité récente</h2></div>
-        ${first ? '<div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel"></div>' : `<div class="feed">${allCommits().slice(0,6).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener">${avatar({emoji:c.emoji, couleur:c.c}, 's')}<span class="tx"><b>${esc(c.app)}</b> <span class="sm">${esc(c.msg)}</span></span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">Aucune activité pour l\'instant.</p>'}</div>`}
+        ${first ? '<div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel"></div>' : `<div class="feed">${allCommits().slice(0,6).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener">${avatar({emoji:c.emoji, couleur:c.c, repo:c.repo, name:c.app}, 's')}<span class="tx"><b>${esc(c.app)}</b> <span class="sm">${esc(c.msg)}</span></span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">Aucune activité pour l\'instant.</p>'}</div>`}
       </section>
     </div>
   </div>`;
@@ -1191,10 +1196,10 @@ function vTasks(){
       <input id="tq" placeholder="Filtrer les tâches…" value="${esc(TF.q)}" style="flex:1;min-width:180px" type="search">
       <button class="btn primary desk-only" data-action="capture">${ic('plus','s')} Nouvelle tâche</button>
     </div>
-    <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes · ${all.length}</button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${esc(a.emoji)} ${esc(a.name)} · ${(C.apps[a.repo]?.issues||[]).length}</button>`).join('')}</div>
+    <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes · ${all.length}</button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${avatar(a,'xs')} ${esc(a.name)} · ${(C.apps[a.repo]?.issues||[]).length}</button>`).join('')}</div>
     ${errs.map(a => `<p class="err">${esc(a.name)} : ${esc(C.apps[a.repo]?.issuesErr || 'les Issues sont désactivées sur ce dépôt')}</p>`).join('')}
     ${list.map(i => `<div class="trow" style="--c:${esc(i.a.couleur)}"><span class="bar"></span>
-      <div class="tt">${esc(i.title)}<span class="meta">${esc(i.a.emoji)} ${esc(i.a.name)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">#${i.number}</a> · ${esc(ago(i.created))}${i.labels.map(l => ` · ${esc(l)}`).join('')}</span></div>
+      <div class="tt">${esc(i.title)}<span class="meta">${avatar(i.a,'xs')} ${esc(i.a.name)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">#${i.number}</a> · ${esc(ago(i.created))}${i.labels.map(l => ` · ${esc(l)}`).join('')}</span></div>
       <div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(i.a.repo)}" data-n="${i.number}" title="Consigne pour Claude" aria-label="Consigne pour Claude">${ic('brain')}</button>
       <button class="ibtn" data-action="closeIssue" data-repo="${esc(i.a.repo)}" data-n="${i.number}" title="Marquer comme fait" aria-label="Marquer comme fait">${ic('check')}</button></div></div>`).join('')
       || empty('🎉', filtre ? 'Rien ne correspond' : 'Rien à faire', filtre ? 'Change le filtre.' : 'Ajoute une idée avec le bouton +.')}`;
@@ -1230,7 +1235,7 @@ function fil(d){
       ${d.id ? `<button class="ibtn phone-only" data-action="discMenu" aria-label="Options de la discussion">⋯</button>` : ''}
       ${d.id ? `<button class="ibtn desk-only" data-action="discPin" title="${d.epingle ? 'Désépingler' : 'Épingler'}" aria-label="Épingler">${ic('pin','s')}</button><button class="ibtn desk-only" data-action="discRename" title="Renommer" aria-label="Renommer">${ic('edit','s')}</button><button class="ibtn desk-only" data-action="discDel" title="Supprimer" aria-label="Supprimer">${ic('trash','s')}</button>` : ''}
     </div>
-    ${d.msgs.length ? '' : `<div class="empty" style="padding:18px 8px 6px"><div class="big">${a ? esc(a.emoji) : '✦'}</div><h3>${a ? 'Parlons de ' + esc(a.name) : 'Que veux-tu savoir ?'}</h3><p>${a ? 'Le chef connaît son cerveau, ses tâches, ses commits et l\'état de sa synchro.' : 'Le chef connaît toutes tes apps et l\'état de leurs synchros.'}</p></div>
+    ${d.msgs.length ? '' : `<div class="empty" style="padding:18px 8px 6px"><div class="big">${a ? avatar(a,'l') : '✦'}</div><h3>${a ? 'Parlons de ' + esc(a.name) : 'Que veux-tu savoir ?'}</h3><p>${a ? 'Le chef connaît son cerveau, ses tâches, ses commits et l\'état de sa synchro.' : 'Le chef connaît toutes tes apps et l\'état de leurs synchros.'}</p></div>
       <div class="sugg">${(a ? suggApp(a) : SUGG).map(q => `<button data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`}
     <div class="chat">${d.msgs.map((m, i) => bulle(m, i, i === d.msgs.length - 1)).join('')}${busy.chat === d.id ? `<div class="msg m" id="chatLive">${spin('')}</div>` : ''}</div>
   </section>
@@ -1272,7 +1277,7 @@ function vSync(){
   return `<section class="banner ${ban.cls}"><div class="bic">${ic(ban.ic)}</div><div style="flex:1;min-width:0"><b>${esc(ban.t)}</b><div class="sm muted">${esc(ban.d)}</div>
       <div class="xs muted" style="margin-top:4px">${busy.verif ? spin(' Vérification en cours…') : s ? `<span class="pulse"></span>Vérifié ${esc(ago(s.at))} · automatiquement toutes les 5 min` : ''}</div></div>
       <button class="btn sm" data-action="verifier" ${busy.verif ? 'disabled' : ''}>${ic('sync','s')} Vérifier</button></section>
-    <div class="sgrid">${tracked().map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av" style="--c:#6366f1"><img src="icon.svg" alt="" style="width:26px;height:26px;border-radius:7px"></span>', s?.atelier, 'atelier', '#6366f1')}</div>
+    <div class="sgrid">${tracked().map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av img"><img src="icones/atelier.png" alt="Atelier"></span>', s?.atelier, 'atelier', '#6366f1')}</div>
     <section class="card"><div class="hd"><h2>${ic('alert')} Journal des incidents</h2>${inc.length ? '<button class="btn sm ghost" data-action="clearInc">Vider</button>' : ''}</div>
       ${inc.length ? `<div class="feed">${inc.slice(0, 20).map(x => `<div class="fi"><span class="sic ${x.fin ? 'ok' : x.statut === 'pb' ? 'pb' : 'att'}">${ic(x.fin ? 'check' : x.statut === 'pb' ? 'x' : 'alert','s')}</span><span class="tx sm"><b>${esc(nomApp(x.app))}</b> · ${esc(x.nom)}<br><span class="muted">${esc(x.msg)}</span></span><span class="when">${x.fin ? 'réglé · a duré ' + esc(dureeTxt(x.fin - x.debut)) : 'en cours · ' + esc(ago(x.debut))}</span></div>`).join('')}</div>` : '<p class="muted sm" style="margin:0">Aucun incident enregistré. Chaque problème détecté apparaîtra ici avec sa durée, sur tous tes appareils.</p>'}
     </section>`;
@@ -1365,7 +1370,7 @@ function vSettings(){
 ================================================================ */
 function showOnboarding(step=1){
   const o = $('#onb'); o.hidden = false;
-  o.innerHTML = `<div class="box"><img src="icon.svg" alt="">
+  o.innerHTML = `<div class="box"><img src="icones/atelier.png" alt="">
     <h1>${step === 1 ? 'Bienvenue dans Atelier' : 'Presque fini'}</h1>
     <p>${step === 1 ? 'Tous tes projets d\'apps au même endroit, sur tous tes appareils.' : 'Ajoute la clé Gemini pour activer le chef de projet.'}</p>
     <div class="card">
@@ -1473,7 +1478,7 @@ JSON strict : {"taches":[{"repo":"pseudo/depot","titre":"…","corps":"…"}]}`,
   if(!TASK_DRAFT.length) throw new Error('Aucune tâche concrète trouvée');
   SHEET = null;
   modal(`<h2>Tâches proposées</h2><p class="muted sm">Coche celles à créer.</p>
-    ${TASK_DRAFT.map((t, i) => `<label class="chk card" style="margin:8px 0"><input type="checkbox" data-td="${i}" checked><span><b>${esc(appBy(t.repo).emoji)} ${esc(t.titre)}</b><br><span class="sm muted">${esc(t.corps)}</span></span></label>`).join('')}
+    ${TASK_DRAFT.map((t, i) => `<label class="chk card" style="margin:8px 0"><input type="checkbox" data-td="${i}" checked><span><b>${avatar(appBy(t.repo),'xs')} ${esc(t.titre)}</b><br><span class="sm muted">${esc(t.corps)}</span></span></label>`).join('')}
     <div class="btns"><button class="btn primary" data-action="createDraft">Créer les tâches cochées</button></div>`);
 }
 
@@ -1737,7 +1742,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     modal(`<h2>Nouvelle idée</h2>
       <textarea id="capText" rows="4" placeholder="Ex : dans Révisions, ajouter un chrono au QCM"></textarea>
       <label class="f">App</label>
-      <select id="capApp">${L.geminiKey && !pre ? '<option value="auto">✦ Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}" ${pre === a.repo ? 'selected' : ''}>${esc(a.emoji)} ${esc(a.name)}</option>`).join('')}</select>
+      <select id="capApp">${L.geminiKey && !pre ? '<option value="auto">✦ Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}" ${pre === a.repo ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select>
       ${L.geminiKey ? '<label class="chk" style="margin-top:12px"><input type="checkbox" id="capAI" checked> Reformuler en tâche claire</label>' : ''}
       <div class="btns"><button class="btn primary" data-action="sendCapture" id="capBtn">Ajouter</button><span class="xs muted desk-only" style="align-self:center">Ctrl+Entrée</span></div>`);
     setTimeout(() => $('#capText')?.focus(), 60);

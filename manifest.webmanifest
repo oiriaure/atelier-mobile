@@ -4,8 +4,8 @@
   "description": "Dashboard de tous mes projets d'apps, avec GitHub et Gemini.",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0f1115",
-  "theme_color": "#5b5bf0",
+  "background_color": "#0b0d12",
+  "theme_color": "#5b4bf5",
   "lang": "fr",
   "icons": [
     {
@@ -23,11 +23,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
     }
   ]
 }
