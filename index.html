@@ -403,7 +403,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.1.3';
+const VERSION = '3.2.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -560,20 +560,21 @@ function resumeEtat(j){
 }
 async function syncApp(a){
   const repo = a.repo; let issuesErr = null;
-  const [info, verTxt, brain, commits, issues, etatTxt] = await Promise.all([
+  const [info, verTxt, brain, commits, issues, etatTxt, obsidian] = await Promise.all([
     gh(`/repos/${repo}`),
     ghRaw(repo, 'publication/version.json').catch(() => null),
     readBrain(repo),
     gh(`/repos/${repo}/commits?per_page=40`).catch(() => []),
     gh(`/repos/${repo}/issues?state=open&per_page=60`).catch(e => { issuesErr = e.message; return []; }),
-    validRepo(a.donnees) && a.etat ? ghRaw(a.donnees, a.etat).catch(e => JSON.stringify({__err:e.message})) : null
+    validRepo(a.donnees) && a.etat ? ghRaw(a.donnees, a.etat).catch(e => JSON.stringify({__err:e.message})) : null,
+    lireObsidian(repo)
   ]);
   let version = null, live = null, liveErr = null;
   try{ if(verTxt){ const v = JSON.parse(verTxt); version = {version:v.version, date:v.date, notes:(v.notes||[]).slice(0,8)}; } }catch{}
   try{ if(etatTxt){ const j = JSON.parse(etatTxt); if(j.__err) liveErr = j.__err; else live = resumeEtat(j); } }catch{ liveErr = 'données illisibles'; }
   return {
     info:{pushed_at:info.pushed_at, html_url:info.html_url, homepage:info.homepage, description:info.description, default_branch:info.default_branch||'main', has_issues:info.has_issues},
-    version, brain, live, liveErr, issuesErr,
+    version, brain, obsidian, live, liveErr, issuesErr,
     commits:(commits||[]).map(c => ({sha:c.sha, msg:c.commit.message.split('\n')[0], date:c.commit.author?.date, url:c.html_url})),
     issues:issues.filter(i => !i.pull_request).map(mapIssue), fetchedAt:Date.now(), error:null
   };
@@ -869,11 +870,11 @@ async function resumerCerveaux(){
   resumeEnCours = true;
   try{
     for(const a of tracked()){
-      const b = C.apps[a.repo]?.brain; if(!b) continue;
+      const txt = cerveauTexte(C.apps[a.repo]); if(!txt) continue;
       const s = get('resumes', {})[a.repo];
-      if(s && s.len === b.text.length) continue;
-      const text = await gemini(`Résume ce fichier de notes de l'app ${a.name} en 12 lignes maximum, en puces courtes : à quoi sert l'app, comment elle est construite (fichiers clés), comment elle est publiée, règles importantes, état actuel.\n\n${clip(b.text, 60000)}`, {tier:'rapide', temperature:0.2});
-      const all = Object.assign({}, get('resumes', {})); all[a.repo] = {len:b.text.length, text, t:Date.now()}; put('resumes', all);
+      if(s && s.len === txt.length) continue;
+      const text = await gemini(`Résume les notes de l'app ${a.name} (fichier de maintenance et/ou coffre Obsidian) en 15 lignes maximum, en puces courtes : à quoi sert l'app, comment elle est construite (fichiers clés), comment elle est publiée, règles importantes, état actuel et prochaines étapes.\n\n${clip(txt, 80000)}`, {tier:'rapide', temperature:0.2});
+      const all = Object.assign({}, get('resumes', {})); all[a.repo] = {len:txt.length, text, t:Date.now()}; put('resumes', all);
     }
   }catch(e){ console.warn('résumé', e.message); }
   finally{ resumeEnCours = false; }
@@ -881,7 +882,7 @@ async function resumerCerveaux(){
 function ficheApp(a, profond=false){
   const d = C.apps[a.repo] || {}, v = d.version || {}, l = d.live;
   const res = get('resumes', {})[a.repo]?.text;
-  const cerveau = profond ? clip(d.brain?.text || '(pas de cerveau)', 30000) : (res || clip(d.brain?.text || '(pas de cerveau)', 2500));
+  const cerveau = profond ? clip(cerveauTexte(d) || '(pas de cerveau)', 40000) : (res || clip(cerveauTexte(d) || '(pas de cerveau)', 2500));
   return `## ${a.name} (${a.repo})
 Version publiée : ${v.version || '?'}${v.date ? ' du ' + new Date(v.date).toLocaleDateString('fr-FR') : ''} · Dernier commit : ${d.info?.pushed_at || '?'}
 Notes de version : ${(v.notes||[]).join(' | ') || '—'}
@@ -891,6 +892,58 @@ ${l ? `En direct (${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => 
 ${cerveau}`;
 }
 const contexteGlobal = () => tracked().map(a => ficheApp(a)).join('\n\n');
+
+/* ================================================================
+   Cerveaux Obsidian (3.2) : l'app Atelier du PC lit les coffres et les envoie au cloud,
+   cerveaux/<app>.md dans atelier-donnees ; tous les appareils les lisent.
+================================================================ */
+const PC = window.atelierPC || null;
+const slugApp = repo => repo.split('/')[1];
+const sansAccent = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const cerveauTexte = d => [d?.brain?.text, d?.obsidian?.text].filter(Boolean).join('\n\n---\n\n');
+function hashTxt(s){ let x = 5381; for(let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0; return (x >>> 0).toString(36) + ':' + s.length; }
+async function lireObsidian(repo){
+  const t = await ghRaw(Cloud.repo, `cerveaux/${slugApp(repo)}.md`).catch(() => null);
+  if(!t) return null;
+  const m = t.match(/^<!-- atelier:cerveau notes=(\d+) envoi=([^ ]+) coffre="([^"]*)" -->/);
+  return {text:t.replace(/^<!--.*?-->\n?/, ''), notes:m ? +m[1] : null, at:m ? m[2] : null, coffre:m ? m[3] : ''};
+}
+let obsEnCours = false;
+async function envoyerCerveaux(force=false){
+  if(!PC || obsEnCours || !L.ghToken || !Cloud.joined) return;
+  obsEnCours = true;
+  try{
+    for(const a of tracked()){
+      if(!a.obsidian) continue;
+      const r = await PC.lireCoffre(a.obsidian);
+      if(!r || r.erreur){ C.obsErr = Object.assign({}, C.obsErr, {[a.repo]:r?.erreur || 'illisible'}); saveC(); continue; }
+      const corps = r.fichiers.map(f => `## ${f.chemin.replace(/\.md$/i, '')}\n\n${f.texte.trim()}\n`).join('\n');
+      const h2 = hashTxt(corps);
+      if(!force && C.obsHash?.[a.repo] === h2) continue;
+      const contenu = `<!-- atelier:cerveau notes=${r.fichiers.length} envoi=${new Date().toISOString()} coffre="${r.nom.replace(/"/g, '')}" -->\n# Cerveau Obsidian de ${a.name}\n\n${corps}`;
+      const chemin = `cerveaux/${slugApp(a.repo)}.md`;
+      const meta = await gh(`/repos/${Cloud.repo}/contents/${chemin}`, {allow404:true});
+      await gh(`/repos/${Cloud.repo}/contents/${chemin}`, {method:'PUT', body:{message:`Cerveau Obsidian de ${a.name} (${r.fichiers.length} notes)`, content:utf8b64(contenu), ...(meta?.sha ? {sha:meta.sha} : {})}});
+      C.obsHash = Object.assign({}, C.obsHash, {[a.repo]:h2}); if(C.obsErr) delete C.obsErr[a.repo]; saveC();
+      if(C.apps[a.repo]) C.apps[a.repo].obsidian = {text:`# Cerveau Obsidian de ${a.name}\n\n${corps}`, notes:r.fichiers.length, at:new Date().toISOString(), coffre:r.nom};
+    }
+  }catch(e){ console.warn('cerveaux', e); }
+  finally{ obsEnCours = false; }
+}
+async function rangerCoffres(){
+  if(!PC) return;
+  try{
+    const cof = await PC.coffres(); C.coffres = cof; saveC();
+    const apps = appsAll(); let ch = false;
+    for(const a of apps){
+      if(a.obsidian || a.obsidianNon) continue;
+      const nom = sansAccent(a.name).replace(/s$/, '');
+      const c = cof.find(x => sansAccent(x.nom).includes(nom));
+      if(c){ a.obsidian = c.chemin; ch = true; }
+    }
+    if(ch){ setReg({apps}); toast('Cerveau Obsidian trouvé sur ce PC et branché'); envoyerCerveaux(true); }
+  }catch{}
+}
 
 /* ================================================================
    Suivi des synchros (3.1) : chaque app, ses envois, sa publication, ses sites
@@ -956,6 +1009,9 @@ async function verifierApp(a){
   const props = (prs||[]).filter(x => (x.head?.ref||'').startsWith('atelier/'));
   if(props.length) items.push({id:'pr', nom:'Propositions de cerveau', statut:'att', detail:`${plural(props.length, 'proposition')} à relire et fusionner`, lien:props[0].html_url});
   const d = C.apps[repo];
+  const ob = await lireObsidian(repo).catch(() => null);
+  if(ob){ const age = Date.now() - new Date(ob.at); items.push({id:'obs', nom:'Cerveau Obsidian (PC)', statut:age < 7*864e5 ? 'ok' : 'att', detail:`${ob.notes ?? '?'} notes${ob.coffre ? ' de « ' + ob.coffre + ' »' : ''} · envoyé il y a ${dureeTxt(age)}${age >= 7*864e5 ? ' : ouvre Atelier sur le PC pour le mettre à jour' : ''}`, quand:ob.at}); }
+  else if(a.obsidian) items.push({id:'obs', nom:'Cerveau Obsidian (PC)', statut:'att', detail:'Branché mais pas encore envoyé : ouvre Atelier sur le PC'});
   if(d?.issuesErr) items.push({id:'issues', nom:'Tâches (Issues)', statut:'att', detail:d.issuesErr});
   return items;
 }
@@ -1179,7 +1235,7 @@ function vApps(){
         <div class="xs muted" style="display:flex;gap:6px;align-items:center"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · v' + esc(v.version) : ''}${d?.info ? ' · ' + esc(ago(d.info.pushed_at)) : ''}</div></div>${ic('chev','s muted')}</div>
       <p class="note clamp2">${esc(d?.live?.climat?.titre || (v.notes||[])[0] || d?.info?.description || (d?.error ? '' : 'Pas encore de notes de version.'))}</p>
       ${d?.error ? `<p class="err clamp2" style="margin:6px 0 0">${esc(d.error)}</p>` : ''}
-      <div class="foot"><div>${n ? `<span class="pill">${ic('tasks','s')} ${plural(n, 'tâche')}</span>` : ''}${d && d.info && !d.brain ? '<span class="pill" style="color:var(--wa)">sans cerveau</span>' : ''}</div>${spark(a.repo)}</div>
+      <div class="foot"><div>${n ? `<span class="pill">${ic('tasks','s')} ${plural(n, 'tâche')}</span>` : ''}${d && d.info && !d.brain && !d.obsidian ? '<span class="pill" style="color:var(--wa)">sans cerveau</span>' : d?.obsidian ? '<span class="pill">🧠 Obsidian</span>' : ''}</div>${spark(a.repo)}</div>
     </div>`; }).join('')}</div>
   <section class="card">
     <div class="hd"><h2>${ic('link')} Code en commun</h2>${dups ? `<span class="xs muted">${esc(ago(dups.at))}</span>` : ''}</div>
@@ -1232,7 +1288,7 @@ function bulle(m, i, last){
 function fil(d){
   const a = d.app ? appBy(d.app) : null, large = LARGE();
   const pire = a ? pireDe(C.sante?.apps?.[a.repo]) : pireDe(C.sante ? [...Object.values(C.sante.apps).flat(), ...(C.sante.atelier||[])] : null);
-  const ctx = a ? [C.apps[a.repo]?.brain ? 'son cerveau' : 'pas de cerveau', plural((C.apps[a.repo]?.issues||[]).length, 'tâche'), (C.apps[a.repo]?.commits||[]).length ? 'ses commits' : null, pire ? 'synchro ' + ST[pire].l.toLowerCase() : null]
+  const ctx = a ? [C.apps[a.repo]?.obsidian ? 'son cerveau Obsidian' : C.apps[a.repo]?.brain ? 'son cerveau' : 'pas de cerveau', plural((C.apps[a.repo]?.issues||[]).length, 'tâche'), (C.apps[a.repo]?.commits||[]).length ? 'ses commits' : null, pire ? 'synchro ' + ST[pire].l.toLowerCase() : null]
                 : [plural(tracked().length, 'app'), plural(nbTaches(), 'tâche'), pire ? 'synchro ' + ST[pire].l.toLowerCase() : null];
   return `<section class="thread">
     <div class="thd">${large ? '' : `<button class="ibtn" data-action="discListe" aria-label="Toutes les discussions">${ic('back')}</button>`}${a ? avatar(a) : '<span class="av" style="--c:#6366f1">✦</span>'}
@@ -1362,7 +1418,11 @@ function vSettings(){
         <input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code">
         <input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Dépôt de données (facultatif)" aria-label="Dépôt de données">
         <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état" aria-label="Fichier d'état">
-      </div></div>`).join('')}
+      </div>
+      ${PC ? `<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><span class="sm" style="flex:1;min-width:200px">🧠 Coffre Obsidian : <b>${a.obsidian ? esc(a.obsidian.split(/[\\/]/).pop()) : 'aucun'}</b>${C.obsErr?.[a.repo] ? ` <span class="err">(${esc(C.obsErr[a.repo])})</span>` : ''}</span>
+        <select data-obs="${i}" style="width:auto;min-width:200px"><option value="">Choisir un coffre…</option>${(C.coffres||[]).map(c => `<option value="${esc(c.chemin)}" ${a.obsidian === c.chemin ? 'selected' : ''}>${esc(c.nom)}</option>`).join('')}<option value="__autre">Autre dossier…</option>${a.obsidian ? '<option value="__aucun">Débrancher</option>' : ''}</select></div>`
+      : (C.apps[a.repo]?.obsidian ? `<p class="help">🧠 Cerveau Obsidian reçu du PC : ${C.apps[a.repo].obsidian.notes ?? '?'} notes, ${esc(ago(C.apps[a.repo].obsidian.at))}</p>` : '')}
+      </div>`).join('')}
     <div class="btns"><button class="btn sm" data-action="addApp">${ic('plus','s')} Ajouter une app</button></div>
     <p class="help">Atelier lit dans chaque dépôt <code>publication/version.json</code>, le cerveau (<code>CLAUDE.md</code>), les commits et les Issues. Le dépôt de données sert à l'affichage en direct.</p>
   </section>
@@ -1465,7 +1525,13 @@ function appSheet(repo, tab='apercu'){
   if(tab === 'cerveau') body = `
     <div class="btns"><button class="btn sm primary" data-action="brain" ${busy['brain'+repo] ? 'disabled' : ''}>${busy['brain'+repo] ? spin('Lecture…') : ic('brain','s') + (d.brain ? ' Mettre à jour le cerveau' : ' Créer le cerveau')}</button>${ai.pr ? `<a class="btn sm ghost" href="${esc(ai.pr)}" target="_blank" rel="noopener">Proposition en attente ${ic('ext','s')}</a>` : ''}</div>
     ${get('resumes', {})[repo] ? `<h3 class="sec">Résumé</h3>${md(get('resumes', {})[repo].text)}` : ''}
-    ${d.brain ? `<details><summary>${esc(d.brain.path)} complet · ${d.brain.text.split('\n').length} lignes</summary>${md(d.brain.text)}</details>` : '<p class="muted">Pas encore de cerveau (CLAUDE.md) dans ce dépôt.</p>'}`;
+    <h3 class="sec">Cerveau Obsidian (PC)</h3>
+    ${d.obsidian ? `<p class="sm" style="margin:0 0 6px">🧠 <b>${d.obsidian.notes ?? '?'} notes</b>${d.obsidian.coffre ? ' du coffre « ' + esc(d.obsidian.coffre) + ' »' : ''} · envoyé depuis le PC ${esc(ago(d.obsidian.at))}</p>
+      <details><summary>Lire toutes les notes</summary>${md(d.obsidian.text)}</details>`
+      : `<p class="muted sm" style="margin:0">${a.obsidian ? 'Branché sur « ' + esc(a.obsidian.split(/[\\/]/).pop()) + ' » : il sera envoyé à la prochaine ouverture d\'Atelier sur le PC.' : 'Aucun. Sur le PC, dans l\'app Atelier, branche le coffre Obsidian de cette app (Réglages › Apps suivies).'}</p>`}
+    ${PC && a.obsidian ? `<div class="btns"><button class="btn sm" data-action="obsEnvoyer">${ic('sync','s')} Renvoyer maintenant</button></div>` : ''}
+    <h3 class="sec">Fichier de maintenance du dépôt</h3>
+    ${d.brain ? `<details><summary>${esc(d.brain.path)} complet · ${d.brain.text.split('\n').length} lignes</summary>${md(d.brain.text)}</details>` : '<p class="muted sm">Pas de CLAUDE.md dans ce dépôt.</p>'}`;
   modal(`<div style="display:flex;gap:14px;align-items:center;margin-top:2px">${avatar(a,'l')}<div style="flex:1"><h2 style="margin:0">${esc(a.name)}</h2>
       <div class="xs muted" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · version ' + esc(v.version) : ''} · ${esc(repo)}</div></div></div>
     <div class="btns"><button class="btn sm primary" data-action="discApp" data-repo="${esc(repo)}">${ic('chef','s')} Discuter</button>${d.info ? `<a class="btn sm ghost" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">${ic('git','s')} GitHub</a>` : ''}${site ? `<a class="btn sm ghost" href="${esc(site)}" target="_blank" rel="noopener">${ic('ext','s')} Site</a>` : ''}</div>
@@ -1552,7 +1618,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     try{
       const parts = await Promise.all(tracked().map(async a => {
         const files = await tree(a.repo, C.apps[a.repo]?.info?.default_branch).catch(e => ['(illisible : ' + e.message + ')']);
-        return `## ${a.name}\nFichiers :\n${files.join('\n')}\nCerveau (résumé) :\n${get('resumes', {})[a.repo]?.text || clip(C.apps[a.repo]?.brain?.text, 5000)}`;
+        return `## ${a.name}\nFichiers :\n${files.join('\n')}\nCerveau (résumé) :\n${get('resumes', {})[a.repo]?.text || clip(cerveauTexte(C.apps[a.repo]), 5000)}`;
       }));
       const text = await gemini(`Compare ces apps et repère le code ou les mécanismes faits plusieurs fois (mises à jour GitHub, démarrage avec retour arrière, stockage chiffré, client Gemini, site téléphone, QR code…).\n\n${parts.join('\n\n')}\n\nMarkdown : ### Ce qui est en double · ### Ce que je propose de partager (quoi, comment, gain, risque) · ### À ne PAS mutualiser. Sois honnête sur ce que tu ne peux pas vérifier.`, {system:ROLE_CHEF, onText:flux('dupsLive')});
       put('dups', {at:Date.now(), text});
@@ -1565,7 +1631,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     busy['review'+repo] = true; appSheet(repo, 'apercu');
     try{
       const diffs = await recentDiffs(repo, 5);
-      const text = await gemini(`Revue de code des derniers commits de ${a.name}.\nRègles (cerveau) :\n${get('resumes', {})[repo]?.text || clip(d.brain?.text, 8000)}\n\nModifications :\n${diffs}\n\nMarkdown court, en citant fichier et commit :\n### Bugs probables\n### Risques\n### Écarts avec les règles\n### Améliorations simples\n« RAS » si rien. N'invente rien.`, {system:ROLE_CHEF, temperature:0.3, onText:flux('reviewLive')});
+      const text = await gemini(`Revue de code des derniers commits de ${a.name}.\nRègles (cerveau) :\n${get('resumes', {})[repo]?.text || clip(cerveauTexte(d), 8000)}\n\nModifications :\n${diffs}\n\nMarkdown court, en citant fichier et commit :\n### Bugs probables\n### Risques\n### Écarts avec les règles\n### Améliorations simples\n« RAS » si rien. N'invente rien.`, {system:ROLE_CHEF, temperature:0.3, onText:flux('reviewLive')});
       setAi(repo, {review:{at:Date.now(), text}});
     }finally{ busy['review'+repo] = false; if(SHEET?.repo === repo && !SHEET.lock) appSheet(repo, SHEET.tab); }
   },
@@ -1742,6 +1808,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     await envoyer(`Atelier a détecté ceci sur ${nomApp(repo)} : « ${msg} ». Explique simplement ce qui se passe, si c'est grave, et ce que je dois faire (avec la consigne pour Claude si c'est du code).`, d);
   },
   verifier(){ return verifierTout(true); },
+  async obsEnvoyer(){ toast('Envoi du cerveau…'); await envoyerCerveaux(true); toast('Cerveau Obsidian envoyé'); syncAll(true); },
   ajoutJeton(){
     SHEET = null;
     modal(`<h2>Ajouter un token</h2><p class="help" style="margin-top:0">Pour un dépôt que le token Atelier ne voit pas (par exemple <code>revisions-sync</code>). Atelier repère tout seul les dépôts qu'il ouvre et ne s'en sert que pour eux. Il est partagé chiffré avec tes autres appareils.</p>
@@ -1890,7 +1957,7 @@ document.addEventListener('input', e => {
   if(e.target.id === 'dq'){ CHEF.q = e.target.value; render(); }
   if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 140) + 'px'; }
 });
-document.addEventListener('change', e => {
+document.addEventListener('change', async e => {
   const el = e.target;
   if(el.dataset.local){
     const k = el.dataset.local, v = el.value.trim(), avant = L[k];
@@ -1901,6 +1968,14 @@ document.addEventListener('change', e => {
     renderChrome();
   }
   if(el.dataset.reg){ setReg({[el.dataset.reg]:el.value.trim() || (el.dataset.reg === 'model' ? 'auto' : '')}); if(el.dataset.reg === 'model') render(); }
+  if(el.dataset.obs !== undefined){
+    const i = +el.dataset.obs; let v = el.value;
+    if(v === '__autre'){ v = await PC.choisirDossier(); if(!v){ render(); return; } }
+    const apps = appsAll().map((x, k) => k === i ? Object.assign({}, x, v === '__aucun' ? {obsidian:'', obsidianNon:true} : {obsidian:v, obsidianNon:false}) : x);
+    setReg({apps}); render();
+    if(v && v !== '__aucun'){ toast('Envoi du cerveau au cloud…'); await envoyerCerveaux(true); toast('Cerveau Obsidian envoyé'); syncAll(true); }
+    return;
+  }
   if(el.dataset.app !== undefined){
     let v = el.value.trim(); if(el.dataset.field === 'repo' || el.dataset.field === 'donnees') v = el.value = normRepo(v);
     setReg({apps:appsAll().map((a, i) => i === +el.dataset.app ? Object.assign({}, a, {[el.dataset.field]:v}) : a)}); renderChrome();
@@ -1965,6 +2040,7 @@ else {
   adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
+  if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); }, 6000); setInterval(() => envoyerCerveaux(), 10*60e3); }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
 /* Nouvelle version publiée : on le signale et on recharge en un geste */
