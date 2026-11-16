@@ -109,28 +109,113 @@ details{margin-top:10px} summary{cursor:pointer;color:var(--mu)}
 .qr{background:#fff;border-radius:14px;padding:12px;width:min(260px,70vw);margin:10px auto}
 .qr svg{display:block;width:100%;height:auto}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
+
+/* ===== Adaptation téléphone (2.1) ===== */
+html{-webkit-text-size-adjust:100%}
+body{overscroll-behavior-y:none}
+button,nav,.btn,.chips{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+header{padding:calc(env(safe-area-inset-top) + 6px) 16px 8px;border-bottom:1px solid transparent;transition:border-color .2s}
+header.scrolled{border-bottom-color:var(--bd)}
+.brand img{width:28px;height:28px;border-radius:8px}
+h1{font-size:24px;letter-spacing:-.02em}
+main{padding:2px 14px calc(env(safe-area-inset-bottom) + 150px)}
+.card{padding:14px;margin:10px 0;border-radius:18px}
+.card h2{font-size:17px}
+.sec{margin:20px 4px 8px;font-size:12px}
+.stats{gap:8px}
+.stats div{padding:9px 6px;border-radius:14px}
+.stats b{font-size:20px}
+.stats span{font-size:11px}
+.btn{min-height:44px}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:14px}
+.btns{gap:8px}
+.ibtn{flex:none;width:40px;height:40px;border:0;border-radius:12px;background:var(--bg3);color:var(--tx);font-size:17px;display:grid;place-items:center;cursor:pointer}
+input,select,textarea,.approw input,.approw2 input{font-size:16px}
+select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* Navigation */
+nav{padding:4px 4px calc(env(safe-area-inset-bottom) + 4px);background:color-mix(in srgb,var(--bg2) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+nav button{font-size:10.5px;gap:3px;padding:6px 0 4px;min-height:50px}
+nav svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on svg{stroke-width:2.2}
+nav .badge{position:absolute;margin-left:18px;margin-top:-4px;background:var(--ko);color:#fff;border-radius:9px;font-size:10px;min-width:17px;height:17px;line-height:17px;padding:0 4px;font-weight:700}
+nav button{position:relative}
+#fab{width:54px;height:54px;border-radius:17px;font-size:28px;bottom:calc(env(safe-area-inset-bottom) + 74px);transition:transform .25s,opacity .25s}
+#fab.hide{transform:translateY(120px);opacity:0}
+/* Aujourd'hui */
+.hero{background:linear-gradient(135deg,var(--ac),#7c5cf0);color:#fff;border:0}
+.hero .muted{color:rgba(255,255,255,.85)}
+.hero .btn.primary{background:#fff;color:#3b3bd0}
+.hero .action{background:rgba(255,255,255,.14);border-left-color:#fff}
+.hero .action .muted{color:rgba(255,255,255,.8)}
+.hero .action .btn{background:rgba(255,255,255,.2);color:#fff}
+.live{padding:12px 14px}
+.live .t{font-size:15px}
+/* Apps en liste */
+.alist{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.arow{display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:12px;cursor:pointer}
+.arow:active,.row:active{transform:scale(.99)}
+.arow .em{font-size:30px;width:44px;height:44px;display:grid;place-items:center;background:var(--bg3);border-radius:12px;flex:none}
+.arow .mid{flex:1;min-width:0}
+.arow .nm{font-weight:650;display:flex;gap:6px;align-items:baseline}
+.arow .nm small{color:var(--mu);font-weight:400;font-size:12px}
+.arow .chev{color:var(--mu);font-size:20px}
+/* Tâches */
+.trow{display:flex;gap:8px;align-items:flex-start;background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:10px 10px 10px 14px}
+.trow .tt{flex:1;min-width:0;padding-top:9px;font-size:15px;line-height:1.35}
+.trow .tt a{font-size:12px}
+.trow .acts{display:flex;gap:6px}
+/* Feuilles (modales) */
+.sheet{padding:8px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:calc(100dvh - env(safe-area-inset-top) - 24px);overscroll-behavior:contain;transition:transform .2s}
+.grab{position:sticky;top:-8px;z-index:2;display:flex;justify-content:space-between;align-items:center;margin:-8px -16px 4px;padding:8px 12px 6px 16px;background:var(--bg2);touch-action:none}
+.grab::before{content:"";position:absolute;left:50%;top:6px;transform:translateX(-50%);width:38px;height:5px;border-radius:3px;background:var(--bd)}
+.grab .close{float:none;width:34px;height:34px;font-size:15px;margin-top:8px}
+.sheet h2{font-size:21px;padding-right:0}
+#modal{animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{animation:up .25s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40%)}}
+/* Chef */
+body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 150px)}
+.composer{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 58px);z-index:6;margin:0;padding:8px 12px;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--bd)}
+.composer textarea{border-radius:20px;padding:11px 16px;min-height:44px;max-height:120px}
+.composer .send{width:44px;height:44px;border-radius:22px;background:var(--ac);color:#fff;border:0;font-size:20px;flex:none}
+.chips{margin:8px -14px 0;padding:0 14px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.msg{font-size:15px}
+/* Réglages */
+.approw{grid-template-columns:52px 1fr 44px}
+.approw .repo{grid-column:1 / -1}
+@media (min-width:600px){.approw{grid-template-columns:52px 1fr 1.4fr 44px}.approw .repo{grid-column:auto}}
+@media (max-width:420px){.approw2{grid-template-columns:1fr}}
+/* Tirer pour actualiser */
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 54px);z-index:4;transform:translate(-50%,-60px);width:36px;height:36px;border-radius:18px;background:var(--bg2);border:1px solid var(--bd);display:grid;place-items:center;font-size:18px;color:var(--ac);transition:transform .2s;box-shadow:var(--sh)}
+#toast{bottom:auto;top:calc(env(safe-area-inset-top) + 64px);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand"><img src="icon.svg" alt=""><div><h1>Atelier</h1><small id="lastsync"></small></div></div>
+  <div class="brand"><img src="icon.svg" alt=""><div><h1 id="vtitle">Atelier</h1><small id="lastsync"></small></div></div>
   <button id="syncBtn" class="icon" data-action="sync" aria-label="Synchroniser">⟳</button>
 </header>
 <main id="main"></main>
 <button id="fab" data-action="capture" aria-label="Nouvelle idée">+</button>
 <nav>
-  <button data-go="today"><span>☀︎</span>Aujourd'hui</button>
-  <button data-go="apps"><span>▦</span>Apps</button>
-  <button data-go="tasks"><span>☑︎</span>Tâches</button>
-  <button data-go="chef"><span>✦</span>Chef</button>
-  <button data-go="settings"><span>⚙︎</span>Réglages</button>
+  <button data-go="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Aujourd'hui</button>
+  <button data-go="apps"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Apps</button>
+  <button data-go="tasks"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.8 5M3.5 12l1.2 1.2 2.1-2.2M3.5 18l1.2 1.2 2.1-2.2"/></svg><span class="badge" id="tbadge" hidden></span>Tâches</button>
+  <button data-go="chef"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.6"/></svg>Chef</button>
+  <button data-go="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Réglages</button>
 </nav>
 <div id="modal" hidden><div class="sheet"></div></div>
 <div id="toast" hidden></div>
+<div id="ptr" aria-hidden="true">⟳</div>
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '2.0.1';
+const VERSION = '2.1.0';
 /* ================= Utilitaires ================= */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -454,13 +539,22 @@ function health(d){
 }
 const empty = (t, s, goTo) => `<div class="empty"><h2>${esc(t)}</h2><p class="muted">${esc(s)}</p>${goTo?`<button class="btn primary" data-go="${goTo}">Ouvrir les Réglages</button>`:''}</div>`;
 const spin = t => `<span class="spinner"></span>${esc(t)}`;
-function liveCard(a, compact=false){
+function liveCard(a, compact=false, folded=false){
   const d = C.apps[a.repo]; if(!d) return '';
   if(d.liveErr) return `<div class="err sm">Données en direct : ${esc(d.liveErr)}</div>`;
   const l = d.live; if(!l) return '';
   const old = l.t && Date.now() - l.t > 3*3600e3;
   const head = `<div class="sm ${old?'err':'muted'}"><span class="dot ${old?'orange':'green'}"></span>${a.emoji} ${esc(a.name)} · envoyé ${esc(ago(l.t))}${old?' (l\'ordinateur est peut-être éteint)':''}</div>`;
-  if(compact) return `${head}${l.climat ? `<div class="t">${esc(l.climat.titre)}</div>` : ''}`;
+  if(compact) return `${head}${l.climat ? `<div class="t clamp2">${esc(l.climat.titre)}</div>` : ''}`;
+  if(folded) return `${head}
+    ${l.climat ? `<div class="t" style="margin-top:6px">${esc(l.climat.titre)}</div>` : ''}
+    ${l.compteurs ? `<div class="kv">${l.compteurs.opp!=null?`<span class="pill">${l.compteurs.opp} opportunité(s)</span>`:''}${l.compteurs.surv!=null?`<span class="pill">${l.compteurs.surv} à surveiller</span>`:''}${l.compteurs.pos!=null?`<span class="pill">${l.compteurs.pos} position(s)</span>`:''}</div>` : ''}
+    ${(l.alertes||[]).length ? `<div class="sm clamp2">⚠︎ ${esc(l.alertes[0].texte)}</div>` : ''}
+    <details><summary>Détails</summary>
+      ${l.climat ? `<p class="sm muted">${esc(l.climat.resume)}</p>` : ''}
+      ${(l.alertes||[]).slice(1).map(x => `<div class="sm">⚠︎ ${esc(x.texte)}</div>`).join('')}
+      ${(l.bureau||[]).map(x => `<div class="sm" style="margin-top:6px"><b>${esc(x.de||'')}</b> · ${esc(x.texte)} <span class="muted">${esc(ago(x.t))}</span></div>`).join('')}
+    </details>`;
   return `${head}
     ${l.climat ? `<div class="t" style="margin-top:6px">${esc(l.climat.titre)}</div><div class="sm muted">${esc(l.climat.resume)}</div>` : ''}
     ${l.compteurs ? `<div class="kv">${l.compteurs.opp!=null?`<span class="pill">${l.compteurs.opp} opportunité(s)</span>`:''}${l.compteurs.surv!=null?`<span class="pill">${l.compteurs.surv} à surveiller</span>`:''}${l.compteurs.pos!=null?`<span class="pill">${l.compteurs.pos} position(s)</span>`:''}${l.resultats?.totalTxt?`<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>`:''}</div>` : ''}
@@ -483,45 +577,48 @@ function vToday(){
     <div><b>${open}</b><span>tâches ouvertes</span></div>
     <div><b>${week}</b><span>commits · 7 j</span></div>
   </section>
-  ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
-  <section class="card">
+  <section class="card hero">
     <h2>Que faire maintenant ?</h2>
-    <p class="muted" style="margin:0 0 10px">Le chef lit l'état de toutes tes apps et choisit les 3 actions les plus utiles.</p>
-    <button class="btn primary" data-action="advise" ${busy.advise?'disabled':''}>${busy.advise?spin('Analyse en cours…'):'✨ Analyser mes projets'}</button>
-    ${t ? `<p class="muted sm" style="margin-top:12px">Analyse ${ago(t.at)}</p>${t.data.resume?`<p>${esc(t.data.resume)}</p>`:''}
+    ${t ? '' : '<p class="muted" style="margin:0 0 10px">Le chef lit l\'état de toutes tes apps et choisit les 3 actions les plus utiles.</p>'}
+    <button class="btn ${t?'sm':'primary'}" style="${t?'background:rgba(255,255,255,.2);color:#fff;margin-top:8px':''}" data-action="advise" ${busy.advise?'disabled':''}>${busy.advise?spin('Analyse en cours…'):(t?'↻ Refaire l\'analyse':'✨ Analyser mes projets')}</button>
+    ${t ? `<p class="muted sm" style="margin:12px 0 0">Analyse ${ago(t.at)}</p>${t.data.resume?`<p style="margin:4px 0 0">${esc(t.data.resume)}</p>`:''}
       ${(t.data.actions||[]).map((a, i) => `<div class="action">
         <h4>${esc(a.app)} · ${esc(a.titre)}</h4>
         <div class="muted sm">${esc(a.pourquoi)}${a.duree_min?` · ~${esc(a.duree_min)} min`:''}</div>
         <div class="btns">
-          <button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">🧠 Prompt de code</button>
-          <button class="btn sm" data-action="adviceIssue" data-i="${i}">＋ En faire une tâche</button>
+          <button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">🧠 Consigne</button>
+          <button class="btn sm" data-action="adviceIssue" data-i="${i}">＋ Tâche</button>
         </div></div>`).join('')}` : ''}
   </section>
+  ${lives.length ? '<h3 class="sec">En direct</h3>' : ''}${lives.map(a => `<section class="card live">${liveCard(a, false, true)}</section>`).join('')}
   <section class="card">
     <h2>Bilan de la semaine</h2>
-    ${w ? `<p class="muted sm" style="margin:0">Fait ${ago(w.at)}</p>${md(w.text)}` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne, et le cap de la semaine prochaine.</p>`}
+    ${w ? `<p class="muted sm" style="margin:0">Fait ${ago(w.at)}</p><details ${Date.now()-w.at<36e5?'open':''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne, et le cap de la semaine prochaine.</p>`}
     ${lundi && !busy.weekly ? '<p class="sm ok">On est lundi : c\'est le bon moment pour faire le bilan.</p>' : ''}
     <div class="btns"><button class="btn ${w?'':'primary'}" data-action="weekly" ${busy.weekly?'disabled':''}>${busy.weekly?spin('Rédaction…'):(w?'Refaire le bilan':'📊 Faire le bilan')}</button>
     ${w ? '<button class="btn sm" data-action="tasksFrom" data-src="weekly">＋ En tirer des tâches</button>' : ''}</div>
   </section>
   ${(C.pending||[]).length ? `<section class="card"><b>${C.pending.length} idée(s) en attente d'envoi</b><div class="muted sm">Elles partiront sur GitHub à la prochaine synchro en ligne.</div></section>` : ''}
   <h3 class="sec">Activité récente</h3>
-  <div class="list">${allCommits().slice(0,8).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener">
+  <div class="list">${allCommits().slice(0,5).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener">
     <span class="em">${esc(c.emoji)}</span><span class="grow"><b>${esc(c.app)}</b> · ${esc(c.msg)}</span><span class="muted sm">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted">Aucune activité pour l\'instant. Lance une synchro avec ⟳.</p>'}</div>`;
 }
 
 function vApps(){
   const apps = tracked();
   if(!apps.length) return empty('Aucune app suivie', 'Renseigne le dépôt GitHub de chaque app dans les Réglages.', 'settings');
-  return `<h3 class="sec">Mes apps</h3><div class="grid">${apps.map(a => {
+  return `<div class="alist">${apps.map(a => {
     const d = C.apps[a.repo], h = health(d), v = d?.version || {}, p = d?.projet || {};
-    return `<div class="card app" data-action="openApp" data-repo="${esc(a.repo)}">
-      <div class="top"><span class="em">${esc(a.emoji)}</span><div><b>${esc(a.name)}</b><div class="muted sm">${esc(v.version ? 'version ' + v.version : (p.version ? 'v' + p.version : a.repo))}</div></div></div>
-      <p class="sm" style="margin:10px 0 6px">${esc((v.notes||[])[0] || p.description || d?.info?.description || '—')}</p>
-      <div class="sm"><span class="dot ${h.cls}"></span>${esc(h.label)}${d?.info ? ' · modifié ' + esc(ago(d.info.pushed_at)) : ''}</div>
-      <div class="sm muted">${(d?.issues||[]).length} tâche(s) · cerveau : ${d?.brain ? esc(d.brain.path) : '<span class="err">absent</span>'}</div>
-      ${d?.live ? `<div class="sm" style="margin-top:6px">${liveCard(a, true)}</div>` : ''}
-      ${d?.error ? `<div class="err">${esc(d.error)}</div>` : ''}
+    const n = (d?.issues||[]).length;
+    return `<div class="arow" data-action="openApp" data-repo="${esc(a.repo)}">
+      <span class="em">${esc(a.emoji)}</span>
+      <div class="mid">
+        <div class="nm">${esc(a.name)} <small>${esc(v.version ? 'v' + v.version : (p.version ? 'v' + p.version : ''))}</small></div>
+        <div class="sm"><span class="dot ${h.cls}"></span>${esc(h.label)}${d?.info ? ' · ' + esc(ago(d.info.pushed_at)) : ''} · ${n} tâche${n>1?'s':''}${d && d.info && !d.brain ? ' · <span class="err">sans cerveau</span>' : ''}</div>
+        ${d?.live?.climat ? `<div class="sm muted clamp2" style="margin-top:2px">${esc(d.live.climat.titre)}</div>` : `<div class="sm muted clamp2" style="margin-top:2px">${esc((v.notes||[])[0] || p.description || '')}</div>`}
+        ${d?.error ? `<div class="err clamp2">${esc(d.error)}</div>` : ''}
+      </div>
+      <span class="chev">›</span>
     </div>`; }).join('')}</div>
   <section class="card">
     <h2>Code en commun entre les apps</h2>
@@ -541,10 +638,10 @@ function vTasks(){
       ${d.issuesErr ? `<p class="err">${esc(d.issuesErr)}</p>` : ''}
       ${d.info && d.info.has_issues === false ? '<p class="err sm">Les Issues sont désactivées sur ce dépôt (GitHub › Settings › Features › Issues).</p>' : ''}
       <div class="list">${is.map(i => `
-      <div class="row"><span class="grow"><a href="${esc(i.url)}" target="_blank" rel="noopener" class="muted sm">#${i.number}</a> ${esc(i.title)}
-        ${i.labels.map(l => `<span class="pill">${esc(l)}</span>`).join('')}</span>
-        <button class="btn sm" data-action="issuePrompt" data-repo="${esc(a.repo)}" data-n="${i.number}" title="Générer le prompt de code">🧠</button>
-        <button class="btn sm" data-action="closeIssue" data-repo="${esc(a.repo)}" data-n="${i.number}" title="Marquer comme fait">✓</button>
+      <div class="trow"><div class="tt">${esc(i.title)} <a href="${esc(i.url)}" target="_blank" rel="noopener" class="muted">#${i.number}</a>
+        ${i.labels.map(l => `<span class="pill">${esc(l)}</span>`).join('')}</div>
+        <div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(a.repo)}" data-n="${i.number}" aria-label="Consigne pour Claude">🧠</button>
+        <button class="ibtn" data-action="closeIssue" data-repo="${esc(a.repo)}" data-n="${i.number}" aria-label="Marquer comme fait">✓</button></div>
       </div>`).join('') || '<p class="muted sm" style="margin:0 4px">Rien à faire ici.</p>'}</div>`;
   }).join('');
 }
@@ -563,8 +660,8 @@ function vChef(){
       <div class="btns"><button class="btn sm" data-action="copyMsg" data-i="${i}">Copier</button><button class="btn sm" data-action="tasksFrom" data-src="chat" data-i="${i}">＋ En faire des tâches</button></div></div>`).join('')}
     ${busy.chat ? `<div class="msg m">${spin('Le chef réfléchit…')}</div>` : ''}
   </div>
-  <div class="composer"><textarea id="chatIn" rows="1" placeholder="Écris au chef…"></textarea><button class="icon" data-action="send" aria-label="Envoyer" style="background:var(--ac);color:#fff">↑</button></div>
-  ${msgs.length ? '<div class="btns"><button class="btn sm" data-action="newChat">Nouvelle conversation</button></div>' : ''}`;
+  <div class="composer"><div style="display:flex;gap:8px;max-width:760px;margin:0 auto;align-items:flex-end"><textarea id="chatIn" rows="1" placeholder="Écris au chef…"></textarea><button class="send" data-action="send" aria-label="Envoyer">↑</button></div></div>
+  ${msgs.length ? '<div class="btns" style="justify-content:center"><button class="btn sm" data-action="newChat">Nouvelle conversation</button></div>' : ''}`;
 }
 
 const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
@@ -608,10 +705,10 @@ function vSettings(){
     <p class="muted sm">Les clés restent sur cet appareil. Elles ne sont jamais écrites dans le code ni sur GitHub.</p>
   </section>
 
-  <h3 class="sec">Téléphone</h3>
+  <h3 class="sec">Autre appareil</h3>
   <section class="card">
-    <p class="sm" style="margin-top:0">Comme pour Boussole : scanne le QR code avec l'iPhone, puis Partager › « Sur l'écran d'accueil ». Le téléphone reçoit les clés et la liste des apps.</p>
-    <div class="btns"><button class="btn primary" data-action="pairPhone">📱 Afficher le QR code</button></div>
+    <p class="sm" style="margin-top:0">Pour connecter un autre appareil (iPad, ordinateur) sans retaper les clés : affiche ce QR code ici et scanne-le avec l'autre appareil.</p>
+    <div class="btns"><button class="btn sm" data-action="pairPhone">Afficher le QR code</button></div>
   </section>
 
   <h3 class="sec">Apps suivies</h3>
@@ -620,8 +717,8 @@ function vSettings(){
       <div class="approw">
         <input data-app="${i}" data-field="emoji" value="${esc(a.emoji)}" aria-label="Emoji">
         <input data-app="${i}" data-field="name" value="${esc(a.name)}" aria-label="Nom">
-        <input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code">
-        <button class="btn sm" data-action="delApp" data-i="${i}" aria-label="Retirer">✕</button></div>
+        <button class="ibtn" data-action="delApp" data-i="${i}" aria-label="Retirer" style="height:44px;width:44px">✕</button>
+        <input class="repo" data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code"></div>
       <div class="approw2">
         <input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Dépôt de données (facultatif)" aria-label="Dépôt de données">
         <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état, ex. telephone/etat.json" aria-label="Fichier d'état">
@@ -647,11 +744,20 @@ function render(){
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.go === view));
   $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, settings:vSettings}[view] || vToday)();
   if(keep && $('#chatIn')) $('#chatIn').value = keep;
-  $('#lastsync').textContent = C.lastSync ? 'synchro ' + ago(C.lastSync) : 'jamais synchronisé';
+  $('#lastsync').textContent = busy.sync ? 'synchronisation…' : (C.lastSync ? 'synchro ' + ago(C.lastSync) : 'jamais synchronisé');
+  $('#vtitle').textContent = {today:'Aujourd\'hui', apps:'Mes apps', tasks:'Tâches', chef:'Chef de projet', settings:'Réglages'}[view] || 'Atelier';
   $('#fab').hidden = view === 'settings' || view === 'chef';
+  document.body.classList.toggle('chef', view === 'chef');
+  const nTasks = tracked().reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0), bd = $('#tbadge');
+  bd.hidden = !nTasks; bd.textContent = nTasks > 99 ? '99+' : nTasks;
 }
-function modal(html){ $('#modal .sheet').innerHTML = `<button class="icon close" data-action="closeModal" aria-label="Fermer">✕</button>` + html; $('#modal').hidden = false; }
-function closeModal(){ $('#modal').hidden = true; }
+function modal(html){
+  const sh = $('#modal .sheet'), wasOpen = !$('#modal').hidden, top = sh.scrollTop;
+  sh.innerHTML = `<div class="grab"><span></span><button class="icon close" data-action="closeModal" aria-label="Fermer">✕</button></div>` + html;
+  $('#modal').hidden = false; document.body.style.overflow = 'hidden';
+  if(wasOpen) sh.scrollTop = top; else { sh.scrollTop = 0; sh.style.animation = 'none'; sh.offsetHeight; sh.style.animation = ''; }
+}
+function closeModal(){ $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; }
 function textModal(title, text, extra=''){
   modal(`<h2>${esc(title)}</h2>${extra}<div class="pre" id="mtext">${esc(text)}</div>
     <div class="btns"><button class="btn primary" data-action="copyModal">Copier</button></div>`);
@@ -671,7 +777,7 @@ function appSheet(repo){
     </div>
     ${d.error ? `<p class="err">${esc(d.error)}</p>` : ''}
     ${(v.notes||[]).length ? `<h3 class="sec">Dernière version</h3>${md(v.notes.map(n => '- ' + n).join('\n'))}` : ''}
-    ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a)}</div>` : ''}
+    ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a, false, true)}</div>` : ''}
 
     <h3 class="sec">Intelligence</h3>
     <div class="btns" style="margin-top:0">
@@ -1079,6 +1185,38 @@ document.addEventListener('keydown', e => {
 });
 addEventListener('online', () => { if((C.pending||[]).length) syncAll(true); });
 document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && S.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
+
+/* ================= Gestes téléphone ================= */
+(function gestes(){
+  let y0 = null, dy = 0, lastY = 0;
+  const ptr = $('#ptr');
+  addEventListener('touchstart', e => { if(!$('#modal').hidden || view === 'chef') return; y0 = scrollY <= 0 ? e.touches[0].clientY : null; dy = 0; }, {passive:true});
+  addEventListener('touchmove', e => {
+    if(y0 == null) return;
+    dy = Math.max(0, e.touches[0].clientY - y0);
+    ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 60}px) rotate(${dy * 3}deg)`;
+  }, {passive:true});
+  addEventListener('touchend', () => {
+    if(y0 == null) return;
+    ptr.style.transform = '';
+    if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); }
+    y0 = null;
+  });
+  // Feuille : glisser vers le bas depuis la poignée pour fermer
+  let s0 = null, sd = 0;
+  const sh = $('#modal .sheet');
+  sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') || sh.scrollTop <= 0 && e.target.closest('.grab, h2')) { s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
+  sh.addEventListener('touchmove', e => { if(s0 == null) return; sd = Math.max(0, e.touches[0].clientY - s0); sh.style.transform = `translateY(${sd}px)`; }, {passive:true});
+  sh.addEventListener('touchend', () => { if(s0 == null) return; sh.style.transition = ''; if(sd > 110) closeModal(); else sh.style.transform = ''; s0 = null; });
+  // En-tête qui se marque et bouton + qui se cache quand on descend
+  addEventListener('scroll', () => {
+    $('header').classList.toggle('scrolled', scrollY > 4);
+    const fab = $('#fab'); if(scrollY > lastY + 8 && scrollY > 120) fab.classList.add('hide'); else if(scrollY < lastY - 8) fab.classList.remove('hide');
+    lastY = scrollY;
+  }, {passive:true});
+  // Zone de saisie du chef qui grandit avec le texte
+  document.addEventListener('input', e => { if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'; } });
+})();
 
 /* ================= Démarrage ================= */
 render();
