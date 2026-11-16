@@ -1,5 +1,5 @@
 // Atelier — service worker : l'app s'ouvre même sans réseau.
-const CACHE = 'atelier-v3';
+const CACHE = 'atelier-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './icon-512.png', './lib/qrcode.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {

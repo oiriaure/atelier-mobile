@@ -3,251 +3,377 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Atelier — mes projets</title>
-<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<title>Atelier</title>
+<meta name="description" content="Tous mes projets d'apps, au même endroit.">
+<meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://api.github.com">
+<link rel="preconnect" href="https://generativelanguage.googleapis.com">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Atelier">
 <style>
+/* ===== Atelier 3 — système de design ===== */
 :root{
-  --bg:#f5f6f8;--bg2:#fff;--bg3:#eceef2;--tx:#14161b;--mu:#6b7280;--bd:#e2e5ea;
-  --ac:#5b5bf0;--ac2:#ececff;--ok:#16a34a;--wa:#d97706;--ko:#dc2626;--gr:#9ca3af;
-  --r:16px;--sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
+  --bg:#f6f7fb;--s1:#ffffff;--s2:#f0f2f7;--s3:#e7eaf1;--tx:#0e1220;--tx2:#3b4252;--mu:#6b7385;--bd:#e3e6ee;
+  --ac:#5b5bf0;--ac2:#7c5cf0;--acs:#ecebff;--ok:#10b981;--wa:#f59e0b;--ko:#ef4444;--gr:#9aa3b2;
+  --r3:20px;--sh1:0 1px 2px rgba(16,24,40,.05);--sh2:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+  --sh3:0 20px 60px rgba(16,24,40,.18);--ease:cubic-bezier(.2,.8,.2,1);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",Inter,Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#0f1115;--bg2:#171a21;--bg3:#20242d;--tx:#eef0f4;--mu:#9aa1ad;--bd:#2a2f3a;
-  --ac:#8b8bff;--ac2:#25264a;--sh:none;
+  --bg:#0b0d12;--s1:#13161d;--s2:#1a1e27;--s3:#232834;--tx:#eef1f6;--tx2:#c6ccd8;--mu:#8a93a5;--bd:#242a36;
+  --ac:#8080ff;--ac2:#a78bfa;--acs:#22244a;--sh1:none;--sh2:none;--sh3:0 20px 60px rgba(0,0,0,.5);
 }}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-a{color:var(--ac);text-decoration:none}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
-  padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.brand{display:flex;gap:10px;align-items:center}
-.brand img{width:34px;height:34px;border-radius:9px}
-h1{font-size:19px;margin:0;line-height:1.1}
-#lastsync{color:var(--mu);font-size:12px}
-main{max-width:760px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bottom) + 110px)}
-.icon{border:0;background:var(--bg3);color:var(--tx);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;flex:none}
-.icon.spin{animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-around;
-  padding:6px 4px calc(env(safe-area-inset-bottom) + 6px);background:var(--bg2);border-top:1px solid var(--bd)}
-nav button{flex:1;border:0;background:none;color:var(--mu);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer}
-nav button span{font-size:20px;line-height:1}
-nav button.on{color:var(--ac);font-weight:600}
-#fab{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:7;width:56px;height:56px;border-radius:18px;border:0;
-  background:var(--ac);color:#fff;font-size:30px;box-shadow:0 6px 20px rgba(91,91,240,.4);cursor:pointer}
-.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin:12px 0;box-shadow:var(--sh)}
-.card h2{margin:0 0 4px;font-size:18px}
-.muted{color:var(--mu)} .sm{font-size:12px}
-.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:22px 4px 8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-.stats div{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px;text-align:center}
-.stats b{display:block;font-size:24px}
-.stats span{font-size:12px;color:var(--mu)}
-.btn{border:0;border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--tx);display:inline-block}
-.btn.primary{background:var(--ac);color:#fff}
-.btn.sm{padding:7px 11px;font-size:13px;font-weight:500}
-.btn:disabled{opacity:.6}
-.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.list{display:flex;flex-direction:column;gap:6px}
-.row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;color:var(--tx)}
-.row .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.em{font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:8px}
-.app{cursor:pointer;margin:0}
-.app .top{display:flex;align-items:center;gap:10px}
-.app .em{font-size:28px}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
-.green{background:var(--ok)}.orange{background:var(--wa)}.red{background:var(--ko)}.grey{background:var(--gr)}
-.pill{display:inline-block;background:var(--bg3);border-radius:99px;padding:2px 9px;font-size:12px;margin:2px 4px 2px 0}
-.action{border-left:4px solid var(--ac);background:var(--bg3);border-radius:12px;padding:12px;margin-top:10px}
-.action h4{margin:0 0 4px;font-size:15px}
-.err{color:var(--ko);font-size:13px}
-.ok{color:var(--ok)}
-label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px}
-input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
-textarea{resize:vertical}
-.chk{display:flex;gap:8px;align-items:flex-start;color:var(--tx)} .chk input{width:auto;margin-top:4px}
-.appedit{border-top:1px solid var(--bd);padding-top:10px;margin-top:10px}
-.approw{display:grid;grid-template-columns:52px 1fr 1.4fr 40px;gap:6px;margin-top:6px}
-.approw2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
-.approw input,.approw2 input{padding:9px 8px;font-size:14px}
-#modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
-#modal[hidden]{display:none}
-.sheet{background:var(--bg2);width:100%;max-width:760px;max-height:90vh;overflow:auto;border-radius:20px 20px 0 0;
-  padding:18px 18px calc(env(safe-area-inset-bottom) + 18px)}
-@media (min-width:800px){#modal{align-items:center}.sheet{border-radius:20px}}
-.sheet h2{margin:0 0 6px;padding-right:44px}
-.sheet .close{float:right}
-pre,.pre{white-space:pre-wrap;word-break:break-word;background:var(--bg3);border-radius:10px;padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace;max-height:50vh;overflow:auto}
-details{margin-top:10px} summary{cursor:pointer;color:var(--mu)}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 140px);z-index:30;
-  background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;max-width:90vw}
-#toast.bad{background:var(--ko);color:#fff}
-.empty{text-align:center;padding:40px 16px}
-.md p{margin:6px 0}.md h4{margin:14px 0 4px;font-size:15px}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
-.md code{background:var(--bg3);border-radius:5px;padding:1px 5px;font-size:13px}
-.live{border-left:4px solid var(--ok)}
-.live .t{font-weight:600}
-.kv{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.chat{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.msg{max-width:92%;padding:10px 13px;border-radius:16px}
-.msg.u{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px;white-space:pre-wrap}
-.msg.m{align-self:flex-start;background:var(--bg2);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.msg .btns{margin-top:6px}
-.composer{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 70px);display:flex;gap:8px;margin-top:12px;background:var(--bg);padding:8px 0}
-.composer textarea{min-height:46px;max-height:140px}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-top:6px}
-.chips .btn{white-space:nowrap}
-.qr{background:#fff;border-radius:14px;padding:12px;width:min(260px,70vw);margin:10px auto}
-.qr svg{display:block;width:100%;height:auto}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
-
-/* ===== Adaptation téléphone (2.1) ===== */
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
-body{overscroll-behavior-y:none}
-button,nav,.btn,.chips{-webkit-user-select:none;user-select:none;touch-action:manipulation}
-header{padding:calc(env(safe-area-inset-top) + 6px) 16px 8px;border-bottom:1px solid transparent;transition:border-color .2s}
-header.scrolled{border-bottom-color:var(--bd)}
-.brand img{width:28px;height:28px;border-radius:8px}
-h1{font-size:24px;letter-spacing:-.02em}
-main{padding:2px 14px calc(env(safe-area-inset-bottom) + 150px)}
-.card{padding:14px;margin:10px 0;border-radius:18px}
-.card h2{font-size:17px}
-.sec{margin:20px 4px 8px;font-size:12px}
-.stats{gap:8px}
-.stats div{padding:9px 6px;border-radius:14px}
-.stats b{font-size:20px}
-.stats span{font-size:11px}
-.btn{min-height:44px}
-.btn.sm{min-height:38px;padding:8px 12px;font-size:14px}
-.btns{gap:8px}
-.ibtn{flex:none;width:40px;height:40px;border:0;border-radius:12px;background:var(--bg3);color:var(--tx);font-size:17px;display:grid;place-items:center;cursor:pointer}
-input,select,textarea,.approw input,.approw2 input{font-size:16px}
-select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15.5px/1.5 var(--font);overflow-x:clip;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
+a{color:var(--ac);text-decoration:none}
+button{font:inherit;color:inherit}
+button,nav,.btn,.chips,.seg{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:8px}
+svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+svg.i.s{width:16px;height:16px;vertical-align:-3px}
+.muted{color:var(--mu)} .sm{font-size:13px} .xs{font-size:12px} .err{color:var(--ko);font-size:13px} .ok{color:var(--ok)}
+.clamp1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-/* Navigation */
-nav{padding:4px 4px calc(env(safe-area-inset-bottom) + 4px);background:color-mix(in srgb,var(--bg2) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-nav button{font-size:10.5px;gap:3px;padding:6px 0 4px;min-height:50px}
-nav svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-nav button.on svg{stroke-width:2.2}
-nav .badge{position:absolute;margin-left:18px;margin-top:-4px;background:var(--ko);color:#fff;border-radius:9px;font-size:10px;min-width:17px;height:17px;line-height:17px;padding:0 4px;font-weight:700}
-nav button{position:relative}
-#fab{width:54px;height:54px;border-radius:17px;font-size:28px;bottom:calc(env(safe-area-inset-bottom) + 74px);transition:transform .25s,opacity .25s}
+
+/* ===== Mise en page ===== */
+#shell{min-height:100vh}
+#side{display:none}
+#top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:calc(env(safe-area-inset-top) + 8px) 16px 10px;background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid transparent;transition:border-color .2s}
+#top.scrolled{border-bottom-color:var(--bd)}
+#top h1{margin:0;font-size:26px;line-height:1.1;letter-spacing:-.025em;font-weight:750}
+#top small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}
+.hacts{display:flex;gap:8px;align-items:center}
+main{max-width:1180px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bottom) + 150px)}
+.ibtn{flex:none;width:40px;height:40px;border:0;border-radius:12px;background:var(--s2);color:var(--tx);display:grid;place-items:center;cursor:pointer;transition:background .15s,transform .1s}
+.ibtn:hover{background:var(--s3)} .ibtn:active{transform:scale(.94)}
+.ibtn.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;justify-content:space-around;
+  padding:4px 4px calc(env(safe-area-inset-bottom) + 2px);background:color-mix(in srgb,var(--s1) 90%,transparent);
+  backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--bd)}
+#tabs button{flex:1;border:0;background:none;color:var(--mu);font-size:10.5px;font-weight:550;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0 5px;min-height:52px;cursor:pointer;position:relative}
+#tabs button svg.i{width:24px;height:24px}
+#tabs button.on{color:var(--ac)}
+#tabs button.on svg.i{stroke-width:2.2}
+.badge{background:var(--ko);color:#fff;border-radius:9px;font-size:10px;min-width:17px;height:17px;line-height:17px;padding:0 5px;font-weight:700;text-align:center}
+#tabs .badge{position:absolute;top:3px;left:calc(50% + 6px)}
+#fab{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 74px);z-index:7;width:56px;height:56px;border-radius:18px;border:0;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:grid;place-items:center;box-shadow:0 8px 24px rgba(91,91,240,.45);cursor:pointer;transition:transform .25s var(--ease),opacity .25s}
+#fab svg.i{width:26px;height:26px;stroke-width:2.4}
 #fab.hide{transform:translateY(120px);opacity:0}
-/* Aujourd'hui */
-.hero{background:linear-gradient(135deg,var(--ac),#7c5cf0);color:#fff;border:0}
-.hero .muted{color:rgba(255,255,255,.85)}
-.hero .btn.primary{background:#fff;color:#3b3bd0}
-.hero .action{background:rgba(255,255,255,.14);border-left-color:#fff}
-.hero .action .muted{color:rgba(255,255,255,.8)}
-.hero .action .btn{background:rgba(255,255,255,.2);color:#fff}
-.live{padding:12px 14px}
-.live .t{font-size:15px}
-/* Apps en liste */
-.alist{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.arow{display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:12px;cursor:pointer}
-.arow:active,.row:active{transform:scale(.99)}
-.arow .em{font-size:30px;width:44px;height:44px;display:grid;place-items:center;background:var(--bg3);border-radius:12px;flex:none}
-.arow .mid{flex:1;min-width:0}
-.arow .nm{font-weight:650;display:flex;gap:6px;align-items:baseline}
-.arow .nm small{color:var(--mu);font-weight:400;font-size:12px}
-.arow .chev{color:var(--mu);font-size:20px}
-/* Tâches */
-.trow{display:flex;gap:8px;align-items:flex-start;background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:10px 10px 10px 14px}
-.trow .tt{flex:1;min-width:0;padding-top:9px;font-size:15px;line-height:1.35}
-.trow .tt a{font-size:12px}
-.trow .acts{display:flex;gap:6px}
-/* Feuilles (modales) */
-.sheet{padding:8px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:calc(100dvh - env(safe-area-inset-top) - 24px);overscroll-behavior:contain;transition:transform .2s}
-.grab{position:sticky;top:-8px;z-index:2;display:flex;justify-content:space-between;align-items:center;margin:-8px -16px 4px;padding:8px 12px 6px 16px;background:var(--bg2);touch-action:none}
-.grab::before{content:"";position:absolute;left:50%;top:6px;transform:translateX(-50%);width:38px;height:5px;border-radius:3px;background:var(--bd)}
-.grab .close{float:none;width:34px;height:34px;font-size:15px;margin-top:8px}
-.sheet h2{font-size:21px;padding-right:0}
-#modal{animation:fade .2s}
-@keyframes fade{from{opacity:0}}
-.sheet{animation:up .25s cubic-bezier(.2,.8,.2,1)}
-@keyframes up{from{transform:translateY(40%)}}
-/* Chef */
-body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 150px)}
-.composer{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 58px);z-index:6;margin:0;padding:8px 12px;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--bd)}
-.composer textarea{border-radius:20px;padding:11px 16px;min-height:44px;max-height:120px}
-.composer .send{width:44px;height:44px;border-radius:22px;background:var(--ac);color:#fff;border:0;font-size:20px;flex:none}
-.chips{margin:8px -14px 0;padding:0 14px 4px;scrollbar-width:none}
+#fab[hidden]{display:none}
+@media (min-width:900px){
+  #shell{display:grid;grid-template-columns:260px minmax(0,1fr)}
+  #side{display:flex;flex-direction:column;gap:14px;position:sticky;top:0;height:100vh;padding:18px 14px;background:var(--s1);border-right:1px solid var(--bd);overflow:auto}
+  #tabs,#fab,#ptr{display:none!important}
+  #top{padding:22px 32px 14px}
+  #top h1{font-size:30px}
+  main{padding:4px 32px 60px}
+  .phone-only{display:none!important}
+}
+@media (max-width:899px){.desk-only{display:none!important}}
+.brand{display:flex;gap:11px;align-items:center;padding:2px 6px}
+.brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--sh1)}
+.brand b{font-size:17px;letter-spacing:-.01em}
+.brand small{display:block;color:var(--mu);font-size:12px}
+.snav{display:flex;flex-direction:column;gap:2px}
+.snav button{display:flex;align-items:center;gap:11px;border:0;background:none;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--tx2);font-weight:550;text-align:left}
+.snav button:hover{background:var(--s2)}
+.snav button.on{background:var(--acs);color:var(--ac)}
+.snav button .badge{margin-left:auto;background:var(--s3);color:var(--tx2)}
+.snav button.on .badge{background:var(--ac);color:#fff}
+.slabel{font-size:11.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);padding:0 10px;margin-top:4px}
+.sapp{display:flex;align-items:center;gap:10px;border:0;background:none;padding:7px 10px;border-radius:10px;cursor:pointer;text-align:left;width:100%}
+.sapp:hover{background:var(--s2)}
+.sapp .nm{flex:1;font-weight:550;font-size:14.5px}
+.sfoot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.kbd{font:11px var(--mono);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:1px 6px;color:var(--mu)}
+.searchbtn{display:flex;align-items:center;gap:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);border-radius:10px;padding:8px 10px;cursor:pointer;width:100%}
+.searchbtn .kbd{margin-left:auto}
+
+/* ===== Composants ===== */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r3);padding:16px;margin:12px 0;box-shadow:var(--sh2)}
+.card h2{margin:0;font-size:17px;letter-spacing:-.01em}
+.card .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.sec{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:22px 4px 8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;border:0;border-radius:12px;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;background:var(--s2);color:var(--tx);transition:background .15s,transform .1s,opacity .15s}
+.btn:hover{background:var(--s3)} .btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 4px 14px rgba(91,91,240,.3)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border:1px solid var(--bd)}
+.btn.sm{min-height:36px;padding:7px 12px;font-size:13.5px;font-weight:550;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.55;pointer-events:none}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:550;color:var(--tx2);margin:2px 4px 2px 0;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.green{background:var(--ok)}.orange{background:var(--wa)}.red{background:var(--ko)}.grey{background:var(--gr)}
+.av{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:24px;background:color-mix(in srgb,var(--c,#5b5bf0) 16%,var(--s1));border:1px solid color-mix(in srgb,var(--c,#5b5bf0) 25%,transparent)}
+.av.s{width:28px;height:28px;border-radius:8px;font-size:15px}
+.av.l{width:56px;height:56px;border-radius:16px;font-size:30px}
+label.f{display:block;font-size:13px;font-weight:550;color:var(--tx2);margin:14px 0 6px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+textarea{resize:vertical}
+select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+.chk{display:flex;gap:10px;align-items:flex-start;color:var(--tx);cursor:pointer}
+.chk input{width:20px;height:20px;margin-top:2px;accent-color:var(--ac);flex:none}
+.seg{display:flex;background:var(--s2);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 6px;font-weight:600;font-size:13.5px;color:var(--mu);cursor:pointer}
+.seg button.on{background:var(--s1);color:var(--tx);box-shadow:var(--sh2)}
+.help{font-size:12.5px;color:var(--mu);margin:6px 0 0}
+.skel{background:linear-gradient(90deg,var(--s2),var(--s3),var(--s2));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px;height:14px;margin:8px 0}
+@keyframes sk{to{background-position:-200% 0}}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid color-mix(in srgb,currentColor 25%,transparent);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex:none}
+.empty{text-align:center;padding:36px 16px;color:var(--mu)}
+.empty .big{font-size:40px;margin-bottom:6px}
+.empty h3{color:var(--tx);margin:4px 0 6px;font-size:18px}
+
+/* ===== Aujourd'hui ===== */
+.hello{margin:6px 4px 14px}
+.hello h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.hello p{margin:3px 0 0;color:var(--mu)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:12px;box-shadow:var(--sh1)}
+.kpi b{display:block;font-size:24px;letter-spacing:-.02em;line-height:1.1}
+.kpi span{font-size:12px;color:var(--mu)}
+@media (max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cols{display:grid;gap:0 18px}
+@media (min-width:1100px){.cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#4f46e5,#7c3aed 60%,#a855f7);color:#fff;border:0;box-shadow:0 10px 30px rgba(79,70,229,.3)}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);pointer-events:none}
+.hero h2{font-size:19px}
+.hero p{color:rgba(255,255,255,.88)}
+.hero .btn{background:rgba(255,255,255,.18);color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.28)}
+.hero .btn.primary{background:#fff;color:#4338ca;box-shadow:none}
+.act{position:relative;z-index:1;display:flex;gap:12px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px;margin-top:10px}
+.act .n{flex:none;width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:700;font-size:13px}
+.act h4{margin:0 0 2px;font-size:15px}
+.act .meta{font-size:12.5px;color:rgba(255,255,255,.8)}
+.act .btns{margin-top:8px}
+.live{border-left:4px solid var(--ok)}
+.live .t{font-weight:650;font-size:15px;margin-top:4px}
+.feed{display:flex;flex-direction:column}
+.fi{display:flex;gap:12px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--bd);color:var(--tx)}
+.fi:last-child{border-bottom:0}
+.fi .tx{flex:1}
+.fi .when{color:var(--mu);font-size:12px;white-space:nowrap}
+
+/* ===== Apps ===== */
+.agrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.acard{position:relative;cursor:pointer;margin:0;transition:transform .15s var(--ease),box-shadow .15s,border-color .15s}
+.acard:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--c) 40%,var(--bd))}
+.acard:active{transform:scale(.99)}
+.acard .top{display:flex;gap:12px;align-items:center}
+.acard .nm{font-weight:700;font-size:16.5px;letter-spacing:-.01em}
+.acard .note{margin:10px 0 0;font-size:13.5px;color:var(--tx2)}
+.acard .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:12px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:26px}
+.spark i{display:block;width:5px;border-radius:2px;background:var(--c);opacity:.85;min-height:2px}
+.spark i.z{background:var(--s3);opacity:1}
+
+/* ===== Tâches ===== */
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 .chips::-webkit-scrollbar{display:none}
-.msg{font-size:15px}
-/* Réglages */
-.approw{grid-template-columns:52px 1fr 44px}
-.approw .repo{grid-column:1 / -1}
-@media (min-width:600px){.approw{grid-template-columns:52px 1fr 1.4fr 44px}.approw .repo{grid-column:auto}}
-@media (max-width:420px){.approw2{grid-template-columns:1fr}}
-/* Tirer pour actualiser */
-#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 54px);z-index:4;transform:translate(-50%,-60px);width:36px;height:36px;border-radius:18px;background:var(--bg2);border:1px solid var(--bd);display:grid;place-items:center;font-size:18px;color:var(--ac);transition:transform .2s;box-shadow:var(--sh)}
-#toast{bottom:auto;top:calc(env(safe-area-inset-top) + 64px);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.chip{border:1px solid var(--bd);background:var(--s1);border-radius:99px;padding:6px 12px;font-size:13.5px;font-weight:550;cursor:pointer;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+.chip.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.trow{display:flex;gap:10px;align-items:flex-start;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:11px 10px 11px 0;margin-bottom:8px;box-shadow:var(--sh1)}
+.trow .bar{width:4px;align-self:stretch;border-radius:0 4px 4px 0;background:var(--c);flex:none}
+.trow .tt{flex:1;padding-top:7px;font-size:15px;line-height:1.35}
+.trow .tt .meta{display:block;font-size:12px;color:var(--mu);margin-top:3px}
+.trow .acts{display:flex;gap:6px}
+
+/* ===== Chef ===== */
+.chatwrap{max-width:780px;margin:0 auto}
+.chat{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.msg{max-width:88%;padding:11px 14px;border-radius:18px;font-size:15px;line-height:1.5}
+.msg.u{align-self:flex-end;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
+.msg.m{align-self:flex-start;background:var(--s1);border:1px solid var(--bd);border-bottom-left-radius:6px;box-shadow:var(--sh1)}
+.msg .mact{display:flex;gap:6px;margin-top:8px}
+.composer{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 58px);z-index:6;padding:8px 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--bd)}
+.composer .in{display:flex;gap:8px;max-width:780px;margin:0 auto;align-items:flex-end}
+.composer textarea{border-radius:22px;padding:11px 16px;min-height:46px;max-height:140px;background:var(--s1)}
+.send{flex:none;width:46px;height:46px;border-radius:23px;border:0;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:grid;place-items:center;cursor:pointer}
+@media (min-width:900px){.composer{left:260px;bottom:0;padding:14px 32px 18px}}
+body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
+.sugg{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:10px}
+.sugg button{text-align:left;border:1px solid var(--bd);background:var(--s1);border-radius:14px;padding:12px;cursor:pointer;font-size:14px;color:var(--tx2)}
+.sugg button:hover{border-color:var(--ac)}
+
+/* ===== Markdown ===== */
+.md p{margin:6px 0}.md h4{margin:14px 0 4px;font-size:15px}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
+.md code{background:var(--s2);border-radius:6px;padding:1px 6px;font:13px var(--mono)}
+.md pre,pre.pre{white-space:pre-wrap;word-break:break-word;background:var(--s2);border-radius:12px;padding:12px;font:13px/1.55 var(--mono);max-height:55vh;overflow:auto;margin:8px 0}
+.hero .md code{background:rgba(255,255,255,.18)}
+
+/* ===== Feuilles (téléphone) / panneau latéral (ordinateur) ===== */
+#modal{position:fixed;inset:0;z-index:30;background:rgba(10,12,20,.45);display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
+#modal[hidden]{display:none}
+@keyframes fade{from{opacity:0}}
+.sheet{background:var(--s1);width:100%;max-width:760px;max-height:calc(100dvh - env(safe-area-inset-top) - 20px);overflow:auto;overscroll-behavior:contain;
+  border-radius:24px 24px 0 0;padding:8px 18px calc(env(safe-area-inset-bottom) + 20px);box-shadow:var(--sh3);animation:up .3s var(--ease)}
+@keyframes up{from{transform:translateY(40%)}}
+.grab{position:sticky;top:-8px;z-index:3;display:flex;justify-content:flex-end;align-items:center;margin:-8px -18px 2px;padding:10px 12px 4px;background:var(--s1);touch-action:none}
+.grab::before{content:"";position:absolute;left:50%;top:7px;transform:translateX(-50%);width:40px;height:5px;border-radius:3px;background:var(--s3)}
+.sheet h2{margin:2px 0 4px;font-size:22px;letter-spacing:-.02em}
+@media (min-width:900px){
+  #modal{align-items:center}
+  #modal.drawer{justify-content:flex-end;align-items:stretch}
+  .sheet{border-radius:22px;max-height:88vh;width:min(620px,92vw);animation:pop .22s var(--ease)}
+  #modal.drawer .sheet{width:min(640px,96vw);max-width:none;max-height:none;height:100vh;border-radius:0;animation:slide .28s var(--ease);padding:8px 28px 28px}
+  .grab::before{display:none}
+}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+@keyframes slide{from{transform:translateX(40px);opacity:0}}
+.tabs2{display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:12px -4px 4px;overflow-x:auto;scrollbar-width:none}
+.tabs2 button{border:0;background:none;padding:10px 12px;font-weight:600;color:var(--mu);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tabs2 button.on{color:var(--tx);border-bottom-color:var(--ac)}
+
+/* ===== Palette de commandes ===== */
+#pal{position:fixed;inset:0;z-index:40;background:rgba(10,12,20,.45);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh}
+#pal[hidden]{display:none}
+#pal .box{width:min(620px,94vw);background:var(--s1);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh3);overflow:hidden;animation:pop .18s var(--ease)}
+#pal input{border:0;border-bottom:1px solid var(--bd);border-radius:0;background:transparent;padding:16px 18px;font-size:17px;box-shadow:none}
+#pal .list{max-height:55vh;overflow:auto;padding:6px}
+#pal .it{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer}
+#pal .it.on{background:var(--acs)}
+#pal .it .k{margin-left:auto;font-size:12px;color:var(--mu);white-space:nowrap}
+
+/* ===== Accueil (première connexion) ===== */
+#onb{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:radial-gradient(1200px 600px at 20% -10%,color-mix(in srgb,var(--ac) 30%,transparent),transparent),radial-gradient(900px 500px at 110% 110%,color-mix(in srgb,var(--ac2) 28%,transparent),transparent),var(--bg)}
+#onb[hidden]{display:none}
+#onb .box{width:min(460px,100%);text-align:center}
+#onb img{width:76px;height:76px;border-radius:22px;box-shadow:0 16px 40px rgba(91,91,240,.35)}
+#onb h1{font-size:30px;letter-spacing:-.03em;margin:18px 0 6px}
+#onb p{color:var(--mu);margin:0 0 20px}
+#onb .card{text-align:left}
+
+/* ===== Divers ===== */
+#toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 66px);z-index:60;display:flex;gap:10px;align-items:center;
+  background:var(--tx);color:var(--bg);padding:11px 14px;border-radius:14px;font-size:14px;font-weight:550;max-width:min(92vw,520px);box-shadow:var(--sh3)}
+#toast[hidden]{display:none}
+#toast.bad{background:var(--ko);color:#fff}
+#toast button{border:0;background:rgba(127,127,127,.25);color:inherit;border-radius:8px;padding:4px 10px;font-weight:650;cursor:pointer}
+@media (min-width:900px){#toast{top:auto;bottom:24px;left:calc(50% + 130px)}}
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 60px);z-index:4;transform:translate(-50%,-70px);width:38px;height:38px;border-radius:19px;background:var(--s1);border:1px solid var(--bd);display:grid;place-items:center;color:var(--ac);transition:transform .2s;box-shadow:var(--sh2)}
+.cloud{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mu);font-weight:550}
+.cloud.ok svg{color:var(--ok)} .cloud.err{color:var(--ko)}
+.qr{background:#fff;border-radius:16px;padding:12px;width:min(260px,70vw);margin:12px auto}
+.qr svg{display:block;width:100%;height:auto}
+details>summary{cursor:pointer;color:var(--mu);font-weight:550;font-size:13.5px;list-style:none;padding:4px 0}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"›";display:inline-block;margin-right:6px;transition:transform .15s}
+details[open]>summary::before{transform:rotate(90deg)}
+.kv{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.appedit{border:1px solid var(--bd);border-radius:14px;padding:12px;margin-top:10px;background:var(--s2)}
+.appedit .r{display:grid;grid-template-columns:52px 46px 1fr 44px;gap:8px}
+.appedit .r2{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+@media (min-width:600px){.appedit .r2{grid-template-columns:1.2fr 1fr 1fr}}
+.appedit input{background:var(--s1)}
+.appedit input[type=color]{padding:4px;height:46px}
+.dev{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.dev:last-of-type{border-bottom:0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><img src="icon.svg" alt=""><div><h1 id="vtitle">Atelier</h1><small id="lastsync"></small></div></div>
-  <button id="syncBtn" class="icon" data-action="sync" aria-label="Synchroniser">⟳</button>
-</header>
-<main id="main"></main>
-<button id="fab" data-action="capture" aria-label="Nouvelle idée">+</button>
-<nav>
-  <button data-go="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Aujourd'hui</button>
-  <button data-go="apps"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Apps</button>
-  <button data-go="tasks"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.8 5M3.5 12l1.2 1.2 2.1-2.2M3.5 18l1.2 1.2 2.1-2.2"/></svg><span class="badge" id="tbadge" hidden></span>Tâches</button>
-  <button data-go="chef"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.6"/></svg>Chef</button>
-  <button data-go="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Réglages</button>
-</nav>
-<div id="modal" hidden><div class="sheet"></div></div>
+<div id="onb" hidden></div>
+<div id="shell">
+  <aside id="side">
+    <div class="brand"><img src="icon.svg" alt=""><div><b>Atelier</b><small id="sideCloud"></small></div></div>
+    <button class="btn primary block" data-action="capture"><svg class="i"><use href="#i-plus"/></svg>Nouvelle idée</button>
+    <button class="searchbtn" data-action="palette"><svg class="i s"><use href="#i-search"/></svg>Rechercher…<span class="kbd" id="kbdK">Ctrl K</span></button>
+    <div class="snav" id="snav"></div>
+    <div class="slabel">Mes apps</div>
+    <div id="sideApps"></div>
+    <div class="sfoot"><div class="xs muted" id="sideVer"></div></div>
+  </aside>
+  <div id="col">
+    <header id="top">
+      <div><h1 id="vtitle">Atelier</h1><small id="vsub"></small></div>
+      <div class="hacts">
+        <button class="ibtn phone-only" data-action="palette" aria-label="Rechercher"><svg class="i"><use href="#i-search"/></svg></button>
+        <button class="ibtn" id="syncBtn" data-action="sync" aria-label="Actualiser"><svg class="i"><use href="#i-sync"/></svg></button>
+      </div>
+    </header>
+    <main id="main"></main>
+  </div>
+</div>
+<nav id="tabs"></nav>
+<button id="fab" data-action="capture" aria-label="Nouvelle idée"><svg class="i"><use href="#i-plus"/></svg></button>
+<div id="modal" hidden><div class="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="pal" hidden><div class="box"><input id="palIn" placeholder="Rechercher une app, une tâche, une action…" autocomplete="off"><div class="list" id="palList"></div></div></div>
 <div id="toast" hidden></div>
-<div id="ptr" aria-hidden="true">⟳</div>
+<div id="ptr" aria-hidden="true"><svg class="i"><use href="#i-sync"/></svg></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-today" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></symbol>
+  <symbol id="i-tasks" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.3 1.3L7 5M3.5 12l1.3 1.3L7 11M3.5 18l1.3 1.3L7 17"/></symbol>
+  <symbol id="i-chef" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.6L3.5 21l1.4-4.7A8.5 8.5 0 1 1 21 12z"/><path d="M12 8.2l.9 2 2 .8-2 .9-.9 2-.9-2-2-.9 2-.8z"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h0a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h0a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.5a4.8 4.8 0 0 1-.5 9.5z"/></symbol>
+  <symbol id="i-cloudx" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.5a4.8 4.8 0 0 1-.5 9.5z"/><path d="M10 11l4 4M14 11l-4 4"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="9" r="2.2"/><path d="M6 8.2v7.6M18 11.2c0 3-3 3.8-6 4.3"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M9 15l6-6M10.5 6.5l1.8-1.8a4 4 0 0 1 5.7 5.7l-1.8 1.8M13.5 17.5l-1.8 1.8a4 4 0 0 1-5.7-5.7l1.8-1.8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+</svg>
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '2.1.0';
-/* ================= Utilitaires ================= */
+const VERSION = '3.0.0';
+/* ================================================================
+   Utilitaires
+================================================================ */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ic = (n, cls='') => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch{ return d; } },
-  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.warn('stockage plein', e); } }
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.warn('stockage plein', e); } },
+  del(k){ try{ localStorage.removeItem(k); }catch{} }
 };
 const rtf = new Intl.RelativeTimeFormat('fr', {numeric:'auto'});
 function ago(d){
   if(!d) return '';
   const s = (new Date(d) - Date.now())/1000, a = Math.abs(s);
-  if(a < 60) return "à l'instant";
+  if(a < 45) return "à l'instant";
   if(a < 3600) return rtf.format(Math.round(s/60), 'minute');
   if(a < 86400) return rtf.format(Math.round(s/3600), 'hour');
   if(a < 86400*30) return rtf.format(Math.round(s/86400), 'day');
   return rtf.format(Math.round(s/(86400*30)), 'month');
 }
 const dateFR = d => new Date(d).toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-let toastT;
-function toast(msg, bad=false){
-  const t = $('#toast'); t.textContent = msg; t.className = bad ? 'bad' : ''; t.hidden = false;
-  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, bad ? 6000 : 2600);
-}
-async function copy(text){
-  try{ await navigator.clipboard.writeText(text); }
-  catch{ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
-  toast('Copié ✓');
-}
-function parseJSON(t){
-  try{ return JSON.parse(t); }
-  catch{ const m = String(t).match(/[\[{][\s\S]*[\]}]/); if(m) return JSON.parse(m[0]); throw new Error('Réponse JSON illisible'); }
-}
+const today = () => new Date().toISOString().slice(0,10);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function parseJSON(t){ try{ return JSON.parse(t); }catch{ const m = String(t).match(/[\[{][\s\S]*[\]}]/); if(m) return JSON.parse(m[0]); throw new Error('Réponse illisible, réessaie'); } }
 const normRepo = r => (r||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/,'').replace(/^\/+|\/+$/g,'');
 const validRepo = r => /^[\w.-]+\/[\w.-]+$/.test(r);
 const encPath = p => p.split('/').map(encodeURIComponent).join('/');
@@ -255,9 +381,21 @@ function b64utf8(b64){ const bin = atob(b64.replace(/\s/g,'')); return new TextD
 function utf8b64(s){ const b = new TextEncoder().encode(s); let bin = ''; for(let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i+0x8000)); return btoa(bin); }
 const b64url = s => utf8b64(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const unb64url = s => b64utf8(s.replace(/-/g,'+').replace(/_/g,'/'));
-const clip = (s, n) => { s = String(s||''); return s.length > n ? s.slice(0, n) + '\n[…coupé]' : s; };
-
-/* Markdown minimal et sûr (on échappe d'abord) */
+const clip = (s, n) => { s = String(s||''); return s.length > n ? s.slice(0, n) + '\n[…]' : s; };
+const plural = (n, w) => `${n} ${w}${n > 1 ? 's' : ''}`;
+let toastT;
+function toast(msg, bad=false, action=null){
+  const t = $('#toast');
+  t.innerHTML = `<span>${esc(msg)}</span>${action ? `<button id="toastAct">${esc(action.label)}</button>` : ''}`;
+  t.className = bad ? 'bad' : ''; t.hidden = false;
+  if(action) $('#toastAct').onclick = () => { t.hidden = true; action.run(); };
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, bad ? 6000 : action ? 5000 : 2600);
+}
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); }
+  catch{ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('Copié');
+}
 function md(src){
   const inline = s => s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<i>$2</i>');
   let out = '', list = null, inCode = false, code = '';
@@ -275,53 +413,56 @@ function md(src){
   close(); if(inCode) out += `<pre>${code}</pre>`;
   return `<div class="md">${out}</div>`;
 }
+const spin = t => `<span class="spinner"></span>${t ? esc(t) : ''}`;
 
-/* ================= État ================= */
+/* ================================================================
+   Stockage : local (clés, cet appareil) + partagé (cloud) + cache
+================================================================ */
+const COULEURS = ['#f59e0b','#0ea5e9','#10b981','#8b5cf6','#ef4444','#ec4899','#14b8a6','#6366f1'];
 const APPS_DEFAUT = [
-  {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', donnees:'', etat:''},
-  {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
-  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', donnees:'', etat:''}
+  {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', couleur:'#f59e0b', donnees:'', etat:''},
+  {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', couleur:'#0ea5e9', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
+  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', couleur:'#10b981', donnees:'', etat:''}
 ];
-const DEFAULT_SETTINGS = {ghToken:'', geminiKey:'', model:'auto', apps:APPS_DEFAUT};
-let S = Object.assign({}, DEFAULT_SETTINGS, LS.get('atelier.settings', {}));
-// Migration V1 → V2 : on complète les apps connues dont le dépôt n'était pas encore rempli
-S.apps = S.apps.map(a => {
-  const x = Object.assign({donnees:'', etat:''}, a);
-  const d = APPS_DEFAUT.find(k => k.repo === x.repo || k.name.toLowerCase().startsWith((x.name||'?').toLowerCase().replace(/s$/,'')));
-  if(d && !x.repo) Object.assign(x, {repo:d.repo, donnees:d.donnees, etat:d.etat});
-  return x;
-});
-if(S.model === 'gemini-2.5-flash') S.model = 'auto';
-let C = Object.assign({apps:{}, today:null, pending:[], lastSync:0, ai:{}, weekly:[], chat:[], dups:null, blocked:{}}, LS.get('atelier.cache', {}));
+let L = Object.assign({ghToken:'', geminiKey:'', device:'', cloud:'oiriaure/atelier-donnees', nomAppareil:''}, LS.get('atelier.local', {}));
+if(!L.device) L.device = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+let SH = LS.get('atelier.shared', {});
+let C = Object.assign({apps:{}, pending:[], lastSync:0, blocked:{}, models:null, modelsAt:0, noThink:{}, remote:{}}, LS.get('atelier.cache', {}));
+(function migrer(){
+  const v2 = LS.get('atelier.settings', null); if(!v2) return;
+  if(!L.ghToken) L.ghToken = v2.ghToken || '';
+  if(!L.geminiKey) L.geminiKey = v2.geminiKey || '';
+  const apps = (v2.apps||APPS_DEFAUT).map((a, i) => {
+    const d = APPS_DEFAUT.find(k => k.repo === a.repo || k.name.toLowerCase().startsWith((a.name||'?').toLowerCase().replace(/s$/,'')));
+    const x = Object.assign({couleur:d?.couleur || COULEURS[i % COULEURS.length], donnees:'', etat:''}, a);
+    if(d && !validRepo(x.repo)) Object.assign(x, {repo:d.repo, donnees:d.donnees, etat:d.etat, name:d.name});
+    return x;
+  });
+  if(!SH.reglages) SH.reglages = {t:1, v:{apps, model:'auto', vitesse:'equilibre', prenom:''}};
+  for(const k of ['today','weekly','chat','dups','ai']) if(C[k] && !SH[k]) SH[k] = {t:1, v:C[k]};
+  LS.set('atelier.shared', SH); LS.del('atelier.settings');
+})();
+const saveL = () => LS.set('atelier.local', L);
+const saveSH = () => LS.set('atelier.shared', SH);
+const saveC = () => LS.set('atelier.cache', C);
+saveL();
+const get = (k, d) => SH[k] ? SH[k].v : d;
+function put(k, v){ SH[k] = {t:Date.now(), v}; saveSH(); Cloud.schedule(); }
+const REG = () => Object.assign({apps:APPS_DEFAUT, model:'auto', vitesse:'equilibre', prenom:''}, get('reglages', {}));
+const setReg = patch => put('reglages', Object.assign(REG(), patch));
+const appsAll = () => REG().apps || [];
+const tracked = () => appsAll().filter(a => validRepo(a.repo));
+const appBy = repo => appsAll().find(a => a.repo === repo) || {name:repo, emoji:'📦', repo, couleur:'#6366f1'};
+const aiOf = repo => (get('ai', {})[repo] || {});
+function setAi(repo, patch){ const all = Object.assign({}, get('ai', {})); all[repo] = Object.assign({}, all[repo]||{}, patch); put('ai', all); }
 let view = LS.get('atelier.view', 'today');
 const busy = {};
-const saveS = () => LS.set('atelier.settings', S);
-const saveC = () => LS.set('atelier.cache', C);
-const tracked = () => S.apps.filter(a => validRepo(a.repo));
-const appBy = repo => S.apps.find(a => a.repo === repo) || {name:repo, emoji:'📦', repo};
-const aiOf = repo => (C.ai[repo] ||= {});
 
-/* Activation par lien / QR code (comme Boussole) : …/atelier/#a=<code> */
-const EPINGLEE = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-(function activation(){
-  const m = location.hash.match(/[#&]a=([A-Za-z0-9_-]+)/);
-  if(!m) return;
-  try{
-    const j = JSON.parse(unb64url(m[1]));
-    if(j && (j.t || j.g)){
-      S.ghToken = j.t || S.ghToken; S.geminiKey = j.g || S.geminiKey; if(j.m) S.model = j.m;
-      if(Array.isArray(j.a) && j.a.length) S.apps = j.a;
-      saveS(); setTimeout(() => toast('Atelier connecté ✓'), 300);
-    }
-  }catch{}
-  // On garde le code dans l'adresse tant que la page n'est pas épinglée : l'icône de l'écran d'accueil l'emporte avec elle.
-  if(EPINGLEE) history.replaceState(null, '', location.pathname);
-})();
-addEventListener('hashchange', () => { if(/[#&]a=/.test(location.hash)) location.reload(); });
-
-/* ================= GitHub ================= */
+/* ================================================================
+   GitHub
+================================================================ */
 const API = 'https://api.github.com';
-function ghHeaders(extra){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; if(S.ghToken) h.Authorization = 'Bearer ' + S.ghToken; return Object.assign(h, extra||{}); }
+function ghHeaders(extra){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; if(L.ghToken) h.Authorization = 'Bearer ' + L.ghToken; return Object.assign(h, extra||{}); }
 async function gh(path, opts={}){
   const headers = ghHeaders(opts.body ? {'Content-Type':'application/json'} : null);
   const r = await fetch(API + path, {method:opts.method||'GET', headers, body:opts.body ? JSON.stringify(opts.body) : undefined, cache:'no-store'});
@@ -329,9 +470,9 @@ async function gh(path, opts={}){
   if(!r.ok){
     let m = ''; try{ m = (await r.json()).message; }catch{}
     if(r.status === 401) m = 'token GitHub invalide ou expiré';
-    if(r.status === 403 && /Resource not accessible/.test(m)) m = 'le token n\'a pas la permission pour ça (voir Réglages)';
-    if(r.status === 404) m = 'introuvable, ou le token n\'a pas accès à ce dépôt';
-    throw new Error(`GitHub ${r.status} : ${m}`);
+    if(r.status === 403 && /Resource not accessible/.test(m)) m = 'le token n\'a pas la permission pour ça';
+    if(r.status === 404) m = 'introuvable, ou le token n\'a pas accès';
+    const e = new Error(`GitHub ${r.status} : ${m}`); e.status = r.status; throw e;
   }
   return r.status === 204 ? null : r.json();
 }
@@ -342,9 +483,8 @@ async function ghRaw(repo, path){
   return r.text();
 }
 const mapIssue = i => ({number:i.number, title:i.title, body:(i.body||'').slice(0,2000), url:i.html_url, labels:(i.labels||[]).map(l => l.name||l), created:i.created_at});
-const BRAINS = ['CLAUDE.md', 'CERVEAU.md', 'AGENTS.md'];
 async function readBrain(repo){
-  for(const p of BRAINS){ const t = await ghRaw(repo, p).catch(() => null); if(t != null) return {path:p, text:t}; }
+  for(const p of ['CLAUDE.md', 'CERVEAU.md', 'AGENTS.md']){ const t = await ghRaw(repo, p).catch(() => null); if(t != null) return {path:p, text:t}; }
   return null;
 }
 function resumeEtat(j){
@@ -352,51 +492,57 @@ function resumeEtat(j){
   const s = {t:j.envoi || j.t || j.date || null};
   if(j.climat) s.climat = {titre:j.climat.titre, resume:clip(j.climat.resume, 500)};
   if(j.compteurs) s.compteurs = j.compteurs;
-  if(j.resultats) s.resultats = {totalTxt:j.resultats.totalTxt, termines:j.resultats.termines, gagnants:j.resultats.gagnants};
-  if(j.risque) s.risque = j.risque;
+  if(j.resultats) s.resultats = {totalTxt:j.resultats.totalTxt};
   const byT = arr => arr.slice().sort((x, y) => (y.t||0) - (x.t||0));
   if(Array.isArray(j.alertes)) s.alertes = byT(j.alertes).slice(0,3).map(x => ({t:x.t, texte:x.texte}));
   if(Array.isArray(j.bureau)) s.bureau = byT(j.bureau).slice(0,5).map(x => ({t:x.t, de:x.de, texte:x.texte}));
-  if(j.bilan) s.bilan = {titre:j.bilan.titre};
   if(Object.keys(s).length <= 1) s.cles = Object.keys(j).slice(0,20);
   return s;
 }
 async function syncApp(a){
-  const repo = a.repo;
-  let issuesErr = null;
-  const [info, verTxt, projetTxt, brain, commits, issues, etatTxt] = await Promise.all([
+  const repo = a.repo; let issuesErr = null;
+  const [info, verTxt, brain, commits, issues, etatTxt] = await Promise.all([
     gh(`/repos/${repo}`),
     ghRaw(repo, 'publication/version.json').catch(() => null),
-    ghRaw(repo, 'projet.json').catch(() => null),
     readBrain(repo),
-    gh(`/repos/${repo}/commits?per_page=10`).catch(() => []),
-    gh(`/repos/${repo}/issues?state=open&per_page=50`).catch(e => { issuesErr = e.message; return []; }),
+    gh(`/repos/${repo}/commits?per_page=40`).catch(() => []),
+    gh(`/repos/${repo}/issues?state=open&per_page=60`).catch(e => { issuesErr = e.message; return []; }),
     validRepo(a.donnees) && a.etat ? ghRaw(a.donnees, a.etat).catch(e => JSON.stringify({__err:e.message})) : null
   ]);
-  let version = null, projet = null, live = null, liveErr = null;
+  let version = null, live = null, liveErr = null;
   try{ if(verTxt){ const v = JSON.parse(verTxt); version = {version:v.version, date:v.date, notes:(v.notes||[]).slice(0,8)}; } }catch{}
-  try{ if(projetTxt) projet = JSON.parse(projetTxt); }catch{}
   try{ if(etatTxt){ const j = JSON.parse(etatTxt); if(j.__err) liveErr = j.__err; else live = resumeEtat(j); } }catch{ liveErr = 'données illisibles'; }
   return {
-    info:{pushed_at:info.pushed_at, html_url:info.html_url, homepage:info.homepage, description:info.description, private:info.private, default_branch:info.default_branch||'main', has_issues:info.has_issues},
-    version, projet, brain, live, liveErr, issuesErr,
+    info:{pushed_at:info.pushed_at, html_url:info.html_url, homepage:info.homepage, description:info.description, default_branch:info.default_branch||'main', has_issues:info.has_issues},
+    version, brain, live, liveErr, issuesErr,
     commits:(commits||[]).map(c => ({sha:c.sha, msg:c.commit.message.split('\n')[0], date:c.commit.author?.date, url:c.html_url})),
-    issues:issues.filter(i => !i.pull_request).map(mapIssue),
-    fetchedAt:Date.now(), error:null
+    issues:issues.filter(i => !i.pull_request).map(mapIssue), fetchedAt:Date.now(), error:null
   };
 }
-async function flushPending(){
-  const left = [];
-  for(const p of C.pending||[]){ try{ await postIssue(p.repo, p.title, p.body); }catch{ left.push(p); } }
-  C.pending = left;
+async function postIssue(repo, title, body){
+  let iss;
+  try{ iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body, labels:['idée']}}); }
+  catch(e){ if(e.status === 422) iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body}}); else throw e; }
+  const d = C.apps[repo] || (C.apps[repo] = {issues:[]});
+  (d.issues ||= []).unshift(mapIssue(iss)); saveC();
+  return iss;
 }
+async function createIssue(repo, title, body, silent=false){
+  try{ const iss = await postIssue(repo, title, body); if(!silent) toast('Tâche ajoutée à ' + appBy(repo).name, false, {label:'Voir', run:() => go('tasks')}); return iss; }
+  catch(e){
+    if(!navigator.onLine || e instanceof TypeError){ C.pending.push({repo, title, body, at:Date.now()}); saveC(); toast('Hors ligne : gardée, envoyée dès le retour du réseau'); }
+    else throw e;
+  }
+}
+async function flushPending(){ const left = []; for(const p of C.pending||[]){ try{ await postIssue(p.repo, p.title, p.body); }catch{ left.push(p); } } C.pending = left; }
 async function syncAll(quiet=false){
   const apps = tracked();
-  if(!apps.length){ toast('Ajoute au moins un dépôt dans les Réglages', true); go('settings'); return; }
-  if(!S.ghToken){ toast('Colle ton token GitHub dans les Réglages', true); go('settings'); return; }
+  if(!L.ghToken) return showOnboarding();
+  if(!apps.length){ if(!quiet) toast('Ajoute une app dans les Réglages', true); return; }
   if(busy.sync) return;
-  busy.sync = true; $('#syncBtn').classList.add('spin');
+  busy.sync = true; $('#syncBtn').classList.add('spin'); renderChrome();
   try{
+    Cloud.tick(true);
     if((C.pending||[]).length) await flushPending();
     const res = await Promise.allSettled(apps.map(syncApp));
     let errs = 0;
@@ -406,262 +552,447 @@ async function syncAll(quiet=false){
       else { errs++; C.apps[repo] = Object.assign({}, C.apps[repo]||{}, {error:r.reason.message}); }
     });
     C.lastSync = Date.now(); saveC();
-    if(!quiet || errs) toast(errs ? `Synchro terminée (${errs} erreur${errs>1?'s':''}, voir Apps)` : 'Synchro terminée ✓', !!errs);
-  }finally{
-    busy.sync = false; $('#syncBtn').classList.remove('spin'); render();
-  }
+    if(!quiet || errs) toast(errs ? `Actualisé, ${plural(errs, 'erreur')} (voir Apps)` : 'Tout est à jour', !!errs);
+    resumerCerveaux();
+  }finally{ busy.sync = false; $('#syncBtn').classList.remove('spin'); render(); }
 }
-async function postIssue(repo, title, body){
-  let iss;
-  try{ iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body, labels:['idée']}}); }
-  catch(e){ if(/422/.test(e.message)) iss = await gh(`/repos/${repo}/issues`, {method:'POST', body:{title, body}}); else throw e; }
-  const d = C.apps[repo] || (C.apps[repo] = {issues:[]});
-  (d.issues ||= []).unshift(mapIssue(iss)); saveC();
-  return iss;
-}
-async function createIssue(repo, title, body, silent=false){
-  try{ await postIssue(repo, title, body); if(!silent) toast('Tâche ajoutée à ' + appBy(repo).name + ' ✓'); }
-  catch(e){
-    if(!navigator.onLine || e instanceof TypeError){ (C.pending ||= []).push({repo, title, body, at:Date.now()}); saveC(); toast('Hors ligne : gardé, envoyé à la prochaine synchro'); }
-    else throw e;
-  }
-}
-/* Fichiers de code d'un dépôt (pour les doublons) */
 async function tree(repo, branch){
   const t = await gh(`/repos/${repo}/git/trees/${encodeURIComponent(branch||'HEAD')}?recursive=1`);
   return (t.tree||[]).filter(x => x.type === 'blob' && /\.(js|ts|html|css|json|sh|py|md)$/i.test(x.path) && !/node_modules|^lib\/|\.min\.|publication\//.test(x.path)).map(x => `${x.path} (${Math.round((x.size||0)/1024)} ko)`).slice(0, 150);
 }
-/* Commits récents avec leurs modifications (pour la revue) */
-async function recentDiffs(repo, n=5, maxChars=45000){
+async function recentDiffs(repo, n=5, maxChars=40000){
   const list = await gh(`/repos/${repo}/commits?per_page=${n}`);
-  let out = '', used = 0;
-  for(const c of list){
-    const d = await gh(`/repos/${repo}/commits/${c.sha}`);
+  const details = await Promise.all(list.map(c => gh(`/repos/${repo}/commits/${c.sha}`).catch(() => ({files:[]}))));
+  let out = '';
+  list.forEach((c, i) => {
     let block = `\n### Commit ${c.sha.slice(0,7)} — ${c.commit.message.split('\n')[0]} (${c.commit.author?.date})\n`;
-    for(const f of d.files||[]){
+    for(const f of details[i].files||[]){
       if(/\.(png|ico|icns|jpg|ttf|woff2?)$|^lib\/|publication\/|lightweight-charts|qrcode/i.test(f.filename)) continue;
-      block += `\n--- ${f.filename} (${f.status}, +${f.additions}/-${f.deletions})\n${clip(f.patch||'(pas de diff)', 6000)}\n`;
+      block += `\n--- ${f.filename} (${f.status}, +${f.additions}/-${f.deletions})\n${clip(f.patch||'(pas de diff)', 5000)}\n`;
     }
-    if(used + block.length > maxChars){ out += `\n[${list.length} commits demandés, la suite est coupée pour rester dans la limite]`; break; }
-    out += block; used += block.length;
-  }
+    if(out.length + block.length <= maxChars) out += block;
+  });
   return out;
 }
 
-/* ================= Gemini ================= */
+/* ================================================================
+   Cloud (comme Révisions) : dépôt privé, un fichier par appareil.
+   sync/<appareil>.json = {keys:{clé:{t,v}}} ; à la lecture, la donnée la plus récente gagne.
+   Vérification toutes les 5 s (requête conditionnelle, gratuite tant que rien ne change).
+================================================================ */
+const PLATEFORME = (() => {
+  const u = navigator.userAgent;
+  if(/iPhone/.test(u)) return 'iPhone'; if(/iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1)) return 'iPad';
+  if(/Android/.test(u)) return 'Android'; if(/Windows/.test(u)) return /Electron/.test(u) ? 'PC (app Atelier)' : 'PC Windows';
+  if(/Macintosh/.test(u)) return 'Mac'; return 'Appareil';
+})();
+const Cloud = {
+  st:{ok:null, err:null, last:0, pushed:0, busy:false, repoOk:false},
+  etag:null, head:null, timer:null, pushTimer:null, q:Promise.resolve(),
+  shas:LS.get('atelier.cloud.shas', {}), joined:LS.get('atelier.cloud.joined', false),
+  get repo(){ return L.cloud || 'oiriaure/atelier-donnees'; },
+  get path(){ return `sync/${L.device}.json`; },
+  on(){ return !!(L.ghToken && validRepo(this.repo)); },
+  enqueue(job){ return (this.q = this.q.then(job, job)); },
+  setJoined(){ this.joined = true; LS.set('atelier.cloud.joined', true); },
+  snapshot(){
+    const keys = Object.assign({}, SH);
+    if(keys.chat) keys.chat = {t:keys.chat.t, v:(keys.chat.v||[]).slice(-40)};
+    return JSON.stringify({v:1, device:L.device, platform:PLATEFORME, nom:L.nomAppareil || PLATEFORME, updated:Date.now(), version:VERSION, keys});
+  },
+  async push(){
+    if(!this.on() || !this.joined) return;
+    const body = {message:`Atelier depuis ${PLATEFORME}`, content:utf8b64(this.snapshot())};
+    if(this.shas[this.path]) body.sha = this.shas[this.path];
+    const url = `${API}/repos/${this.repo}/contents/${this.path}`;
+    let r = await fetch(url, {method:'PUT', headers:ghHeaders({'Content-Type':'application/json'}), body:JSON.stringify(body)});
+    for(let i = 0; i < 2 && (r.status === 409 || r.status === 422); i++){
+      await sleep(500 + Math.random()*800);
+      const g = await fetch(url + `?t=${Date.now()}`, {headers:ghHeaders(), cache:'no-store'});
+      if(g.ok) body.sha = (await g.json()).sha; else delete body.sha;
+      r = await fetch(url, {method:'PUT', headers:ghHeaders({'Content-Type':'application/json'}), body:JSON.stringify(body)});
+    }
+    if(r.status === 403 || r.status === 404) throw new Error('Le token ne peut pas écrire dans le cloud (' + this.repo + ')');
+    if(!r.ok) throw new Error('envoi au cloud ' + r.status);
+    this.shas[this.path] = (await r.json()).content.sha; LS.set('atelier.cloud.shas', this.shas);
+    this.st.pushed = Date.now();
+  },
+  async pull(){
+    if(!this.on()) return false;
+    const h = ghHeaders(); if(this.etag) h['If-None-Match'] = this.etag;
+    const r = await fetch(`${API}/repos/${this.repo}/git/ref/heads/main`, {headers:h, cache:'no-store'});
+    if(r.status === 304) return false;
+    if(r.status === 409){ this.st.repoOk = true; if(!this.joined){ this.setJoined(); this.schedule(true); } return false; }   // dépôt encore vide
+    if(r.status === 404){
+      const rep = await fetch(`${API}/repos/${this.repo}`, {headers:ghHeaders(), cache:'no-store'});
+      if(rep.ok){ this.st.repoOk = true; if(!this.joined){ this.setJoined(); this.schedule(true); } return false; }
+      throw new Error('Le token n\'a pas accès au cloud (' + this.repo + ')');
+    }
+    if(!r.ok) throw new Error('lecture du cloud ' + r.status);
+    this.st.repoOk = true;
+    this.etag = r.headers.get('ETag');
+    const sha = (await r.json()).object.sha;
+    if(sha === this.head) return false;
+    const t = await fetch(`${API}/repos/${this.repo}/git/trees/${sha}?recursive=1`, {headers:ghHeaders(), cache:'no-store'});
+    if(!t.ok) throw new Error('lecture du cloud ' + t.status);
+    let changed = false;
+    for(const f of (await t.json()).tree || []){
+      const m = f.type === 'blob' && f.path.match(/^sync\/([A-Za-z0-9_-]+)\.json$/); if(!m) continue;
+      const dev = m[1];
+      if(dev === L.device){ this.shas[f.path] = f.sha; continue; }
+      if(C.remote[dev]?.sha === f.sha) continue;
+      const g = await fetch(`${API}/repos/${this.repo}/git/blobs/${f.sha}`, {headers:ghHeaders(), cache:'force-cache'});
+      if(!g.ok) continue;
+      let data; try{ data = JSON.parse(b64utf8((await g.json()).content)); }catch{ continue; }
+      C.remote[dev] = {sha:f.sha, platform:data.platform, nom:data.nom, updated:data.updated, version:data.version};
+      for(const [k, e] of Object.entries(data.keys||{})){ if(e && e.t > (SH[k]?.t || 0)){ SH[k] = e; changed = true; } }
+    }
+    this.head = sha;
+    LS.set('atelier.cloud.shas', this.shas); saveC();
+    if(!this.joined){ this.setJoined(); this.schedule(true); }
+    if(changed){ saveSH(); await adopterCles(); }
+    return changed;
+  },
+  schedule(soon=false){
+    if(!this.on()) return;
+    clearTimeout(this.pushTimer);
+    this.pushTimer = setTimeout(() => this.enqueue(async () => { try{ await this.push(); this.st.ok = true; this.st.err = null; }catch(e){ this.st.ok = false; this.st.err = e.message; } renderChrome(); }), soon ? 200 : 1500);
+  },
+  tick(force=false){
+    if(!this.on() || this.st.busy) return;
+    this.st.busy = true;
+    return this.enqueue(async () => {
+      try{
+        if(force){ this.etag = null; this.head = null; }
+        const changed = await this.pull();
+        this.st.ok = true; this.st.err = null; this.st.last = Date.now();
+        if(changed){ render(); if(!force) toast('Mis à jour depuis un autre appareil'); }
+      }catch(e){ this.st.ok = false; this.st.err = !navigator.onLine ? 'hors ligne' : e.message; }
+      finally{ this.st.busy = false; renderChrome(); }
+    });
+  },
+  start(){
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.tick(), document.hidden ? 20000 : 5000);
+    this.tick();
+  }
+};
+document.addEventListener('visibilitychange', () => { if(L.ghToken){ Cloud.start(); } });
+async function cleAES(){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(L.ghToken), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt:new TextEncoder().encode('atelier-cles-v1'), iterations:120000, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function partagerCle(){
+  if(!L.ghToken || !L.geminiKey || !window.crypto?.subtle) return;
+  try{
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, await cleAES(), new TextEncoder().encode(L.geminiKey)));
+    const all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
+    put('cles', {g:btoa(String.fromCharCode(...all))});
+  }catch(e){ console.warn(e); }
+}
+async function adopterCles(){
+  const c = get('cles', null); if(!c?.g || !L.ghToken || !window.crypto?.subtle) return;
+  try{
+    const all = Uint8Array.from(atob(c.g), x => x.charCodeAt(0));
+    const k = new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:all.slice(0,12)}, await cleAES(), all.slice(12)));
+    if(k && k !== L.geminiKey){ L.geminiKey = k; saveL(); }
+  }catch{}
+}
+
+/* ================================================================
+   Gemini : sans longue réflexion, réponses en flux, modèles de secours
+================================================================ */
 const GEM = 'https://generativelanguage.googleapis.com/v1beta';
-const today = () => new Date().toISOString().slice(0,10);
 function gemErr(status, d){
   const m = d?.error?.message || '';
   if(status === 429) return 'Quota Gemini gratuit atteint, réessaie dans une minute';
   if(status === 400 && /API key/i.test(m)) return 'Clé Gemini refusée : vérifie-la dans les Réglages';
-  if(status === 403) return 'Clé Gemini refusée (403) : ' + m;
+  if(status === 403) return 'Clé Gemini refusée : ' + m;
   return `Gemini ${status} ${m}`.trim();
 }
 async function listModels(force=false){
   if(!force && C.models?.length && Date.now() - (C.modelsAt||0) < 864e5) return C.models;
-  const r = await fetch(GEM + '/models?pageSize=200', {headers:{'x-goog-api-key':S.geminiKey}});
+  const r = await fetch(GEM + '/models?pageSize=200', {headers:{'x-goog-api-key':L.geminiKey}});
   const d = await r.json().catch(() => ({}));
   if(!r.ok) throw new Error(gemErr(r.status, d));
   C.models = (d.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes('generateContent')).map(m => m.name.replace(/^models\//,''));
   C.modelsAt = Date.now(); saveC();
   return C.models;
 }
-/* Le plus récent « flash » stable d'abord, puis les « flash-lite », puis les préversions. Jamais « pro » (rarement gratuit). */
-function rankModels(list){
+function classer(list){
   const P = n => { const m = n.match(/^gemini-(\d+(?:\.\d+)?)-(flash|pro)(-lite)?(.*)$/); if(!m || m[2] === 'pro') return null;
     if(/tts|image|live|audio|embed|thinking|exp|computer|native/i.test(m[4])) return null;
     return {n, v:parseFloat(m[1]), lite:!!m[3], pre:/preview/.test(m[4]), alias:/latest/.test(m[4])}; };
-  return list.map(P).filter(Boolean).sort((a, b) => (a.pre - b.pre) || (a.lite - b.lite) || (b.v - a.v) || (a.alias - b.alias) || a.n.length - b.n.length).map(x => x.n).slice(0, 5);
+  const all = (list||[]).map(P).filter(Boolean).sort((a, b) => (a.pre - b.pre) || (b.v - a.v) || (a.alias - b.alias) || a.n.length - b.n.length);
+  return {flash:all.filter(x => !x.lite).map(x => x.n).slice(0,3), lite:all.filter(x => x.lite).map(x => x.n).slice(0,3)};
 }
-async function modelChain(){
-  if(S.model && S.model !== 'auto') return [S.model.replace(/^models\//,'')];
-  let list = [];
-  try{ list = rankModels(await listModels()); }catch{}
-  if(!list.length) list = ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+async function modelChain(tier){
+  const reg = REG();
+  if(reg.model && reg.model !== 'auto') return [reg.model.replace(/^models\//,'')];
+  let c = {flash:[], lite:[]};
+  try{ c = classer(await listModels()); }catch{}
+  if(!c.flash.length && !c.lite.length) c = {flash:['gemini-2.5-flash'], lite:['gemini-2.5-flash-lite']};
+  const rapide = reg.vitesse === 'rapide' || (tier === 'rapide' && reg.vitesse !== 'approfondi');
+  const list = rapide ? [...c.lite, ...c.flash] : [...c.flash, ...c.lite];
   const ok = list.filter(m => C.blocked?.[m] !== today());
   return ok.length ? ok : list;
 }
-async function gemini(input, {json=false, system=null, temperature=0.5}={}){
-  if(!S.geminiKey) throw new Error('Clé Gemini manquante (onglet Réglages)');
+function reflexion(m){
+  if(C.noThink?.[m]) return null;
+  const deep = REG().vitesse === 'approfondi';
+  if(/^gemini-2\.5-flash-lite/.test(m)) return deep ? {thinkingBudget:512} : null;
+  if(/^gemini-2\.5-flash/.test(m)) return {thinkingBudget:deep ? 2048 : 0};
+  if(/^gemini-([3-9]|\d\d)/.test(m)) return {thinkingLevel:deep ? 'low' : 'minimal'};
+  return null;
+}
+async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null}={}){
+  if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input;
-  const body = {contents, generationConfig:{temperature}};
-  if(system) body.systemInstruction = {parts:[{text:system}]};
-  if(json) body.generationConfig.responseMimeType = 'application/json';
   let last = null;
-  for(const m of await modelChain()){
-    let r, d;
-    try{
-      r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:generateContent`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':S.geminiKey}, body:JSON.stringify(body)});
-      d = await r.json().catch(() => ({}));
-    }catch(e){ throw new Error('Pas de réseau pour joindre Gemini'); }
-    if(r.ok){
-      const text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('').trim();
-      if(!text){ last = new Error('Réponse vide de Gemini (' + m + ')'); continue; }
+  for(const m of await modelChain(tier)){
+    for(let essai = 0; essai < 2; essai++){
+      const body = {contents, generationConfig:{temperature}};
+      const th = reflexion(m); if(th) body.generationConfig.thinkingConfig = th;
+      if(system) body.systemInstruction = {parts:[{text:system}]};
+      if(json) body.generationConfig.responseMimeType = 'application/json';
+      const enFlux = !!onText && !json;
+      let r;
+      try{
+        r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body)});
+      }catch{ throw new Error('Pas de réseau pour joindre Gemini'); }
+      if(!r.ok){
+        const d = await r.json().catch(() => ({}));
+        last = new Error(gemErr(r.status, d));
+        if(r.status === 400 && th && /think/i.test(d?.error?.message||'')){ C.noThink[m] = true; saveC(); continue; }
+        if(r.status === 429){ if(/day|PerDay|daily/i.test(JSON.stringify(d))){ C.blocked[m] = today(); saveC(); } break; }
+        if([404, 500, 503].includes(r.status)) break;
+        throw last;
+      }
+      let text = '';
+      if(enFlux){
+        const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
+        for(;;){
+          const {done, value} = await reader.read(); if(done) break;
+          buf += dec.decode(value, {stream:true});
+          let i;
+          while((i = buf.indexOf('\n')) >= 0){
+            const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+            if(!line.startsWith('data:')) continue;
+            try{ const d = JSON.parse(line.slice(5)); const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{}
+          }
+        }
+      } else {
+        const d = await r.json().catch(() => ({}));
+        text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('');
+      }
+      text = text.trim();
+      if(!text){ last = new Error('Réponse vide de Gemini'); break; }
       C.lastModel = m; saveC();
       return json ? parseJSON(text) : text;
     }
-    last = new Error(gemErr(r.status, d));
-    if(r.status === 429){ if(/day|PerDay|daily/i.test(JSON.stringify(d))){ C.blocked[m] = today(); saveC(); } continue; }
-    if([404, 500, 503].includes(r.status)) continue;
-    throw last;
   }
   throw last || new Error('Aucun modèle Gemini disponible');
 }
+function flux(id){ let raf = 0, txt = ''; return t => { txt = t; if(raf) return; raf = requestAnimationFrame(() => { raf = 0; const el = document.getElementById(id); if(el) el.innerHTML = md(txt); }); }; }
 
-/* ================= Contexte donné à Gemini ================= */
-const ROLE_CHEF = `Tu es le chef de projet et directeur technique de Clément, un étudiant qui développe seul plusieurs apps (Electron pour Mac/Windows, avec une version téléphone sur GitHub Pages, mises à jour publiées sur GitHub). Le code est écrit par une IA (Claude Code) à qui Clément donne des consignes : ton rôle est de l'aider à décider quoi faire, à comprendre son code et à rédiger des consignes claires pour l'IA qui code.
-Tu réponds en français, de façon directe et concrète, sans blabla. Tu t'appuies sur les faits fournis (cerveau des apps, commits, tâches) et tu dis quand une information te manque au lieu d'inventer.`;
-function ficheApp(a, brainChars=2500){
-  const d = C.apps[a.repo] || {}, v = d.version || {}, p = d.projet || {};
-  const l = d.live;
-  return `## ${a.name} (${a.repo})
-Version publiée : ${v.version || p.version || '?'}${v.date ? ' du ' + new Date(v.date).toLocaleDateString('fr-FR') : ''} · Dernier commit : ${d.info?.pushed_at || '?'}
-Notes de la dernière version : ${(v.notes||[]).join(' | ') || '—'}
-Derniers commits : ${(d.commits||[]).slice(0,5).map(c => c.msg).join(' | ') || '—'}
-Tâches ouvertes : ${(d.issues||[]).slice(0,15).map(i => '#'+i.number+' '+i.title).join(' | ') || 'aucune'}
-${l ? `État en direct (envoyé par l'app ${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => x.texte).join(' | ') || ''}\n` : ''}Cerveau (${d.brain?.path || 'absent'}) :
-${clip(d.brain?.text || '(pas de cerveau)', brainChars)}`;
+/* ================================================================
+   Contexte du chef (résumés de cerveau : prompts courts = réponses rapides)
+================================================================ */
+const ROLE_CHEF = `Tu es le chef de projet et directeur technique de Clément, étudiant qui développe seul plusieurs apps (Electron pour Mac/Windows avec une version téléphone sur GitHub Pages, mises à jour publiées sur GitHub). Le code est écrit par une IA (Claude Code) à qui Clément donne des consignes : tu l'aides à décider quoi faire, à comprendre son code et à rédiger des consignes claires.
+Réponds en français, directement, de façon concrète et courte. Appuie-toi sur les faits fournis ; dis quand une information manque au lieu d'inventer.`;
+let resumeEnCours = false;
+async function resumerCerveaux(){
+  if(resumeEnCours || !L.geminiKey) return;
+  resumeEnCours = true;
+  try{
+    for(const a of tracked()){
+      const b = C.apps[a.repo]?.brain; if(!b) continue;
+      const s = get('resumes', {})[a.repo];
+      if(s && s.len === b.text.length) continue;
+      const text = await gemini(`Résume ce fichier de notes de l'app ${a.name} en 12 lignes maximum, en puces courtes : à quoi sert l'app, comment elle est construite (fichiers clés), comment elle est publiée, règles importantes, état actuel.\n\n${clip(b.text, 60000)}`, {tier:'rapide', temperature:0.2});
+      const all = Object.assign({}, get('resumes', {})); all[a.repo] = {len:b.text.length, text, t:Date.now()}; put('resumes', all);
+    }
+  }catch(e){ console.warn('résumé', e.message); }
+  finally{ resumeEnCours = false; }
 }
-const contexteGlobal = (n=2500) => tracked().map(a => ficheApp(a, n)).join('\n\n');
+function ficheApp(a, profond=false){
+  const d = C.apps[a.repo] || {}, v = d.version || {}, l = d.live;
+  const res = get('resumes', {})[a.repo]?.text;
+  const cerveau = profond ? clip(d.brain?.text || '(pas de cerveau)', 30000) : (res || clip(d.brain?.text || '(pas de cerveau)', 2500));
+  return `## ${a.name} (${a.repo})
+Version publiée : ${v.version || '?'}${v.date ? ' du ' + new Date(v.date).toLocaleDateString('fr-FR') : ''} · Dernier commit : ${d.info?.pushed_at || '?'}
+Notes de version : ${(v.notes||[]).join(' | ') || '—'}
+Derniers commits : ${(d.commits||[]).slice(0,5).map(c => c.msg).join(' | ') || '—'}
+Tâches ouvertes : ${(d.issues||[]).slice(0,12).map(i => '#'+i.number+' '+i.title).join(' | ') || 'aucune'}
+${l ? `En direct (${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => x.texte).join(' | ') || ''}\n` : ''}Cerveau${profond ? '' : ' (résumé)'} :
+${cerveau}`;
+}
+const contexteGlobal = () => tracked().map(a => ficheApp(a)).join('\n\n');
 
-/* ================= Vues ================= */
+/* ================================================================
+   Calculs d'affichage
+================================================================ */
 function allCommits(){
-  return tracked().flatMap(a => (C.apps[a.repo]?.commits||[]).map(c => Object.assign({app:a.name, emoji:a.emoji}, c)))
+  return tracked().flatMap(a => (C.apps[a.repo]?.commits||[]).map(c => Object.assign({app:a.name, emoji:a.emoji, c:a.couleur, repo:a.repo}, c)))
     .sort((x, y) => new Date(y.date) - new Date(x.date));
 }
 function health(d){
-  if(!d || !d.info) return {cls:'grey', label:d?.error ? 'erreur' : 'pas encore synchro'};
+  if(!d || !d.info) return {cls:'grey', label:d?.error ? 'erreur' : 'en attente'};
   const days = (Date.now() - new Date(d.info.pushed_at)) / 864e5;
   if(days < 7) return {cls:'green', label:'actif'};
   if(days < 30) return {cls:'orange', label:'ralenti'};
   return {cls:'red', label:'à l\'arrêt'};
 }
-const empty = (t, s, goTo) => `<div class="empty"><h2>${esc(t)}</h2><p class="muted">${esc(s)}</p>${goTo?`<button class="btn primary" data-go="${goTo}">Ouvrir les Réglages</button>`:''}</div>`;
-const spin = t => `<span class="spinner"></span>${esc(t)}`;
-function liveCard(a, compact=false, folded=false){
+function jours14(repo){
+  const out = Array(14).fill(0), t0 = new Date(); t0.setHours(0,0,0,0);
+  for(const c of C.apps[repo]?.commits||[]){ const j = new Date(c.date); j.setHours(0,0,0,0); const d = Math.round((t0 - j) / 864e5); if(d >= 0 && d < 14) out[13 - d]++; }
+  return out;
+}
+const spark = repo => { const j = jours14(repo), mx = Math.max(1, ...j); return `<div class="spark" title="Commits des 14 derniers jours">${j.map(n => `<i class="${n ? '' : 'z'}" style="height:${n ? 6 + n/mx*20 : 3}px"></i>`).join('')}</div>`; };
+function serie(){
+  const jours = new Set(allCommits().map(c => new Date(c.date).toDateString()));
+  let n = 0; const d = new Date();
+  if(!jours.has(d.toDateString())) d.setDate(d.getDate() - 1);
+  while(jours.has(d.toDateString())){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+const nbTaches = () => tracked().reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0);
+const avatar = (a, cls='') => `<span class="av ${cls}" style="--c:${esc(a.couleur||'#6366f1')}">${esc(a.emoji)}</span>`;
+function salut(){ const h = new Date().getHours(), p = REG().prenom; return (h < 5 ? 'Bonne nuit' : h < 18 ? 'Bonjour' : 'Bonsoir') + (p ? ' ' + p : ''); }
+function cloudEtat(){
+  if(!Cloud.on()) return {ic:'cloudx', txt:'Cloud non connecté', cls:'muted'};
+  if(Cloud.st.err) return {ic:'cloudx', txt:Cloud.st.err === 'hors ligne' ? 'Hors ligne' : 'Cloud : erreur', cls:'err'};
+  if(Cloud.st.ok == null) return {ic:'cloud', txt:'Connexion au cloud…', cls:''};
+  const n = Object.values(C.remote).filter(r => Date.now() - (r.updated||0) < 30*864e5).length + 1;
+  return {ic:'cloud', txt:`Synchronisé · ${plural(n, 'appareil')}`, cls:'ok'};
+}
+
+/* ================================================================
+   Vues
+================================================================ */
+const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
+const empty = (big, t, s, btn) => `<div class="empty"><div class="big">${big}</div><h3>${esc(t)}</h3><p>${esc(s)}</p>${btn||''}</div>`;
+
+function liveCard(a, folded=true){
   const d = C.apps[a.repo]; if(!d) return '';
-  if(d.liveErr) return `<div class="err sm">Données en direct : ${esc(d.liveErr)}</div>`;
+  if(d.liveErr) return `<div class="err">Données en direct de ${esc(a.name)} : ${esc(d.liveErr)}</div>`;
   const l = d.live; if(!l) return '';
   const old = l.t && Date.now() - l.t > 3*3600e3;
-  const head = `<div class="sm ${old?'err':'muted'}"><span class="dot ${old?'orange':'green'}"></span>${a.emoji} ${esc(a.name)} · envoyé ${esc(ago(l.t))}${old?' (l\'ordinateur est peut-être éteint)':''}</div>`;
-  if(compact) return `${head}${l.climat ? `<div class="t clamp2">${esc(l.climat.titre)}</div>` : ''}`;
-  if(folded) return `${head}
-    ${l.climat ? `<div class="t" style="margin-top:6px">${esc(l.climat.titre)}</div>` : ''}
-    ${l.compteurs ? `<div class="kv">${l.compteurs.opp!=null?`<span class="pill">${l.compteurs.opp} opportunité(s)</span>`:''}${l.compteurs.surv!=null?`<span class="pill">${l.compteurs.surv} à surveiller</span>`:''}${l.compteurs.pos!=null?`<span class="pill">${l.compteurs.pos} position(s)</span>`:''}</div>` : ''}
+  return `<div class="xs ${old ? 'err' : 'muted'}" style="display:flex;gap:6px;align-items:center"><span class="dot ${old ? 'orange' : 'green'}"></span>${esc(a.name)} en direct · ${esc(ago(l.t))}${old ? ' · l\'ordinateur est peut-être éteint' : ''}</div>
+    ${l.climat ? `<div class="t">${esc(l.climat.titre)}</div>` : ''}
+    ${l.compteurs ? `<div class="kv">${l.compteurs.opp != null ? `<span class="pill">${l.compteurs.opp} opportunité(s)</span>` : ''}${l.compteurs.surv != null ? `<span class="pill">${l.compteurs.surv} à surveiller</span>` : ''}${l.compteurs.pos != null ? `<span class="pill">${l.compteurs.pos} position(s)</span>` : ''}${l.resultats?.totalTxt ? `<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>` : ''}</div>` : ''}
     ${(l.alertes||[]).length ? `<div class="sm clamp2">⚠︎ ${esc(l.alertes[0].texte)}</div>` : ''}
-    <details><summary>Détails</summary>
+    <details ${folded ? '' : 'open'}><summary>Détails</summary>
       ${l.climat ? `<p class="sm muted">${esc(l.climat.resume)}</p>` : ''}
       ${(l.alertes||[]).slice(1).map(x => `<div class="sm">⚠︎ ${esc(x.texte)}</div>`).join('')}
       ${(l.bureau||[]).map(x => `<div class="sm" style="margin-top:6px"><b>${esc(x.de||'')}</b> · ${esc(x.texte)} <span class="muted">${esc(ago(x.t))}</span></div>`).join('')}
+      ${l.cles ? `<div class="xs muted">Champs : ${esc(l.cles.join(', '))}</div>` : ''}
     </details>`;
-  return `${head}
-    ${l.climat ? `<div class="t" style="margin-top:6px">${esc(l.climat.titre)}</div><div class="sm muted">${esc(l.climat.resume)}</div>` : ''}
-    ${l.compteurs ? `<div class="kv">${l.compteurs.opp!=null?`<span class="pill">${l.compteurs.opp} opportunité(s)</span>`:''}${l.compteurs.surv!=null?`<span class="pill">${l.compteurs.surv} à surveiller</span>`:''}${l.compteurs.pos!=null?`<span class="pill">${l.compteurs.pos} position(s)</span>`:''}${l.resultats?.totalTxt?`<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>`:''}</div>` : ''}
-    ${(l.alertes||[]).map(x => `<div class="sm">⚠︎ ${esc(x.texte)}</div>`).join('')}
-    ${(l.bureau||[]).length ? `<details><summary>Derniers mots de l'équipe</summary>${l.bureau.map(x => `<div class="sm" style="margin-top:6px"><b>${esc(x.de||'')}</b> · ${esc(x.texte)} <span class="muted">${esc(ago(x.t))}</span></div>`).join('')}</details>` : ''}
-    ${l.cles ? `<div class="sm muted">Champs : ${esc(l.cles.join(', '))}</div>` : ''}`;
 }
 
 function vToday(){
   const apps = tracked();
-  if(!apps.length || !S.ghToken) return empty('Bienvenue dans Atelier', 'Commence par les Réglages : ton token GitHub et ta clé Gemini.', 'settings');
-  const open = apps.reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0);
-  const week = allCommits().filter(c => Date.now() - new Date(c.date) < 7*864e5).length;
-  const t = C.today, w = C.weekly?.[0];
+  if(!apps.length) return empty('🧩', 'Aucune app suivie', 'Ajoute tes apps dans les Réglages.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
+  const t = get('today', null), w = (get('weekly', [])||[])[0];
   const lives = apps.filter(a => C.apps[a.repo]?.live || C.apps[a.repo]?.liveErr);
+  const week = allCommits().filter(c => Date.now() - new Date(c.date) < 7*864e5).length;
+  const s = serie(), first = !C.lastSync && busy.sync;
   const lundi = new Date().getDay() === 1 && (!w || Date.now() - w.at > 5*864e5);
+  const actions = t?.data?.actions || [];
   return `
-  <section class="stats">
-    <div><b>${apps.length}</b><span>apps</span></div>
-    <div><b>${open}</b><span>tâches ouvertes</span></div>
-    <div><b>${week}</b><span>commits · 7 j</span></div>
+  <div class="hello"><h2>${esc(salut())} 👋</h2><p>${esc(dateFR(Date.now()).replace(/^./, c => c.toUpperCase()))}</p></div>
+  <section class="kpis">
+    <div class="kpi"><b>${apps.length}</b><span>apps suivies</span></div>
+    <div class="kpi"><b>${nbTaches()}</b><span>tâches ouvertes</span></div>
+    <div class="kpi"><b>${week}</b><span>commits cette semaine</span></div>
+    <div class="kpi"><b>${s ? '🔥 ' + s : '0'}</b><span>${s > 1 ? 'jours d\'affilée' : 'jour d\'affilée'}</span></div>
   </section>
-  <section class="card hero">
-    <h2>Que faire maintenant ?</h2>
-    ${t ? '' : '<p class="muted" style="margin:0 0 10px">Le chef lit l\'état de toutes tes apps et choisit les 3 actions les plus utiles.</p>'}
-    <button class="btn ${t?'sm':'primary'}" style="${t?'background:rgba(255,255,255,.2);color:#fff;margin-top:8px':''}" data-action="advise" ${busy.advise?'disabled':''}>${busy.advise?spin('Analyse en cours…'):(t?'↻ Refaire l\'analyse':'✨ Analyser mes projets')}</button>
-    ${t ? `<p class="muted sm" style="margin:12px 0 0">Analyse ${ago(t.at)}</p>${t.data.resume?`<p style="margin:4px 0 0">${esc(t.data.resume)}</p>`:''}
-      ${(t.data.actions||[]).map((a, i) => `<div class="action">
-        <h4>${esc(a.app)} · ${esc(a.titre)}</h4>
-        <div class="muted sm">${esc(a.pourquoi)}${a.duree_min?` · ~${esc(a.duree_min)} min`:''}</div>
-        <div class="btns">
-          <button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">🧠 Consigne</button>
-          <button class="btn sm" data-action="adviceIssue" data-i="${i}">＋ Tâche</button>
-        </div></div>`).join('')}` : ''}
-  </section>
-  ${lives.length ? '<h3 class="sec">En direct</h3>' : ''}${lives.map(a => `<section class="card live">${liveCard(a, false, true)}</section>`).join('')}
-  <section class="card">
-    <h2>Bilan de la semaine</h2>
-    ${w ? `<p class="muted sm" style="margin:0">Fait ${ago(w.at)}</p><details ${Date.now()-w.at<36e5?'open':''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne, et le cap de la semaine prochaine.</p>`}
-    ${lundi && !busy.weekly ? '<p class="sm ok">On est lundi : c\'est le bon moment pour faire le bilan.</p>' : ''}
-    <div class="btns"><button class="btn ${w?'':'primary'}" data-action="weekly" ${busy.weekly?'disabled':''}>${busy.weekly?spin('Rédaction…'):(w?'Refaire le bilan':'📊 Faire le bilan')}</button>
-    ${w ? '<button class="btn sm" data-action="tasksFrom" data-src="weekly">＋ En tirer des tâches</button>' : ''}</div>
-  </section>
-  ${(C.pending||[]).length ? `<section class="card"><b>${C.pending.length} idée(s) en attente d'envoi</b><div class="muted sm">Elles partiront sur GitHub à la prochaine synchro en ligne.</div></section>` : ''}
-  <h3 class="sec">Activité récente</h3>
-  <div class="list">${allCommits().slice(0,5).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <span class="em">${esc(c.emoji)}</span><span class="grow"><b>${esc(c.app)}</b> · ${esc(c.msg)}</span><span class="muted sm">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted">Aucune activité pour l\'instant. Lance une synchro avec ⟳.</p>'}</div>`;
+  <div class="cols">
+    <div>
+      <section class="card hero">
+        <div class="hd" style="position:relative;z-index:1"><h2>${ic('spark')} Que faire maintenant ?</h2>${t ? `<span class="xs" style="opacity:.8">${esc(ago(t.at))}</span>` : ''}</div>
+        ${t?.data?.resume ? `<p style="position:relative;z-index:1;margin:0 0 4px">${esc(t.data.resume)}</p>` : `<p style="position:relative;z-index:1;margin:0">Le chef lit l'état de toutes tes apps et choisit les 3 actions les plus utiles, avec la consigne prête pour Claude.</p>`}
+        ${actions.map((a, i) => `<div class="act"><span class="n">${i+1}</span><div style="flex:1">
+          <h4>${esc(a.titre)}</h4><div class="meta">${esc(a.app)} · ${esc(a.pourquoi)}${a.duree_min ? ` · ~${esc(a.duree_min)} min` : ''}</div>
+          <div class="btns"><button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">${ic('copy','s')} Consigne</button><button class="btn sm" data-action="adviceIssue" data-i="${i}">${ic('plus','s')} Tâche</button></div></div></div>`).join('')}
+        <div class="btns" style="position:relative;z-index:1"><button class="btn ${t ? 'sm' : 'primary'}" data-action="advise" ${busy.advise ? 'disabled' : ''}>${busy.advise ? spin('Le chef analyse…') : (t ? ic('sync','s') + ' Refaire' : ic('spark','s') + ' Analyser mes projets')}</button></div>
+      </section>
+      <section class="card">
+        <div class="hd"><h2>${ic('chart')} Bilan de la semaine</h2>${w ? `<span class="xs muted">${esc(ago(w.at))}</span>` : ''}</div>
+        ${busy.weekly ? `<div id="weeklyLive">${spin('Rédaction…')}</div>` : w ? `<details ${Date.now() - w.at < 36e5 ? 'open' : ''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne et le cap de la semaine prochaine.</p>`}
+        ${lundi && !busy.weekly ? '<p class="sm ok">C\'est lundi : le bon moment pour faire le bilan.</p>' : ''}
+        <div class="btns"><button class="btn sm ${w ? '' : 'primary'}" data-action="weekly" ${busy.weekly ? 'disabled' : ''}>${w ? 'Refaire le bilan' : 'Faire le bilan'}</button>${w && !busy.weekly ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="weekly">${ic('plus','s')} En tirer des tâches</button>` : ''}</div>
+      </section>
+    </div>
+    <div>
+      ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
+      ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi automatique dès le retour du réseau.</div></section>` : ''}
+      <section class="card">
+        <div class="hd"><h2>${ic('git')} Activité récente</h2></div>
+        ${first ? '<div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel"></div>' : `<div class="feed">${allCommits().slice(0,6).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener">${avatar({emoji:c.emoji, couleur:c.c}, 's')}<span class="tx"><b>${esc(c.app)}</b> <span class="sm">${esc(c.msg)}</span></span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">Aucune activité pour l\'instant.</p>'}</div>`}
+      </section>
+    </div>
+  </div>`;
 }
 
 function vApps(){
   const apps = tracked();
-  if(!apps.length) return empty('Aucune app suivie', 'Renseigne le dépôt GitHub de chaque app dans les Réglages.', 'settings');
-  return `<div class="alist">${apps.map(a => {
-    const d = C.apps[a.repo], h = health(d), v = d?.version || {}, p = d?.projet || {};
-    const n = (d?.issues||[]).length;
-    return `<div class="arow" data-action="openApp" data-repo="${esc(a.repo)}">
-      <span class="em">${esc(a.emoji)}</span>
-      <div class="mid">
-        <div class="nm">${esc(a.name)} <small>${esc(v.version ? 'v' + v.version : (p.version ? 'v' + p.version : ''))}</small></div>
-        <div class="sm"><span class="dot ${h.cls}"></span>${esc(h.label)}${d?.info ? ' · ' + esc(ago(d.info.pushed_at)) : ''} · ${n} tâche${n>1?'s':''}${d && d.info && !d.brain ? ' · <span class="err">sans cerveau</span>' : ''}</div>
-        ${d?.live?.climat ? `<div class="sm muted clamp2" style="margin-top:2px">${esc(d.live.climat.titre)}</div>` : `<div class="sm muted clamp2" style="margin-top:2px">${esc((v.notes||[])[0] || p.description || '')}</div>`}
-        ${d?.error ? `<div class="err clamp2">${esc(d.error)}</div>` : ''}
-      </div>
-      <span class="chev">›</span>
+  if(!apps.length) return empty('🧩', 'Aucune app suivie', 'Ajoute le dépôt GitHub de chaque app dans les Réglages.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
+  const dups = get('dups', null);
+  return `<div class="agrid">${apps.map(a => {
+    const d = C.apps[a.repo], h = health(d), v = d?.version || {}, n = (d?.issues||[]).length;
+    if(!d && busy.sync) return `<div class="card acard" style="--c:${esc(a.couleur)}"><div class="top">${avatar(a)}<div style="flex:1"><div class="nm">${esc(a.name)}</div><div class="skel" style="width:60%"></div></div></div><div class="skel"></div></div>`;
+    return `<div class="card acard" style="--c:${esc(a.couleur)}" data-action="openApp" data-repo="${esc(a.repo)}" tabindex="0">
+      <div class="top">${avatar(a)}<div style="flex:1"><div class="nm">${esc(a.name)}</div>
+        <div class="xs muted" style="display:flex;gap:6px;align-items:center"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · v' + esc(v.version) : ''}${d?.info ? ' · ' + esc(ago(d.info.pushed_at)) : ''}</div></div>${ic('chev','s muted')}</div>
+      <p class="note clamp2">${esc(d?.live?.climat?.titre || (v.notes||[])[0] || d?.info?.description || (d?.error ? '' : 'Pas encore de notes de version.'))}</p>
+      ${d?.error ? `<p class="err clamp2" style="margin:6px 0 0">${esc(d.error)}</p>` : ''}
+      <div class="foot"><div>${n ? `<span class="pill">${ic('tasks','s')} ${plural(n, 'tâche')}</span>` : ''}${d && d.info && !d.brain ? '<span class="pill" style="color:var(--wa)">sans cerveau</span>' : ''}</div>${spark(a.repo)}</div>
     </div>`; }).join('')}</div>
   <section class="card">
-    <h2>Code en commun entre les apps</h2>
-    <p class="muted" style="margin:0">Le chef compare la structure et le cerveau de chaque app pour repérer ce qui est codé plusieurs fois (mises à jour GitHub, démarrage, stockage…) et ce qui pourrait être partagé.</p>
-    ${C.dups ? `<p class="muted sm">Analyse ${ago(C.dups.at)}</p>${md(C.dups.text)}` : ''}
-    <div class="btns"><button class="btn ${C.dups?'':'primary'}" data-action="dups" ${busy.dups?'disabled':''}>${busy.dups?spin('Comparaison…'):(C.dups?'Refaire l\'analyse':'🔗 Comparer mes apps')}</button>
-    ${C.dups ? '<button class="btn sm" data-action="tasksFrom" data-src="dups">＋ En tirer des tâches</button>' : ''}</div>
+    <div class="hd"><h2>${ic('link')} Code en commun</h2>${dups ? `<span class="xs muted">${esc(ago(dups.at))}</span>` : ''}</div>
+    ${busy.dups ? `<div id="dupsLive">${spin('Comparaison…')}</div>` : dups ? `<details><summary>Lire l'analyse</summary>${md(dups.text)}</details>` : '<p class="muted" style="margin:0">Repère ce qui est codé plusieurs fois entre tes apps (mises à jour GitHub, démarrage, stockage…) et ce qui pourrait être partagé.</p>'}
+    <div class="btns"><button class="btn sm ${dups ? '' : 'primary'}" data-action="dups" ${busy.dups ? 'disabled' : ''}>${dups ? 'Refaire' : 'Comparer mes apps'}</button>${dups && !busy.dups ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="dups">${ic('plus','s')} En tirer des tâches</button>` : ''}</div>
   </section>`;
 }
 
+let TF = {app:'all', q:''};
 function vTasks(){
   const apps = tracked();
-  if(!apps.length) return empty('Aucune tâche', 'Ajoute tes dépôts dans les Réglages.', 'settings');
-  return apps.map(a => {
-    const d = C.apps[a.repo] || {}, is = d.issues || [];
-    return `<h3 class="sec">${esc(a.emoji)} ${esc(a.name)} · ${is.length}</h3>
-      ${d.issuesErr ? `<p class="err">${esc(d.issuesErr)}</p>` : ''}
-      ${d.info && d.info.has_issues === false ? '<p class="err sm">Les Issues sont désactivées sur ce dépôt (GitHub › Settings › Features › Issues).</p>' : ''}
-      <div class="list">${is.map(i => `
-      <div class="trow"><div class="tt">${esc(i.title)} <a href="${esc(i.url)}" target="_blank" rel="noopener" class="muted">#${i.number}</a>
-        ${i.labels.map(l => `<span class="pill">${esc(l)}</span>`).join('')}</div>
-        <div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(a.repo)}" data-n="${i.number}" aria-label="Consigne pour Claude">🧠</button>
-        <button class="ibtn" data-action="closeIssue" data-repo="${esc(a.repo)}" data-n="${i.number}" aria-label="Marquer comme fait">✓</button></div>
-      </div>`).join('') || '<p class="muted sm" style="margin:0 4px">Rien à faire ici.</p>'}</div>`;
-  }).join('');
+  if(!apps.length) return empty('✅', 'Aucune tâche', 'Ajoute tes apps dans les Réglages.');
+  const all = apps.flatMap(a => (C.apps[a.repo]?.issues||[]).map(i => Object.assign({a}, i)));
+  const q = TF.q.toLowerCase();
+  const list = all.filter(i => (TF.app === 'all' || i.a.repo === TF.app) && (!q || (i.title + ' ' + i.body).toLowerCase().includes(q)));
+  const errs = apps.filter(a => C.apps[a.repo]?.issuesErr || C.apps[a.repo]?.info?.has_issues === false);
+  const filtre = TF.q || TF.app !== 'all';
+  return `<div class="toolbar">
+      <input id="tq" placeholder="Filtrer les tâches…" value="${esc(TF.q)}" style="flex:1;min-width:180px" type="search">
+      <button class="btn primary desk-only" data-action="capture">${ic('plus','s')} Nouvelle tâche</button>
+    </div>
+    <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes · ${all.length}</button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${esc(a.emoji)} ${esc(a.name)} · ${(C.apps[a.repo]?.issues||[]).length}</button>`).join('')}</div>
+    ${errs.map(a => `<p class="err">${esc(a.name)} : ${esc(C.apps[a.repo]?.issuesErr || 'les Issues sont désactivées sur ce dépôt')}</p>`).join('')}
+    ${list.map(i => `<div class="trow" style="--c:${esc(i.a.couleur)}"><span class="bar"></span>
+      <div class="tt">${esc(i.title)}<span class="meta">${esc(i.a.emoji)} ${esc(i.a.name)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">#${i.number}</a> · ${esc(ago(i.created))}${i.labels.map(l => ` · ${esc(l)}`).join('')}</span></div>
+      <div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(i.a.repo)}" data-n="${i.number}" title="Consigne pour Claude" aria-label="Consigne pour Claude">${ic('brain')}</button>
+      <button class="ibtn" data-action="closeIssue" data-repo="${esc(i.a.repo)}" data-n="${i.number}" title="Marquer comme fait" aria-label="Marquer comme fait">${ic('check')}</button></div></div>`).join('')
+      || empty('🎉', filtre ? 'Rien ne correspond' : 'Rien à faire', filtre ? 'Change le filtre.' : 'Ajoute une idée avec le bouton +.')}`;
 }
 
+const SUGG = ['Sur quelle app je devrais passer du temps cette semaine ?', 'Quels risques vois-tu dans mes apps en ce moment ?', 'Rédige une consigne pour Claude : la prochaine amélioration la plus utile', 'Explique-moi simplement comment Boussole se met à jour depuis GitHub'];
 function vChef(){
-  if(!S.geminiKey) return empty('Le chef de projet', 'Ajoute ta clé Gemini dans les Réglages pour discuter avec lui.', 'settings');
-  const msgs = C.chat || [];
-  return `<section class="card" style="margin-bottom:4px">
-    <h2>Le chef de projet</h2>
-    <p class="muted sm" style="margin:0">Il connaît le cerveau, les commits et les tâches de toutes tes apps. Demande-lui quoi coder, comment marche une partie, ou fais-lui rédiger une consigne pour Claude.</p>
-    <div class="chips">
-      ${['Sur quelle app je devrais passer du temps cette semaine ?','Explique-moi simplement comment Boussole se met à jour depuis GitHub','Quels risques vois-tu dans mes apps en ce moment ?','Rédige une consigne pour Claude : la prochaine amélioration la plus utile'].map(q => `<button class="btn sm" data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}
+  if(!L.geminiKey) return empty('💬', 'Le chef de projet', 'Ajoute ta clé Gemini dans les Réglages pour discuter avec lui.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
+  const msgs = get('chat', []) || [];
+  return `<div class="chatwrap">
+    ${msgs.length ? '' : `<div class="empty" style="padding:20px 8px 8px"><div class="big">✦</div><h3>Que veux-tu savoir ?</h3><p>Le chef connaît le cerveau, les commits et les tâches de toutes tes apps.</p></div>
+    <div class="sugg">${SUGG.map(q => `<button data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`}
+    <div class="chat">${msgs.map((m, i) => m.role === 'user' ? `<div class="msg u">${esc(m.text)}</div>` : `<div class="msg m">${md(m.text)}
+      <div class="mact"><button class="btn sm ghost" data-action="copyMsg" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tasksFrom" data-src="chat" data-i="${i}">${ic('plus','s')} Tâches</button></div></div>`).join('')}
+      ${busy.chat ? `<div class="msg m" id="chatLive">${spin('')}</div>` : ''}
     </div>
-  </section>
-  <div class="chat">${msgs.map((m, i) => m.role === 'user' ? `<div class="msg u">${esc(m.text)}</div>` : `<div class="msg m">${md(m.text)}
-      <div class="btns"><button class="btn sm" data-action="copyMsg" data-i="${i}">Copier</button><button class="btn sm" data-action="tasksFrom" data-src="chat" data-i="${i}">＋ En faire des tâches</button></div></div>`).join('')}
-    ${busy.chat ? `<div class="msg m">${spin('Le chef réfléchit…')}</div>` : ''}
+    ${msgs.length ? `<div class="btns" style="justify-content:center"><button class="btn sm ghost" data-action="newChat">Nouvelle conversation</button></div>` : ''}
   </div>
-  <div class="composer"><div style="display:flex;gap:8px;max-width:760px;margin:0 auto;align-items:flex-end"><textarea id="chatIn" rows="1" placeholder="Écris au chef…"></textarea><button class="send" data-action="send" aria-label="Envoyer">↑</button></div></div>
-  ${msgs.length ? '<div class="btns" style="justify-content:center"><button class="btn sm" data-action="newChat">Nouvelle conversation</button></div>' : ''}`;
+  <div class="composer"><div class="in"><textarea id="chatIn" rows="1" placeholder="Écris au chef…" enterkeyhint="send"></textarea><button class="send" data-action="send" aria-label="Envoyer">${ic('send')}</button></div></div>`;
 }
 
 const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
@@ -680,320 +1011,310 @@ const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
 
 ## Ce qui reste à faire
 - `;
-
 function vSettings(){
-  const chain = S.model === 'auto' && C.models?.length ? rankModels(C.models) : null;
-  return `
-  <h3 class="sec">Connexions</h3>
+  const reg = REG(), ce = cloudEtat();
+  const c = C.models?.length ? classer(C.models) : null;
+  const devs = Object.entries(C.remote).sort((x, y) => (y[1].updated||0) - (x[1].updated||0));
+  return `<div style="max-width:780px">
+  <h3 class="sec">Compte et cloud</h3>
   <section class="card">
-    <label>Token GitHub (fine-grained)</label>
-    <input type="password" data-set="ghToken" value="${esc(S.ghToken)}" placeholder="github_pat_…" autocomplete="off">
-    <label>Clé API Gemini (compte gratuit)</label>
-    <input type="password" data-set="geminiKey" value="${esc(S.geminiKey)}" placeholder="AIza…" autocomplete="off">
-    <label>Modèle Gemini</label>
-    <input data-set="model" value="${esc(S.model)}" list="models" placeholder="auto">
-    <datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>
-    <p class="muted sm">« auto » prend le plus récent modèle flash disponible et passe au suivant si le quota gratuit est épuisé.${chain ? ' Ordre actuel : ' + esc(chain.join(' → ')) : ''}${C.lastModel ? ' · Dernier utilisé : ' + esc(C.lastModel) : ''}</p>
-    <div class="btns">
-      <button class="btn sm" data-action="testGh">Tester GitHub</button>
-      <button class="btn sm" data-action="testGemini">Tester Gemini</button>
-      <button class="btn sm" data-action="listModels">Voir les modèles</button>
-    </div>
-    <details><summary>Quelles permissions pour le token ?</summary>
-      <div class="sm" style="margin-top:6px">GitHub › Settings › Developer settings › Fine-grained tokens. <b>Repository access</b> : boussole, boussole-donnees, revisions, trousseau. <b>Permissions</b> : Contents <b>Read and write</b> (lire le code, proposer les mises à jour du cerveau), Issues <b>Read and write</b> (les tâches), Pull requests <b>Read and write</b> (cerveau). Expiration : comme pour Boussole.</div>
-    </details>
-    <p class="muted sm">Les clés restent sur cet appareil. Elles ne sont jamais écrites dans le code ni sur GitHub.</p>
+    <div style="display:flex;gap:12px;align-items:center"><span class="cloud ${ce.cls}">${ic(ce.ic)}</span><div style="flex:1"><b>${esc(ce.txt)}</b><div class="xs muted">Dépôt privé ${esc(Cloud.repo)}${Cloud.st.last ? ' · vérifié ' + esc(ago(Cloud.st.last)) : ''}</div></div><button class="btn sm" data-action="cloudNow">Synchroniser</button></div>
+    ${Cloud.st.err && Cloud.st.err !== 'hors ligne' ? `<p class="err">${esc(Cloud.st.err)}</p>` : ''}
+    <label class="f">Appareils connectés</label>
+    <div class="dev">${ic(/PC|Mac/.test(PLATEFORME) ? 'desk' : 'phone')}<div style="flex:1"><b>${esc(L.nomAppareil || PLATEFORME)}</b> <span class="pill">cet appareil</span></div></div>
+    ${devs.map(([id, r]) => `<div class="dev">${ic(/PC|Mac/.test(r.platform||'') ? 'desk' : 'phone')}<div style="flex:1"><b>${esc(r.nom || r.platform)}</b><div class="xs muted">vu ${esc(ago(r.updated))}${r.version ? ' · version ' + esc(r.version) : ''}</div></div></div>`).join('')}
+    <label class="f">Nom de cet appareil</label>
+    <input data-local="nomAppareil" value="${esc(L.nomAppareil)}" placeholder="${esc(PLATEFORME)}">
+    <label class="f">Token GitHub</label>
+    <input type="password" data-local="ghToken" value="${esc(L.ghToken)}" placeholder="github_pat_…" autocomplete="off">
+    <p class="help">Il donne accès à tes apps et au cloud. C'est la seule chose à coller sur un nouvel appareil.</p>
+    <div class="btns"><button class="btn sm" data-action="testGh">Tester GitHub</button><button class="btn sm" data-action="pairPhone">${ic('phone','s')} Connecter un autre appareil</button></div>
   </section>
 
-  <h3 class="sec">Autre appareil</h3>
+  <h3 class="sec">Intelligence</h3>
   <section class="card">
-    <p class="sm" style="margin-top:0">Pour connecter un autre appareil (iPad, ordinateur) sans retaper les clés : affiche ce QR code ici et scanne-le avec l'autre appareil.</p>
-    <div class="btns"><button class="btn sm" data-action="pairPhone">Afficher le QR code</button></div>
+    <label class="f" style="margin-top:0">Vitesse des réponses</label>
+    <div class="seg">${[['rapide','⚡ Rapide'],['equilibre','Équilibré'],['approfondi','Approfondi']].map(([k, t]) => `<button class="${reg.vitesse === k ? 'on' : ''}" data-vitesse="${k}">${t}</button>`).join('')}</div>
+    <p class="help">${reg.vitesse === 'rapide' ? 'Réponses quasi instantanées, un peu moins fines.' : reg.vitesse === 'approfondi' ? 'Le chef réfléchit plus longtemps : plus fin, mais plus lent.' : 'Rapide pour les petites demandes, soigné pour les analyses.'}</p>
+    <label class="f">Clé Gemini (compte gratuit)</label>
+    <input type="password" data-local="geminiKey" value="${esc(L.geminiKey)}" placeholder="AIza…" autocomplete="off">
+    <p class="help">Partagée chiffrée avec tes autres appareils par le cloud : à coller une seule fois.</p>
+    <label class="f">Modèle</label>
+    <input data-reg="model" value="${esc(reg.model)}" list="models" placeholder="auto">
+    <datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>
+    <p class="help">« auto » choisit le plus récent modèle gratuit et passe au suivant si le quota du jour est épuisé.${c ? ' Rapide : ' + esc(c.lite[0] || '—') + ' · Soigné : ' + esc(c.flash[0] || '—') + '.' : ''}${C.lastModel ? ' Dernier utilisé : ' + esc(C.lastModel) + '.' : ''}</p>
+    <div class="btns"><button class="btn sm" data-action="testGemini">${ic('bolt','s')} Tester la vitesse</button><button class="btn sm" data-action="listModels">Voir les modèles</button></div>
+  </section>
+
+  <h3 class="sec">Profil</h3>
+  <section class="card">
+    <label class="f" style="margin-top:0">Prénom (pour l'accueil)</label>
+    <input data-reg="prenom" value="${esc(reg.prenom||'')}" placeholder="Ton prénom">
   </section>
 
   <h3 class="sec">Apps suivies</h3>
   <section class="card">
-    ${S.apps.map((a, i) => `<div class="appedit">
-      <div class="approw">
-        <input data-app="${i}" data-field="emoji" value="${esc(a.emoji)}" aria-label="Emoji">
+    ${appsAll().map((a, i) => `<div class="appedit">
+      <div class="r">
+        <input data-app="${i}" data-field="emoji" value="${esc(a.emoji)}" aria-label="Emoji" style="text-align:center">
+        <input type="color" data-app="${i}" data-field="couleur" value="${esc(a.couleur||'#6366f1')}" aria-label="Couleur">
         <input data-app="${i}" data-field="name" value="${esc(a.name)}" aria-label="Nom">
-        <button class="ibtn" data-action="delApp" data-i="${i}" aria-label="Retirer" style="height:44px;width:44px">✕</button>
-        <input class="repo" data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code"></div>
-      <div class="approw2">
+        <button class="ibtn" data-action="delApp" data-i="${i}" aria-label="Retirer" style="height:46px;width:44px">${ic('trash','s')}</button>
+      </div>
+      <div class="r2">
+        <input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code">
         <input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Dépôt de données (facultatif)" aria-label="Dépôt de données">
-        <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état, ex. telephone/etat.json" aria-label="Fichier d'état">
+        <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état" aria-label="Fichier d'état">
       </div></div>`).join('')}
-    <div class="btns"><button class="btn sm" data-action="addApp">＋ Ajouter une app</button></div>
-    <p class="muted sm">Atelier lit dans chaque dépôt <code>publication/version.json</code> (version et notes), le cerveau (<code>CLAUDE.md</code>, sinon <code>CERVEAU.md</code>), les commits et les Issues. Le dépôt de données sert à afficher l'état en direct (comme le téléphone de Boussole).</p>
+    <div class="btns"><button class="btn sm" data-action="addApp">${ic('plus','s')} Ajouter une app</button></div>
+    <p class="help">Atelier lit dans chaque dépôt <code>publication/version.json</code>, le cerveau (<code>CLAUDE.md</code>), les commits et les Issues. Le dépôt de données sert à l'affichage en direct.</p>
   </section>
 
   <h3 class="sec">Données</h3>
   <section class="card">
-    <div class="btns" style="margin-top:0">
-      <button class="btn sm" data-action="exportCfg">Exporter la config</button>
-      <button class="btn sm" data-action="importCfg">Importer une config</button>
-      <button class="btn sm" data-action="clearCache">Vider le cache</button>
-    </div>
-    <p class="muted sm">Atelier ${VERSION}</p>
-  </section>`;
+    <div class="btns" style="margin-top:0"><button class="btn sm" data-action="exportCfg">Exporter</button><button class="btn sm" data-action="importCfg">Importer</button><button class="btn sm ghost" data-action="clearCache">Vider le cache de cet appareil</button></div>
+    <p class="help">Atelier ${VERSION} · ${esc(PLATEFORME)} · raccourcis : N nouvelle idée, 1 à 5 les onglets, R actualiser, Ctrl+K rechercher.</p>
+  </section></div>`;
 }
 
-function go(v){ view = v; LS.set('atelier.view', v); render(); window.scrollTo(0, v === 'chef' ? document.body.scrollHeight : 0); }
-function render(){
-  const keep = $('#chatIn')?.value;
-  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.go === view));
-  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, settings:vSettings}[view] || vToday)();
-  if(keep && $('#chatIn')) $('#chatIn').value = keep;
-  $('#lastsync').textContent = busy.sync ? 'synchronisation…' : (C.lastSync ? 'synchro ' + ago(C.lastSync) : 'jamais synchronisé');
-  $('#vtitle').textContent = {today:'Aujourd\'hui', apps:'Mes apps', tasks:'Tâches', chef:'Chef de projet', settings:'Réglages'}[view] || 'Atelier';
+/* ================================================================
+   Accueil (première connexion)
+================================================================ */
+function showOnboarding(step=1){
+  const o = $('#onb'); o.hidden = false;
+  o.innerHTML = `<div class="box"><img src="icon.svg" alt="">
+    <h1>${step === 1 ? 'Bienvenue dans Atelier' : 'Presque fini'}</h1>
+    <p>${step === 1 ? 'Tous tes projets d\'apps au même endroit, sur tous tes appareils.' : 'Ajoute la clé Gemini pour activer le chef de projet.'}</p>
+    <div class="card">
+      ${step === 1 ? `<label class="f" style="margin-top:0">Token GitHub</label><input id="onTok" type="password" placeholder="github_pat_…" autocomplete="off">
+        <p class="help">Le token « Atelier » donne accès à tes apps et à ton cloud privé. Tes données et ta clé Gemini sont récupérées automatiquement.</p>
+        <div class="btns"><button class="btn primary block" data-action="onbGo" id="onbBtn">Se connecter</button></div>`
+      : `<label class="f" style="margin-top:0">Clé Gemini</label><input id="onKey" type="password" placeholder="AIza…" autocomplete="off">
+        <p class="help">Elle sera partagée chiffrée avec tes autres appareils.</p>
+        <div class="btns"><button class="btn primary block" data-action="onbKey">Terminer</button><button class="btn ghost block" data-action="onbSkip">Plus tard</button></div>`}
+      <p class="err" id="onbErr" hidden></p>
+    </div></div>`;
+  setTimeout(() => o.querySelector('input')?.focus(), 60);
+}
+function onbFin(){ $('#onb').hidden = true; render(); syncAll(true); }
+
+/* ================================================================
+   Rendu général
+================================================================ */
+function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' ? document.body.scrollHeight : 0); }
+function renderChrome(){
+  const ce = cloudEtat(), n = nbTaches();
+  $('#vtitle').textContent = VUES[view]?.t || 'Atelier';
+  $('#vsub').innerHTML = busy.sync ? `<span class="cloud">${spin('')} Actualisation…</span>` : `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
+  $('#sideCloud').innerHTML = `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
+  const nav = side => Object.entries(VUES).map(([k, v]) => `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${k === 'tasks' && n ? `<span class="badge">${n > 99 ? '99+' : n}</span>` : ''}</button>`).join('');
+  $('#tabs').innerHTML = nav(false);
+  $('#snav').innerHTML = nav(true);
+  $('#sideApps').innerHTML = tracked().map(a => { const h = health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
+  $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
   $('#fab').hidden = view === 'settings' || view === 'chef';
   document.body.classList.toggle('chef', view === 'chef');
-  const nTasks = tracked().reduce((n, a) => n + (C.apps[a.repo]?.issues||[]).length, 0), bd = $('#tbadge');
-  bd.hidden = !nTasks; bd.textContent = nTasks > 99 ? '99+' : nTasks;
+  document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
-function modal(html){
-  const sh = $('#modal .sheet'), wasOpen = !$('#modal').hidden, top = sh.scrollTop;
-  sh.innerHTML = `<div class="grab"><span></span><button class="icon close" data-action="closeModal" aria-label="Fermer">✕</button></div>` + html;
-  $('#modal').hidden = false; document.body.style.overflow = 'hidden';
+function render(){
+  const keep = $('#chatIn')?.value, keepTq = document.activeElement?.id === 'tq';
+  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, settings:vSettings}[view] || vToday)();
+  if(keep && $('#chatIn')) $('#chatIn').value = keep;
+  if(keepTq){ const t = $('#tq'); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+  renderChrome();
+  if(SHEET && !SHEET.lock && !$('#modal').hidden) appSheet(SHEET.repo, SHEET.tab, true);
+}
+
+/* ================================================================
+   Feuilles / panneau latéral
+================================================================ */
+let SHEET = null;
+function modal(html, kind='dialog'){
+  const m = $('#modal'), sh = $('#modal .sheet'), wasOpen = !m.hidden, top = sh.scrollTop;
+  m.className = kind === 'drawer' ? 'drawer' : '';
+  sh.innerHTML = `<div class="grab"><button class="ibtn" data-action="closeModal" aria-label="Fermer" style="width:34px;height:34px">${ic('x','s')}</button></div>` + html;
+  m.hidden = false; document.body.style.overflow = 'hidden';
   if(wasOpen) sh.scrollTop = top; else { sh.scrollTop = 0; sh.style.animation = 'none'; sh.offsetHeight; sh.style.animation = ''; }
 }
-function closeModal(){ $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; }
+function closeModal(){ $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; SHEET = null; }
 function textModal(title, text, extra=''){
-  modal(`<h2>${esc(title)}</h2>${extra}<div class="pre" id="mtext">${esc(text)}</div>
-    <div class="btns"><button class="btn primary" data-action="copyModal">Copier</button></div>`);
+  SHEET = null;
+  modal(`<h2>${esc(title)}</h2>${extra}<pre class="pre" id="mtext">${esc(text)}</pre><div class="btns"><button class="btn primary" data-action="copyModal">${ic('copy','s')} Copier</button></div>`);
 }
-let MODAL_REPO = null;
-
-/* ================= Fiche d'une app ================= */
-function appSheet(repo){
-  MODAL_REPO = repo;
-  const a = appBy(repo), d = C.apps[repo] || {}, v = d.version || {}, ai = aiOf(repo);
-  const site = d.projet?.url || d.info?.homepage;
-  modal(`<h2>${esc(a.emoji)} ${esc(a.name)}</h2>
-    <div class="muted sm">${esc(repo)}${v.version ? ' · version ' + esc(v.version) : ''}${v.date ? ' publiée ' + esc(ago(v.date)) : ''}</div>
-    <div class="btns">
-      ${d.info ? `<a class="btn sm" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">Dépôt GitHub</a>` : ''}
-      ${site ? `<a class="btn sm" href="${esc(site)}" target="_blank" rel="noopener">Ouvrir le site</a>` : ''}
-    </div>
-    ${d.error ? `<p class="err">${esc(d.error)}</p>` : ''}
-    ${(v.notes||[]).length ? `<h3 class="sec">Dernière version</h3>${md(v.notes.map(n => '- ' + n).join('\n'))}` : ''}
-    ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a, false, true)}</div>` : ''}
-
+function appSheet(repo, tab='apercu'){
+  SHEET = {repo, tab};
+  const a = appBy(repo), d = C.apps[repo] || {}, v = d.version || {}, ai = aiOf(repo), h = health(d);
+  const site = d.info?.homepage;
+  const b = (k, label) => `<button class="${tab === k ? 'on' : ''}" data-stab="${k}">${label}</button>`;
+  let body = '';
+  if(tab === 'apercu') body = `
+    ${(v.notes||[]).length ? `<h3 class="sec">Dernière version${v.date ? ' · ' + esc(ago(v.date)) : ''}</h3>${md(v.notes.map(n => '- ' + n).join('\n'))}` : ''}
+    ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a)}</div>` : ''}
     <h3 class="sec">Intelligence</h3>
     <div class="btns" style="margin-top:0">
-      <button class="btn sm" data-action="review" ${busy['review'+repo]?'disabled':''}>${busy['review'+repo]?spin('Revue…'):'🔍 Revue du code récent'}</button>
-      <button class="btn sm" data-action="ideas" ${busy['ideas'+repo]?'disabled':''}>${busy['ideas'+repo]?spin('Réflexion…'):'💡 5 améliorations'}</button>
-      <button class="btn sm" data-action="brain" ${busy['brain'+repo]?'disabled':''}>${busy['brain'+repo]?spin('Lecture…'):(d.brain?'🧠 Mettre à jour le cerveau':'🧠 Créer le cerveau')}</button>
+      <button class="btn sm" data-action="review" ${busy['review'+repo] ? 'disabled' : ''}>${busy['review'+repo] ? spin('Revue…') : ic('search','s') + ' Revue du code récent'}</button>
+      <button class="btn sm" data-action="ideas" ${busy['ideas'+repo] ? 'disabled' : ''}>${busy['ideas'+repo] ? spin('Réflexion…') : ic('spark','s') + ' 5 améliorations'}</button>
     </div>
-    ${ai.review ? `<div class="card"><b>Revue du code</b> <span class="muted sm">${ago(ai.review.at)}</span>${md(ai.review.text)}
-      <div class="btns"><button class="btn sm" data-action="tasksFrom" data-src="review">＋ En tirer des tâches</button></div></div>` : ''}
-    ${ai.ideas ? `<div class="card"><b>Améliorations proposées</b> <span class="muted sm">${ago(ai.ideas.at)}</span>
-      ${ai.ideas.list.map((x, i) => `<div class="action"><h4>${esc(x.titre)}</h4><div class="sm muted">${esc(x.pourquoi)} · effort ${esc(x.effort||'?')} · impact ${esc(x.impact||'?')}</div>
-        <div class="btns"><button class="btn sm" data-action="ideaIssue" data-i="${i}">＋ Créer la tâche</button></div></div>`).join('')}</div>` : ''}
-    ${(d.brain?.pr) ? `<p class="sm">Proposition de cerveau en attente : <a href="${esc(d.brain.pr)}" target="_blank" rel="noopener">voir la pull request</a></p>` : ''}
-
-    <h3 class="sec">Tâches ouvertes · ${(d.issues||[]).length}</h3>
-    <div class="list">${(d.issues||[]).map(i => `<div class="row"><span class="grow">#${i.number} ${esc(i.title)}</span><button class="btn sm" data-action="issuePrompt" data-repo="${esc(repo)}" data-n="${i.number}">🧠</button></div>`).join('') || '<p class="muted sm">Aucune</p>'}</div>
-    <h3 class="sec">Derniers commits</h3>
-    <div class="list">${(d.commits||[]).map(c => `<a class="row" href="${esc(c.url)}" target="_blank" rel="noopener"><span class="grow">${esc(c.msg)}</span><span class="muted sm">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">—</p>'}</div>
-    ${d.brain ? `<details><summary>Cerveau : ${esc(d.brain.path)} (${d.brain.text.split('\n').length} lignes)</summary>${md(d.brain.text)}</details>` : `<p class="muted sm">Pas de cerveau (CLAUDE.md) dans ce dépôt.</p>`}`);
+    ${busy['review'+repo] ? `<div class="card" id="reviewLive">${spin('Le chef lit les derniers changements…')}</div>` : ai.review ? `<div class="card"><div class="hd"><h2>Revue du code</h2><span class="xs muted">${esc(ago(ai.review.at))}</span></div>${md(ai.review.text)}<div class="btns"><button class="btn sm ghost" data-action="tasksFrom" data-src="review">${ic('plus','s')} En tirer des tâches</button></div></div>` : ''}
+    ${ai.ideas ? `<div class="card"><div class="hd"><h2>Améliorations proposées</h2><span class="xs muted">${esc(ago(ai.ideas.at))}</span></div>
+      ${ai.ideas.list.map((x, i) => `<div style="padding:10px 0;border-top:1px solid var(--bd)"><b>${esc(x.titre)}</b><div class="sm muted">${esc(x.pourquoi)}</div><div class="kv"><span class="pill">effort ${esc(x.effort||'?')}</span><span class="pill">impact ${esc(x.impact||'?')}</span></div>
+        <button class="btn sm" data-action="ideaIssue" data-i="${i}" ${x.cree ? 'disabled' : ''}>${x.cree ? ic('check','s') + ' Tâche créée' : ic('plus','s') + ' Créer la tâche'}</button></div>`).join('')}</div>` : ''}`;
+  if(tab === 'taches') body = `<div style="margin-top:10px">${(d.issues||[]).map(i => `<div class="trow" style="--c:${esc(a.couleur)}"><span class="bar"></span><div class="tt">${esc(i.title)}<span class="meta">#${i.number} · ${esc(ago(i.created))}</span></div><div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(repo)}" data-n="${i.number}" aria-label="Consigne">${ic('brain')}</button><button class="ibtn" data-action="closeIssue" data-repo="${esc(repo)}" data-n="${i.number}" aria-label="Fait">${ic('check')}</button></div></div>`).join('') || empty('🎉', 'Aucune tâche ouverte', '')}
+    <div class="btns"><button class="btn sm primary" data-action="capture" data-repo="${esc(repo)}">${ic('plus','s')} Nouvelle tâche</button></div></div>`;
+  if(tab === 'activite') body = `<div class="feed" style="margin-top:8px">${(d.commits||[]).slice(0,25).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener"><span class="tx sm">${esc(c.msg)}</span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted">—</p>'}</div>`;
+  if(tab === 'cerveau') body = `
+    <div class="btns"><button class="btn sm primary" data-action="brain" ${busy['brain'+repo] ? 'disabled' : ''}>${busy['brain'+repo] ? spin('Lecture…') : ic('brain','s') + (d.brain ? ' Mettre à jour le cerveau' : ' Créer le cerveau')}</button>${ai.pr ? `<a class="btn sm ghost" href="${esc(ai.pr)}" target="_blank" rel="noopener">Proposition en attente ${ic('ext','s')}</a>` : ''}</div>
+    ${get('resumes', {})[repo] ? `<h3 class="sec">Résumé</h3>${md(get('resumes', {})[repo].text)}` : ''}
+    ${d.brain ? `<details><summary>${esc(d.brain.path)} complet · ${d.brain.text.split('\n').length} lignes</summary>${md(d.brain.text)}</details>` : '<p class="muted">Pas encore de cerveau (CLAUDE.md) dans ce dépôt.</p>'}`;
+  modal(`<div style="display:flex;gap:14px;align-items:center;margin-top:2px">${avatar(a,'l')}<div style="flex:1"><h2 style="margin:0">${esc(a.name)}</h2>
+      <div class="xs muted" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · version ' + esc(v.version) : ''} · ${esc(repo)}</div></div></div>
+    <div class="btns">${d.info ? `<a class="btn sm ghost" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">${ic('git','s')} GitHub</a>` : ''}${site ? `<a class="btn sm ghost" href="${esc(site)}" target="_blank" rel="noopener">${ic('ext','s')} Site</a>` : ''}</div>
+    ${d.error ? `<p class="err">${esc(d.error)}</p>` : ''}
+    <div class="tabs2">${b('apercu', 'Aperçu')}${b('taches', 'Tâches · ' + (d.issues||[]).length)}${b('activite', 'Activité')}${b('cerveau', 'Cerveau')}</div>
+    ${body}`, 'drawer');
 }
 
-/* ================= Extraction de tâches depuis un texte ================= */
+/* ================================================================
+   Tâches tirées d'un texte
+================================================================ */
 let TASK_DRAFT = [];
 async function tasksFromText(text, defaultRepo){
   const apps = tracked();
-  const r = await gemini(`Voici un texte (analyse, revue ou conversation) au sujet des apps de Clément :
-"""
-${clip(text, 12000)}
-"""
-Apps : ${apps.map(a => `${a.name} = ${a.repo}`).join(' ; ')}${defaultRepo ? `\nApp concernée par défaut : ${defaultRepo}` : ''}
-Extrais les tâches de développement concrètes qui en découlent (5 au maximum, uniquement des choses à faire dans le code). Chaque tâche : titre court à l'infinitif, corps de 2 à 5 lignes avec le critère de réussite.
-JSON strict : {"taches":[{"repo":"pseudo/depot","titre":"…","corps":"…"}]}`, {json:true, system:ROLE_CHEF});
+  const r = await gemini(`Texte au sujet des apps de Clément :\n"""\n${clip(text, 12000)}\n"""\nApps : ${apps.map(a => `${a.name} = ${a.repo}`).join(' ; ')}${defaultRepo ? `\nApp par défaut : ${defaultRepo}` : ''}
+Extrais au plus 5 tâches de développement concrètes. Chaque tâche : titre court à l'infinitif, corps de 2 à 5 lignes avec le critère de réussite.
+JSON strict : {"taches":[{"repo":"pseudo/depot","titre":"…","corps":"…"}]}`, {json:true, system:ROLE_CHEF, tier:'rapide'});
   TASK_DRAFT = (r.taches||[]).filter(t => apps.some(a => a.repo === t.repo));
-  if(!TASK_DRAFT.length) throw new Error('Aucune tâche concrète trouvée dans ce texte');
-  modal(`<h2>Tâches proposées</h2><p class="muted sm">Coche celles à créer dans GitHub.</p>
+  if(!TASK_DRAFT.length) throw new Error('Aucune tâche concrète trouvée');
+  SHEET = null;
+  modal(`<h2>Tâches proposées</h2><p class="muted sm">Coche celles à créer.</p>
     ${TASK_DRAFT.map((t, i) => `<label class="chk card" style="margin:8px 0"><input type="checkbox" data-td="${i}" checked><span><b>${esc(appBy(t.repo).emoji)} ${esc(t.titre)}</b><br><span class="sm muted">${esc(t.corps)}</span></span></label>`).join('')}
     <div class="btns"><button class="btn primary" data-action="createDraft">Créer les tâches cochées</button></div>`);
 }
 
-/* ================= Actions ================= */
+/* ================================================================
+   Actions
+================================================================ */
 const ACTIONS = {
   sync: () => syncAll(),
+  cloudNow(){ Cloud.tick(true); Cloud.schedule(true); toast('Synchronisation du cloud…'); },
   closeModal,
   copyModal(){ copy($('#mtext').textContent); },
+  palette(){ openPalette(); },
+
+  async onbGo(){
+    const t = $('#onTok').value.trim(), err = $('#onbErr'), btn = $('#onbBtn');
+    if(!t) return;
+    btn.disabled = true; btn.innerHTML = spin('Connexion…'); err.hidden = true;
+    try{
+      L.ghToken = t; saveL();
+      await gh('/user');
+      Cloud.joined = false; Cloud.etag = null; Cloud.head = null;
+      await Cloud.enqueue(async () => { try{ await Cloud.pull(); Cloud.st.ok = true; }catch(e){ Cloud.st.err = e.message; } });
+      await adopterCles();
+      Cloud.start();
+      if(L.geminiKey) onbFin(); else showOnboarding(2);
+    }catch(e){ L.ghToken = ''; saveL(); err.textContent = e.message; err.hidden = false; btn.disabled = false; btn.textContent = 'Se connecter'; }
+  },
+  async onbKey(){ const k = $('#onKey').value.trim(); if(!k) return; L.geminiKey = k; saveL(); await partagerCle(); onbFin(); },
+  onbSkip(){ onbFin(); },
 
   async advise(){
-    if(!tracked().length) return go('settings');
     if(!C.lastSync) await syncAll(true);
     busy.advise = true; render();
     try{
-      const data = await gemini(`Nous sommes le ${dateFR(Date.now())}. Voici l'état de toutes les apps :
-
-${contexteGlobal(2500)}
-
-Choisis les 3 actions les plus utiles à faire maintenant, toutes apps confondues. Privilégie les tâches déjà ouvertes, les problèmes visibles dans l'état en direct, les petites actions qui débloquent beaucoup.
-Pour chaque action, rédige "prompt_code" : une consigne complète, autonome, en français, prête à coller dans Claude Code (contexte de l'app, résultat attendu, contraintes : respecter les règles du cerveau, ne pas casser l'existant, publier une nouvelle version comme d'habitude ; critères de vérification).
-JSON strict : {"resume":"2 phrases sur l'état global","actions":[{"app":"nom exact","repo":"pseudo/depot","titre":"action courte","pourquoi":"1 phrase","duree_min":30,"prompt_code":"…"}]}`, {json:true, system:ROLE_CHEF});
-      C.today = {at:Date.now(), data}; saveC();
+      const data = await gemini(`Nous sommes le ${dateFR(Date.now())}. État des apps :\n\n${contexteGlobal()}\n\nChoisis les 3 actions les plus utiles maintenant, toutes apps confondues (tâches déjà ouvertes, problèmes visibles en direct, petites actions qui débloquent beaucoup).
+Pour chaque action, "prompt_code" = consigne complète et autonome pour Claude Code (contexte, résultat attendu, contraintes : respecter le cerveau, ne rien casser, publier comme d'habitude ; critères de vérification).
+JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot","titre":"action courte","pourquoi":"1 phrase","duree_min":30,"prompt_code":"…"}]}`, {json:true, system:ROLE_CHEF});
+      put('today', {at:Date.now(), data});
     }finally{ busy.advise = false; render(); }
   },
-  showAdvicePrompt(el){
-    const a = C.today?.data?.actions?.[+el.dataset.i]; if(!a) return;
-    textModal('Consigne pour Claude', a.prompt_code || '(vide)', `<p class="muted sm">${esc(a.app)} · ${esc(a.titre)}</p>`);
-  },
+  showAdvicePrompt(el){ const a = get('today', null)?.data?.actions?.[+el.dataset.i]; if(a) textModal('Consigne pour Claude', a.prompt_code || '(vide)', `<p class="muted sm">${esc(a.app)} · ${esc(a.titre)}</p>`); },
   async adviceIssue(el){
-    const a = C.today?.data?.actions?.[+el.dataset.i]; if(!a) return;
+    const a = get('today', null)?.data?.actions?.[+el.dataset.i]; if(!a) return;
     const repo = tracked().find(t => t.repo === a.repo)?.repo || tracked().find(t => t.name === a.app)?.repo;
     if(!repo) throw new Error('App introuvable : ' + a.app);
-    await createIssue(repo, a.titre, `${a.pourquoi||''}\n\n### Consigne pour Claude\n${a.prompt_code||''}`);
-    render();
+    await createIssue(repo, a.titre, `${a.pourquoi||''}\n\n### Consigne pour Claude\n${a.prompt_code||''}`); render();
   },
-
   async weekly(){
     busy.weekly = true; render();
     try{
       const since = new Date(Date.now() - 7*864e5).toISOString();
       const parts = await Promise.all(tracked().map(async a => {
-        const [cm, closed] = await Promise.all([
-          gh(`/repos/${a.repo}/commits?since=${since}&per_page=60`).catch(() => []),
-          gh(`/repos/${a.repo}/issues?state=closed&since=${since}&per_page=30`).catch(() => [])
-        ]);
-        const v = C.apps[a.repo]?.version;
-        return `## ${a.name}
-Commits de la semaine (${cm.length}) : ${cm.map(c => c.commit.message.split('\n')[0]).join(' | ') || 'aucun'}
-Tâches terminées : ${closed.filter(i => !i.pull_request && i.closed_at > since).map(i => i.title).join(' | ') || 'aucune'}
-Tâches encore ouvertes : ${(C.apps[a.repo]?.issues||[]).map(i => i.title).slice(0,10).join(' | ') || 'aucune'}
-Version actuelle : ${v?.version || '?'} — ${(v?.notes||[]).join(' | ')}`;
+        const [cm, closed] = await Promise.all([gh(`/repos/${a.repo}/commits?since=${since}&per_page=60`).catch(() => []), gh(`/repos/${a.repo}/issues?state=closed&since=${since}&per_page=30`).catch(() => [])]);
+        return `## ${a.name}\nCommits (${cm.length}) : ${cm.map(c => c.commit.message.split('\n')[0]).join(' | ') || 'aucun'}\nTerminées : ${closed.filter(i => !i.pull_request && i.closed_at > since).map(i => i.title).join(' | ') || 'aucune'}\nOuvertes : ${(C.apps[a.repo]?.issues||[]).map(i => i.title).slice(0,10).join(' | ') || 'aucune'}\nVersion : ${C.apps[a.repo]?.version?.version || '?'}`;
       }));
-      const text = await gemini(`Nous sommes le ${dateFR(Date.now())}. Fais le bilan de la semaine écoulée pour l'ensemble des apps :
-
-${parts.join('\n\n')}
-
-Format (Markdown court, 15 lignes maximum) :
-### Ce qui a avancé
-### Ce qui stagne
-### Le cap de la semaine prochaine (3 objectifs concrets et mesurables, toutes apps confondues)
-Termine par une phrase d'encouragement honnête, sans flatterie.`, {system:ROLE_CHEF});
-      C.weekly = [{at:Date.now(), text}, ...(C.weekly||[])].slice(0, 8); saveC();
+      const text = await gemini(`Nous sommes le ${dateFR(Date.now())}. Bilan de la semaine écoulée :\n\n${parts.join('\n\n')}\n\nMarkdown court (15 lignes max) :\n### Ce qui a avancé\n### Ce qui stagne\n### Le cap de la semaine prochaine (3 objectifs concrets)\nTermine par une phrase d'encouragement honnête.`, {system:ROLE_CHEF, onText:flux('weeklyLive')});
+      put('weekly', [{at:Date.now(), text}, ...(get('weekly', [])||[])].slice(0, 8));
     }finally{ busy.weekly = false; render(); }
   },
-
   async dups(){
     busy.dups = true; render();
     try{
       const parts = await Promise.all(tracked().map(async a => {
-        const d = C.apps[a.repo] || {};
-        const files = await tree(a.repo, d.info?.default_branch).catch(e => ['(arborescence illisible : ' + e.message + ')']);
-        return `## ${a.name} (${a.repo})\nFichiers :\n${files.join('\n')}\nCerveau (extrait) :\n${clip(d.brain?.text || '(absent)', 7000)}`;
+        const files = await tree(a.repo, C.apps[a.repo]?.info?.default_branch).catch(e => ['(illisible : ' + e.message + ')']);
+        return `## ${a.name}\nFichiers :\n${files.join('\n')}\nCerveau (résumé) :\n${get('resumes', {})[a.repo]?.text || clip(C.apps[a.repo]?.brain?.text, 5000)}`;
       }));
-      const text = await gemini(`Compare ces apps et repère le code ou les mécanismes réalisés plusieurs fois (même nom de fichier, même rôle : mises à jour depuis GitHub, démarrage avec retour arrière, stockage chiffré des clés, client Gemini, site téléphone, QR code…).
-
-${parts.join('\n\n')}
-
-Réponds en Markdown :
-### Ce qui est en double
-(pour chaque point : quelles apps, quels fichiers, à quel point c'est identique selon ce que tu vois)
-### Ce que je propose de partager
-(par ordre d'intérêt : quoi, comment — par exemple un dépôt « commun » copié par un script de publication —, le gain, le risque)
-### À ne PAS mutualiser
-Sois honnête sur ce que tu ne peux pas vérifier à partir des noms de fichiers et des cerveaux.`, {system:ROLE_CHEF});
-      C.dups = {at:Date.now(), text}; saveC();
+      const text = await gemini(`Compare ces apps et repère le code ou les mécanismes faits plusieurs fois (mises à jour GitHub, démarrage avec retour arrière, stockage chiffré, client Gemini, site téléphone, QR code…).\n\n${parts.join('\n\n')}\n\nMarkdown : ### Ce qui est en double · ### Ce que je propose de partager (quoi, comment, gain, risque) · ### À ne PAS mutualiser. Sois honnête sur ce que tu ne peux pas vérifier.`, {system:ROLE_CHEF, onText:flux('dupsLive')});
+      put('dups', {at:Date.now(), text});
     }finally{ busy.dups = false; render(); }
   },
 
   openApp(el){ appSheet(el.dataset.repo); },
-
   async review(){
-    const repo = MODAL_REPO, a = appBy(repo), d = C.apps[repo] || {};
-    busy['review'+repo] = true; appSheet(repo);
+    const repo = SHEET.repo, a = appBy(repo), d = C.apps[repo] || {};
+    busy['review'+repo] = true; appSheet(repo, 'apercu');
     try{
       const diffs = await recentDiffs(repo, 5);
-      const text = await gemini(`Fais la revue de code des derniers commits de ${a.name}.
-Règles de l'app (cerveau, extrait) :
-${clip(d.brain?.text || '(absent)', 12000)}
-
-Modifications récentes :
-${diffs}
-
-Réponds en Markdown, court et concret, en citant fichier et commit :
-### Bugs probables
-### Risques (sécurité, perte de données, mises à jour, téléphone)
-### Écarts avec les règles du cerveau
-### Améliorations simples
-Si tout va bien dans une rubrique, écris « RAS ». N'invente rien que le diff ne montre pas.`, {system:ROLE_CHEF, temperature:0.3});
-      aiOf(repo).review = {at:Date.now(), text}; saveC();
-    }finally{ busy['review'+repo] = false; if(!$('#modal').hidden && MODAL_REPO === repo) appSheet(repo); }
+      const text = await gemini(`Revue de code des derniers commits de ${a.name}.\nRègles (cerveau) :\n${get('resumes', {})[repo]?.text || clip(d.brain?.text, 8000)}\n\nModifications :\n${diffs}\n\nMarkdown court, en citant fichier et commit :\n### Bugs probables\n### Risques\n### Écarts avec les règles\n### Améliorations simples\n« RAS » si rien. N'invente rien.`, {system:ROLE_CHEF, temperature:0.3, onText:flux('reviewLive')});
+      setAi(repo, {review:{at:Date.now(), text}});
+    }finally{ busy['review'+repo] = false; if(SHEET?.repo === repo && !SHEET.lock) appSheet(repo, SHEET.tab); }
   },
   async ideas(){
-    const repo = MODAL_REPO, a = appBy(repo);
-    busy['ideas'+repo] = true; appSheet(repo);
+    const repo = SHEET.repo, a = appBy(repo);
+    busy['ideas'+repo] = true; appSheet(repo, 'apercu');
     try{
-      const r = await gemini(`${ficheApp(a, 15000)}
-
-Propose les 5 améliorations les plus utiles pour ${a.name} maintenant, en partant de ce que l'app fait déjà et de ses règles. Évite ce qui est déjà fait ou déjà en tâche ouverte. Mélange petites améliorations rapides et une idée plus ambitieuse.
-JSON strict : {"idees":[{"titre":"…","pourquoi":"1 phrase","effort":"petit|moyen|gros","impact":"faible|moyen|fort","consigne":"consigne complète pour Claude Code"}]}`, {json:true, system:ROLE_CHEF, temperature:0.7});
-      aiOf(repo).ideas = {at:Date.now(), list:(r.idees||[]).slice(0,5)}; saveC();
-    }finally{ busy['ideas'+repo] = false; if(!$('#modal').hidden && MODAL_REPO === repo) appSheet(repo); }
+      const r = await gemini(`${ficheApp(a)}\n\nPropose les 5 améliorations les plus utiles pour ${a.name}, sans reprendre ce qui est fait ou déjà en tâche. Mélange rapides et une plus ambitieuse.\nJSON strict : {"idees":[{"titre":"…","pourquoi":"1 phrase","effort":"petit|moyen|gros","impact":"faible|moyen|fort","consigne":"consigne complète pour Claude Code"}]}`, {json:true, system:ROLE_CHEF, temperature:0.7});
+      setAi(repo, {ideas:{at:Date.now(), list:(r.idees||[]).slice(0,5)}});
+    }finally{ busy['ideas'+repo] = false; if(SHEET?.repo === repo && !SHEET.lock) appSheet(repo, SHEET.tab); }
   },
   async ideaIssue(el){
-    const repo = MODAL_REPO, x = aiOf(repo).ideas?.list?.[+el.dataset.i]; if(!x) return;
+    const repo = SHEET.repo, ideas = aiOf(repo).ideas, x = ideas?.list?.[+el.dataset.i]; if(!x) return;
     await createIssue(repo, x.titre, `${x.pourquoi}\n\nEffort : ${x.effort} · Impact : ${x.impact}\n\n### Consigne pour Claude\n${x.consigne||''}`);
-    el.disabled = true; el.textContent = 'Créée ✓';
+    x.cree = true; setAi(repo, {ideas}); appSheet(repo, SHEET.tab);
   },
-
   async brain(){
-    const repo = MODAL_REPO, a = appBy(repo), d = C.apps[repo] || {};
-    busy['brain'+repo] = true; appSheet(repo);
+    const repo = SHEET.repo, a = appBy(repo), d = C.apps[repo] || {};
+    busy['brain'+repo] = true; appSheet(repo, 'cerveau');
     try{
       if(d.brain){
         const last = await gh(`/repos/${repo}/commits?path=${encodeURIComponent(d.brain.path)}&per_page=1`).catch(() => []);
         const since = last[0]?.commit?.author?.date;
         const cm = await gh(`/repos/${repo}/commits?per_page=40${since ? '&since=' + since : ''}`);
         const after = cm.filter(c => !last[0] || c.sha !== last[0].sha);
-        const r = await gemini(`Voici le cerveau de ${a.name} (${d.brain.path}), le fichier de notes que lit l'IA qui code avant chaque modification :
-"""
-${clip(d.brain.text, 60000)}
-"""
-Commits faits depuis sa dernière mise à jour (${since || 'date inconnue'}) :
-${after.map(c => '- ' + c.commit.message.replace(/\n+/g, ' / ')).join('\n') || '(aucun)'}
-Notes de la version publiée : ${(d.version?.notes||[]).join(' | ')}
-
-Le cerveau est-il à jour ? Si non, rédige UNIQUEMENT une section à AJOUTER à la fin (pas de réécriture du reste), titre « ## Mise à jour du ${new Date().toLocaleDateString('fr-FR')} (proposée par Atelier) », qui consigne ce que les commits ont changé et que le cerveau ne dit pas encore (nouveaux fichiers, nouvelles règles, décisions). Style : identique au cerveau existant, précis, sans inventer.
-Signale aussi les incohérences éventuelles entre le cerveau et les commits.
-JSON strict : {"a_jour":true|false,"resume":"1-2 phrases","ajout":"markdown de la section, vide si à jour","incoherences":["…"]}`, {json:true, system:ROLE_CHEF, temperature:0.3});
-        modal(`<h2>🧠 Cerveau de ${esc(a.name)}</h2><p>${esc(r.resume||'')}</p>
-          ${(r.incoherences||[]).length ? `<h3 class="sec">Incohérences repérées</h3>${md(r.incoherences.map(x => '- ' + x).join('\n'))}` : ''}
-          ${r.a_jour && !r.ajout ? '<p class="ok">Le cerveau est à jour. Rien à ajouter.</p>' : `
-          <h3 class="sec">Section à ajouter à ${esc(d.brain.path)}</h3>
-          <textarea id="brainAdd" rows="12">${esc(r.ajout||'')}</textarea>
-          <p class="muted sm">Tu peux la modifier. Elle sera proposée en <b>pull request</b> : rien ne change dans l'app tant que tu ne l'as pas fusionnée (bouton ci-dessous ou sur GitHub). Si tu publies depuis un clone sur ton Mac, fais <code>git pull</code> après la fusion.</p>
+        const r = await gemini(`Cerveau de ${a.name} (${d.brain.path}) :\n"""\n${clip(d.brain.text, 60000)}\n"""\nCommits depuis sa dernière mise à jour (${since || '?'}) :\n${after.map(c => '- ' + c.commit.message.replace(/\n+/g, ' / ')).join('\n') || '(aucun)'}\nNotes de version : ${(d.version?.notes||[]).join(' | ')}\n\nLe cerveau est-il à jour ? Sinon, rédige UNIQUEMENT une section à AJOUTER à la fin, titre « ## Mise à jour du ${new Date().toLocaleDateString('fr-FR')} (proposée par Atelier) », même style, sans inventer. Signale les incohérences.\nJSON strict : {"a_jour":true,"resume":"…","ajout":"markdown ou vide","incoherences":["…"]}`, {json:true, system:ROLE_CHEF, temperature:0.3});
+        SHEET = {repo, tab:'cerveau', lock:true};
+        modal(`<h2>${ic('brain')} Cerveau de ${esc(a.name)}</h2><p>${esc(r.resume||'')}</p>
+          ${(r.incoherences||[]).length ? `<h3 class="sec">Incohérences</h3>${md(r.incoherences.map(x => '- ' + x).join('\n'))}` : ''}
+          ${r.a_jour && !r.ajout ? '<p class="ok">Le cerveau est à jour.</p>' : `<h3 class="sec">Section à ajouter</h3><textarea id="brainAdd" rows="12">${esc(r.ajout||'')}</textarea>
+          <p class="help">Modifiable. Envoyée en pull request : rien ne change tant qu'elle n'est pas fusionnée.</p>
           <div class="btns"><button class="btn primary" data-action="brainPR" data-mode="append">Proposer l'ajout</button></div>`}`);
       } else {
         const files = await tree(repo, d.info?.default_branch).catch(() => []);
         const readme = await ghRaw(repo, 'README.md').catch(() => null);
-        const text = await gemini(`L'app ${a.name} (${repo}) n'a pas encore de cerveau (fichier CLAUDE.md lu par l'IA qui code avant chaque modification).
-Fichiers : ${files.join(', ')}
-README : ${clip(readme || '(absent)', 6000)}
-Derniers commits : ${(d.commits||[]).map(c => c.msg).join(' | ')}
-Version : ${JSON.stringify(d.version||{})}
-Rédige un premier CLAUDE.md en suivant ce plan, en n'écrivant que ce qui se déduit des éléments ci-dessus (marque « à compléter » sinon) :
-${TPL_CERVEAU}`, {system:ROLE_CHEF, temperature:0.3});
-        modal(`<h2>🧠 Créer le cerveau de ${esc(a.name)}</h2>
-          <p class="muted sm">Brouillon rédigé à partir des fichiers et des commits. Complète-le, puis propose-le : il arrivera en pull request.</p>
-          <textarea id="brainAdd" rows="16">${esc(text)}</textarea>
+        const text = await gemini(`L'app ${a.name} (${repo}) n'a pas de cerveau (CLAUDE.md).\nFichiers : ${files.join(', ')}\nREADME : ${clip(readme || '(absent)', 6000)}\nCommits : ${(d.commits||[]).slice(0,10).map(c => c.msg).join(' | ')}\nRédige un premier CLAUDE.md selon ce plan, sans inventer (« à compléter » sinon) :\n${TPL_CERVEAU}`, {system:ROLE_CHEF, temperature:0.3});
+        SHEET = {repo, tab:'cerveau', lock:true};
+        modal(`<h2>${ic('brain')} Créer le cerveau de ${esc(a.name)}</h2><p class="help">Brouillon à compléter, envoyé en pull request.</p><textarea id="brainAdd" rows="16">${esc(text)}</textarea>
           <div class="btns"><button class="btn primary" data-action="brainPR" data-mode="create">Proposer CLAUDE.md</button></div>`);
       }
-    }catch(e){ busy['brain'+repo] = false; appSheet(repo); throw e; }
-    finally{ busy['brain'+repo] = false; }
+      busy['brain'+repo] = false;
+    }catch(e){ busy['brain'+repo] = false; appSheet(repo, 'cerveau'); throw e; }
   },
   async brainPR(el){
-    const repo = MODAL_REPO, d = C.apps[repo] || {}, a = appBy(repo);
+    const repo = SHEET.repo, d = C.apps[repo] || {}, a = appBy(repo);
     const add = $('#brainAdd').value.trim(); if(!add) return;
     el.disabled = true; el.innerHTML = spin('Envoi sur GitHub…');
     try{
-      const base = d.info?.default_branch || 'main';
-      const path = el.dataset.mode === 'create' ? 'CLAUDE.md' : d.brain.path;
+      const base = d.info?.default_branch || 'main', path = el.dataset.mode === 'create' ? 'CLAUDE.md' : d.brain.path;
       const ref = await gh(`/repos/${repo}/git/ref/heads/${encodeURIComponent(base)}`);
       const branch = `atelier/cerveau-${new Date().toISOString().slice(0,16).replace(/[-:T]/g,'')}`;
       await gh(`/repos/${repo}/git/refs`, {method:'POST', body:{ref:'refs/heads/' + branch, sha:ref.object.sha}});
@@ -1001,33 +1322,31 @@ ${TPL_CERVEAU}`, {system:ROLE_CHEF, temperature:0.3});
       if(el.dataset.mode !== 'create'){
         const meta = await gh(`/repos/${repo}/contents/${encPath(path)}?ref=${encodeURIComponent(branch)}`);
         sha = meta.sha;
-        const current = meta.content ? b64utf8(meta.content) : (await ghRaw(repo, path));
+        const current = meta.content ? b64utf8(meta.content) : await ghRaw(repo, path);
         content = current.replace(/\s*$/, '') + '\n\n' + add + '\n';
       }
       await gh(`/repos/${repo}/contents/${encPath(path)}`, {method:'PUT', body:{message:`Cerveau : ${el.dataset.mode === 'create' ? 'création' : 'mise à jour'} proposée par Atelier`, content:utf8b64(content), branch, ...(sha ? {sha} : {})}});
-      const pr = await gh(`/repos/${repo}/pulls`, {method:'POST', body:{title:`Cerveau de ${a.name} : ${el.dataset.mode === 'create' ? 'création' : 'mise à jour'}`, head:branch, base, body:`Proposé par Atelier (Gemini), relu par Clément.\n\nFusionner cette PR ajoute la section au fichier \`${path}\`. Après la fusion, faire \`git pull\` dans les clones locaux avant de publier.`}});
-      modal(`<h2>Proposition envoyée ✓</h2><p>Pull request #${pr.number} ouverte sur ${esc(repo)}.</p>
-        <div class="btns"><a class="btn sm" href="${esc(pr.html_url)}" target="_blank" rel="noopener">Voir sur GitHub</a>
-        <button class="btn primary" data-action="mergePR" data-n="${pr.number}" data-branch="${esc(branch)}">Fusionner maintenant</button></div>`);
-      if(C.apps[repo]?.brain) C.apps[repo].brain.pr = pr.html_url; saveC();
+      const pr = await gh(`/repos/${repo}/pulls`, {method:'POST', body:{title:`Cerveau de ${a.name} : ${el.dataset.mode === 'create' ? 'création' : 'mise à jour'}`, head:branch, base, body:`Proposé par Atelier, relu par Clément.\n\nAjoute la section au fichier \`${path}\`.`}});
+      setAi(repo, {pr:pr.html_url});
+      modal(`<h2>Proposition envoyée</h2><p>Pull request #${pr.number} ouverte sur ${esc(repo)}.</p>
+        <div class="btns"><a class="btn ghost" href="${esc(pr.html_url)}" target="_blank" rel="noopener">Voir sur GitHub ${ic('ext','s')}</a><button class="btn primary" data-action="mergePR" data-n="${pr.number}" data-branch="${esc(branch)}">Fusionner maintenant</button></div>`);
     }catch(e){ el.disabled = false; el.textContent = 'Réessayer'; throw e; }
   },
   async mergePR(el){
-    const repo = MODAL_REPO, n = +el.dataset.n;
-    if(!confirm(`Fusionner la PR #${n} dans ${repo} ? Le cerveau sera modifié sur la branche principale.`)) return;
+    const repo = SHEET.repo, n = +el.dataset.n;
+    if(!confirm(`Fusionner la PR #${n} dans ${repo} ?`)) return;
     el.disabled = true;
     await gh(`/repos/${repo}/pulls/${n}/merge`, {method:'PUT', body:{merge_method:'squash'}});
     await gh(`/repos/${repo}/git/refs/heads/${el.dataset.branch}`, {method:'DELETE'}).catch(() => {});
-    if(C.apps[repo]?.brain) delete C.apps[repo].brain.pr;
-    closeModal(); toast('Cerveau mis à jour ✓'); syncAll(true);
+    setAi(repo, {pr:null}); closeModal(); toast('Cerveau mis à jour'); syncAll(true);
   },
 
   async tasksFrom(el){
     const src = el.dataset.src; let text = '', repo = null;
-    if(src === 'weekly') text = C.weekly?.[0]?.text;
-    else if(src === 'dups') text = C.dups?.text;
-    else if(src === 'review'){ repo = MODAL_REPO; text = aiOf(repo).review?.text; }
-    else if(src === 'chat') text = C.chat?.[+el.dataset.i]?.text;
+    if(src === 'weekly') text = (get('weekly', [])||[])[0]?.text;
+    else if(src === 'dups') text = get('dups', null)?.text;
+    else if(src === 'review'){ repo = SHEET.repo; text = aiOf(repo).review?.text; }
+    else if(src === 'chat') text = (get('chat', [])||[])[+el.dataset.i]?.text;
     if(!text) return;
     const old = el.innerHTML; el.disabled = true; el.innerHTML = spin('Extraction…');
     try{ await tasksFromText(text, repo); } finally { if(el.isConnected){ el.disabled = false; el.innerHTML = old; } }
@@ -1037,78 +1356,69 @@ ${TPL_CERVEAU}`, {system:ROLE_CHEF, temperature:0.3});
     if(!pick.length) return closeModal();
     el.disabled = true; el.innerHTML = spin('Création…');
     for(const t of pick) await createIssue(t.repo, t.titre, t.corps, true);
-    closeModal(); toast(`${pick.length} tâche(s) créée(s) ✓`); render();
+    closeModal(); toast(`${plural(pick.length, 'tâche')} créée${pick.length > 1 ? 's' : ''}`, false, {label:'Voir', run:() => go('tasks')}); render();
   },
-
   async issuePrompt(el){
     const repo = el.dataset.repo, n = +el.dataset.n, d = C.apps[repo] || {}, a = appBy(repo);
     const issue = (d.issues||[]).find(i => i.number === n); if(!issue) return;
-    modal(`<h2>Consigne pour Claude</h2><p class="muted">#${n} ${esc(issue.title)}</p><p>${spin('Le chef rédige la consigne…')}</p>`);
+    SHEET = null;
+    modal(`<h2>Consigne pour Claude</h2><p class="muted sm">${esc(a.name)} · #${n} ${esc(issue.title)}</p><div class="card" id="promptLive" style="margin:8px 0">${spin('Le chef rédige…')}</div>`);
     try{
-      const text = await gemini(`Rédige UNE consigne complète, en français, prête à coller dans Claude Code, pour réaliser la tâche ci-dessous dans ${a.name}.
-La consigne doit : rappeler en 2-3 phrases ce qu'est l'app ; décrire précisément le résultat attendu ; rappeler les règles du cerveau qui s'appliquent (versions, publication, compatibilité Mac/Windows/téléphone) ; finir par des critères de vérification.
-Réponds uniquement avec la consigne, sans introduction.
-
-${ficheApp(a, 30000)}
-
-TÂCHE #${n} : ${issue.title}
-${issue.body||''}`, {system:ROLE_CHEF});
+      const text = await gemini(`Rédige UNE consigne complète, prête à coller dans Claude Code, pour réaliser la tâche ci-dessous dans ${a.name} : 2-3 phrases sur l'app, résultat attendu précis, règles du cerveau qui s'appliquent (versions, publication, Mac/Windows/téléphone), critères de vérification. Réponds uniquement avec la consigne.\n\n${ficheApp(a, true)}\n\nTÂCHE #${n} : ${issue.title}\n${issue.body||''}`, {system:ROLE_CHEF, onText:t => { const el2 = $('#promptLive'); if(el2) el2.innerHTML = `<pre class="pre" style="margin:0;max-height:none;background:none;padding:0">${esc(t)}</pre>`; }});
       textModal('Consigne pour Claude', text, `<p class="muted sm">${esc(a.name)} · #${n} ${esc(issue.title)}</p>`);
     }catch(e){ closeModal(); throw e; }
   },
   async closeIssue(el){
     const repo = el.dataset.repo, n = +el.dataset.n;
-    if(!confirm(`Marquer la tâche #${n} comme faite ?`)) return;
+    const d = C.apps[repo], issue = d?.issues?.find(i => i.number === n);
     await gh(`/repos/${repo}/issues/${n}`, {method:'PATCH', body:{state:'closed'}});
-    const d = C.apps[repo]; if(d) d.issues = (d.issues||[]).filter(i => i.number !== n);
-    saveC(); render(); toast('Bien joué ✓');
+    if(d) d.issues = d.issues.filter(i => i.number !== n);
+    saveC(); render(); if(navigator.vibrate) navigator.vibrate(12);
+    toast('Tâche terminée', false, {label:'Annuler', run:async () => { try{ await gh(`/repos/${repo}/issues/${n}`, {method:'PATCH', body:{state:'open'}}); if(d && issue){ d.issues.unshift(issue); saveC(); render(); } }catch(e){ toast(e.message, true); } }});
   },
 
-  /* Chef de projet */
   ask(el){ $('#chatIn').value = el.dataset.q; return ACTIONS.send(); },
   async send(){
-    const box = $('#chatIn'); const q = box.value.trim(); if(!q || busy.chat) return;
-    box.value = '';
-    C.chat = [...(C.chat||[]), {role:'user', text:q}].slice(-30); saveC();
+    const box = $('#chatIn'); const q = box?.value.trim(); if(!q || busy.chat) return;
+    box.value = ''; box.style.height = '';
+    const msgs = [...(get('chat', [])||[]), {role:'user', text:q}].slice(-40);
+    put('chat', msgs);
     busy.chat = true; render(); window.scrollTo(0, document.body.scrollHeight);
     try{
-      const ctx = `Contexte à jour (${dateFR(Date.now())}) :\n\n${contexteGlobal(8000)}`;
-      const hist = C.chat.slice(-12).map(m => ({role:m.role === 'user' ? 'user' : 'model', parts:[{text:m.text}]}));
-      const text = await gemini([{role:'user', parts:[{text:ctx}]}, {role:'model', parts:[{text:'Compris, j\'ai le contexte de toutes les apps.'}]}, ...hist], {system:ROLE_CHEF + `\nQuand Clément demande une consigne pour Claude, donne-la dans un bloc de code pour qu'il la copie facilement.`});
-      C.chat = [...C.chat, {role:'model', text}].slice(-30); saveC();
-    }catch(e){ C.chat.pop(); saveC(); box.value = q; throw e; }
+      const hist = msgs.slice(-12).map(m => ({role:m.role === 'user' ? 'user' : 'model', parts:[{text:m.text}]}));
+      const text = await gemini([{role:'user', parts:[{text:`Contexte à jour (${dateFR(Date.now())}) :\n\n${contexteGlobal()}`}]}, {role:'model', parts:[{text:'Compris.'}]}, ...hist],
+        {system:ROLE_CHEF + '\nQuand Clément demande une consigne pour Claude, mets-la dans un bloc de code.', onText:t => { const el = $('#chatLive'); if(el){ el.innerHTML = md(t); if(innerHeight + scrollY > document.body.scrollHeight - 260) window.scrollTo(0, document.body.scrollHeight); } }});
+      put('chat', [...msgs, {role:'model', text}].slice(-40));
+    }catch(e){ put('chat', msgs.slice(0, -1)); busy.chat = false; render(); if($('#chatIn')) $('#chatIn').value = q; throw e; }
     finally{ busy.chat = false; render(); window.scrollTo(0, document.body.scrollHeight); }
   },
-  copyMsg(el){ const t = C.chat?.[+el.dataset.i]?.text || ''; const m = t.match(/```[^\n]*\n([\s\S]*?)```/); copy(m ? m[1].trim() : t); },
-  newChat(){ if(confirm('Effacer la conversation ?')){ C.chat = []; saveC(); render(); } },
+  copyMsg(el){ const t = (get('chat', [])||[])[+el.dataset.i]?.text || ''; const m = t.match(/```[^\n]*\n([\s\S]*?)```/); copy(m ? m[1].trim() : t); },
+  newChat(){ if(confirm('Effacer la conversation (sur tous tes appareils) ?')){ put('chat', []); render(); } },
 
-  /* Capture rapide */
-  capture(){
+  capture(el){
     const apps = tracked(); if(!apps.length) return go('settings');
+    const pre = el?.dataset?.repo;
+    SHEET = null;
     modal(`<h2>Nouvelle idée</h2>
-      <textarea id="capText" rows="5" placeholder="Ex : dans Révisions, ajouter un chrono au QCM"></textarea>
-      <label>App</label>
-      <select id="capApp">${S.geminiKey ? '<option value="auto">🤖 Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}">${esc(a.emoji)} ${esc(a.name)}</option>`).join('')}</select>
-      ${S.geminiKey ? '<label class="chk"><input type="checkbox" id="capAI" checked> Reformuler en tâche claire</label>' : ''}
-      <div class="btns"><button class="btn primary" data-action="sendCapture" id="capBtn">Ajouter</button></div>`);
-    setTimeout(() => $('#capText')?.focus(), 50);
+      <textarea id="capText" rows="4" placeholder="Ex : dans Révisions, ajouter un chrono au QCM"></textarea>
+      <label class="f">App</label>
+      <select id="capApp">${L.geminiKey && !pre ? '<option value="auto">✦ Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}" ${pre === a.repo ? 'selected' : ''}>${esc(a.emoji)} ${esc(a.name)}</option>`).join('')}</select>
+      ${L.geminiKey ? '<label class="chk" style="margin-top:12px"><input type="checkbox" id="capAI" checked> Reformuler en tâche claire</label>' : ''}
+      <div class="btns"><button class="btn primary" data-action="sendCapture" id="capBtn">Ajouter</button><span class="xs muted desk-only" style="align-self:center">Ctrl+Entrée</span></div>`);
+    setTimeout(() => $('#capText')?.focus(), 60);
   },
   async sendCapture(){
     const txt = $('#capText').value.trim(); if(!txt) return;
     let repo = $('#capApp').value, title, body;
-    const useAI = navigator.onLine && S.geminiKey && ($('#capAI')?.checked || repo === 'auto');
-    const btn = $('#capBtn'); btn.disabled = true; btn.innerHTML = spin(useAI ? 'Le chef reformule…' : 'Envoi…');
+    const useAI = navigator.onLine && L.geminiKey && ($('#capAI')?.checked || repo === 'auto');
+    const btn = $('#capBtn'); btn.disabled = true; btn.innerHTML = spin(useAI ? 'Reformulation…' : 'Envoi…');
     try{
       if(useAI){
-        const r = await gemini(`Transforme cette note en tâche de développement claire.
-Apps : ${tracked().map(a => `${a.name} = ${a.repo} (${(C.apps[a.repo]?.version?.notes||[])[0] || ''})`).join(' ; ')}
-${repo === 'auto' ? 'Choisis l\'app la plus probable.' : 'App imposée : ' + repo}
-Note : """${txt}"""
-JSON strict : {"repo":"pseudo/depot","titre":"titre court à l'infinitif","corps":"description précise en 2 à 5 lignes, avec critère de réussite"}`, {json:true, system:ROLE_CHEF});
+        const r = await gemini(`Transforme cette note en tâche de développement claire.\nApps : ${tracked().map(a => `${a.name} = ${a.repo}`).join(' ; ')}\n${repo === 'auto' ? 'Choisis l\'app la plus probable.' : 'App imposée : ' + repo}\nNote : """${txt}"""\nJSON strict : {"repo":"pseudo/depot","titre":"titre court à l'infinitif","corps":"2 à 5 lignes, avec critère de réussite"}`, {json:true, system:ROLE_CHEF, tier:'rapide'});
         if(repo === 'auto') repo = r.repo;
         title = r.titre; body = `${r.corps||''}\n\n> Note d'origine : ${txt}`;
       } else {
-        if(repo === 'auto') throw new Error('Hors ligne : choisis une app à la main');
+        if(repo === 'auto') throw new Error('Hors ligne : choisis une app');
         const lines = txt.split('\n'); title = lines[0].slice(0,100); body = lines.slice(1).join('\n') || txt;
       }
       if(!tracked().some(a => a.repo === repo)) throw new Error('App inconnue : ' + repo);
@@ -1117,110 +1427,158 @@ JSON strict : {"repo":"pseudo/depot","titre":"titre court à l'infinitif","corps
     }finally{ if(btn.isConnected){ btn.disabled = false; btn.textContent = 'Ajouter'; } }
   },
 
-  /* Réglages */
-  addApp(){ S.apps.push({name:'Nouvelle app', repo:'', emoji:'📦', donnees:'', etat:''}); saveS(); render(); },
-  delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${S.apps[i].name} d'Atelier ? (le dépôt GitHub n'est pas touché)`)){ S.apps.splice(i,1); saveS(); render(); } },
+  addApp(){ const apps = [...appsAll(), {name:'Nouvelle app', repo:'', emoji:'📦', couleur:COULEURS[appsAll().length % COULEURS.length], donnees:'', etat:''}]; setReg({apps}); render(); },
+  delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${appsAll()[i].name} d'Atelier ? (le dépôt GitHub n'est pas touché)`)){ setReg({apps:appsAll().filter((_, k) => k !== i)}); render(); } },
   async testGh(){
-    if(!S.ghToken) throw new Error('Colle d\'abord ton token GitHub');
     const u = await gh('/user');
-    const res = await Promise.all(tracked().map(a => gh(`/repos/${a.repo}`).then(r => `✓ ${a.name}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${a.name} : ${e.message}`)));
+    const res = await Promise.all([...tracked().map(a => ({n:a.name, r:a.repo})), {n:'Cloud', r:Cloud.repo}].map(x => gh(`/repos/${x.r}`).then(r => `✓ ${x.n}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${x.n} : ${e.message}`)));
     textModal('GitHub', `Connecté en tant que ${u.login}\n\n${res.join('\n')}`);
   },
-  async testGemini(){ const t = await gemini('Réponds uniquement : OK'); toast(`Gemini répond « ${t.slice(0,20)} » avec ${C.lastModel}`); },
+  async testGemini(){ const t0 = performance.now(); const t = await gemini('Réponds uniquement : OK', {tier:'rapide'}); toast(`« ${t.slice(0,12)} » en ${((performance.now() - t0)/1000).toFixed(1)} s avec ${C.lastModel}`); },
   async listModels(){
-    if(!S.geminiKey) throw new Error('Clé Gemini manquante');
-    const ms = await listModels(true); render();
-    textModal('Modèles disponibles avec ta clé', `Ordre utilisé en « auto » :\n${rankModels(ms).join('\n')}\n\nTous :\n${ms.join('\n')}`);
+    const ms = await listModels(true); const c = classer(ms); render();
+    textModal('Modèles disponibles', `Rapides : ${c.lite.join(', ') || '—'}\nSoignés : ${c.flash.join(', ') || '—'}\n\nTous :\n${ms.join('\n')}`);
   },
   pairPhone(){
-    if(!S.ghToken) throw new Error('Colle d\'abord ton token GitHub');
-    const code = b64url(JSON.stringify({t:S.ghToken, g:S.geminiKey, m:S.model, a:S.apps}));
-    const base = /\.github\.io$/.test(location.hostname) ? location.origin + location.pathname : `https://${(tracked()[0]?.repo||'pseudo/x').split('/')[0]}.github.io/atelier-mobile/`;
-    const lien = `${base}#a=${code}`;
-    let svg = '';
-    try{ const q = qrcode(0, 'L'); q.addData(lien); q.make(); svg = q.createSvgTag({cellSize:3, margin:2, scalable:true}); }catch{ svg = '<p class="err">Lien trop long pour un QR code : utilise « Copier le lien ».</p>'; }
-    window._lien = lien;
-    modal(`<h2>📱 Connecter le téléphone</h2>
-      <div class="qr">${svg}</div>
-      <ol class="sm"><li><b>Scanne ce QR code</b> avec l'appareil photo de l'iPhone : Safari s'ouvre sur Atelier.</li>
-      <li><b>Épingle-le</b> : Partager › « Sur l'écran d'accueil » › Ajouter.</li><li><b>Ouvre l'icône Atelier</b> : c'est fini.</li></ol>
-      <p class="err sm">Ce QR code contient tes clés : ne le photographie pas et ne le partage pas.</p>
-      <div class="btns"><button class="btn sm" data-action="copyLien">Copier le lien</button></div>`);
+    const lien = `https://oiriaure.github.io/atelier-mobile/#a=${b64url(JSON.stringify({t:L.ghToken, g:L.geminiKey}))}`;
+    let svg = ''; try{ const q = qrcode(0, 'L'); q.addData(lien); q.make(); svg = q.createSvgTag({cellSize:3, margin:2, scalable:true}); }catch{}
+    window._lien = lien; SHEET = null;
+    modal(`<h2>Connecter un autre appareil</h2><div class="qr">${svg}</div>
+      <p class="sm">Scanne ce QR code avec l'autre appareil : il se connecte et récupère tout depuis le cloud. Sinon, colle simplement le token GitHub sur l'écran d'accueil d'Atelier.</p>
+      <p class="err sm">Ce QR code contient tes clés : ne le partage pas.</p>
+      <div class="btns"><button class="btn sm" data-action="copyLien">${ic('copy','s')} Copier le lien</button></div>`);
   },
   copyLien(){ copy(window._lien); },
-  exportCfg(){
-    textModal('Config à transférer', b64url(JSON.stringify(S)), `<p class="err">Contient tes clés : envoie-la-toi seulement par un canal privé, puis efface-la.</p>`);
+  exportCfg(){ textModal('Sauvegarde', b64url(JSON.stringify({L:{ghToken:L.ghToken, geminiKey:L.geminiKey}, SH})), '<p class="err sm">Contient tes clés : garde-la en privé.</p>'); },
+  importCfg(){ SHEET = null; modal(`<h2>Importer</h2><textarea id="impText" rows="6" placeholder="Colle ici la sauvegarde"></textarea><div class="btns"><button class="btn primary" data-action="doImport">Importer</button></div>`); },
+  async doImport(){
+    let j; try{ j = JSON.parse(unb64url($('#impText').value.trim())); }catch{ throw new Error('Sauvegarde invalide'); }
+    if(j.L){ Object.assign(L, j.L); saveL(); }
+    if(j.SH){ for(const [k, e] of Object.entries(j.SH)) if(e.t > (SH[k]?.t||0)) SH[k] = e; saveSH(); Cloud.schedule(); }
+    if(j.ghToken){ L.ghToken = j.ghToken; L.geminiKey = j.geminiKey || L.geminiKey; saveL(); }
+    closeModal(); toast('Importé'); syncAll(true);
   },
-  importCfg(){
-    modal(`<h2>Importer une config</h2><textarea id="impText" rows="6" placeholder="Colle ici le texte exporté"></textarea>
-      <div class="btns"><button class="btn primary" data-action="doImport">Importer</button></div>`);
-  },
-  doImport(){
-    try{ S = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(unb64url($('#impText').value.trim()))); }
-    catch{ throw new Error('Texte de config invalide'); }
-    saveS(); closeModal(); render(); toast('Config importée ✓'); syncAll();
-  },
-  clearCache(){ if(confirm('Vider les données en cache ? (réglages et conversation gardés)')){ C = {apps:{}, today:null, pending:C.pending||[], lastSync:0, ai:{}, weekly:C.weekly||[], chat:C.chat||[], dups:null, blocked:{}}; saveC(); render(); } }
+  clearCache(){ if(confirm('Vider le cache de cet appareil ? (les données du cloud sont gardées)')){ C = {apps:{}, pending:C.pending||[], lastSync:0, blocked:{}, models:null, modelsAt:0, noThink:{}, remote:{}}; saveC(); render(); syncAll(true); } }
 };
 
+/* ================================================================
+   Palette de commandes (Ctrl+K)
+================================================================ */
+let PAL = {items:[], i:0};
+function palItems(q){
+  q = q.toLowerCase().trim();
+  const items = [
+    ...Object.entries(VUES).map(([k, v]) => ({ic:v.i, t:v.t, k:'Aller à', run:() => go(k)})),
+    {ic:'plus', t:'Nouvelle idée', k:'N', run:() => ACTIONS.capture()},
+    {ic:'spark', t:'Que faire maintenant ?', k:'Analyse', run:() => { go('today'); ACTIONS.advise().catch(e => toast(e.message, true)); }},
+    {ic:'chart', t:'Bilan de la semaine', k:'Analyse', run:() => { go('today'); ACTIONS.weekly().catch(e => toast(e.message, true)); }},
+    {ic:'sync', t:'Tout actualiser', k:'R', run:() => syncAll()},
+    ...tracked().map(a => ({av:a, t:a.name, k:'App', run:() => appSheet(a.repo)})),
+    ...tracked().flatMap(a => (C.apps[a.repo]?.issues||[]).map(i => ({av:a, t:i.title, k:'Tâche #' + i.number, run:() => ACTIONS.issuePrompt({dataset:{repo:a.repo, n:i.number}}).catch(e => toast(e.message, true))})))
+  ];
+  return (q ? items.filter(x => (x.t + ' ' + x.k).toLowerCase().includes(q)) : items).slice(0, 40);
+}
+function drawPal(){
+  $('#palList').innerHTML = PAL.items.map((x, i) => `<div class="it ${i === PAL.i ? 'on' : ''}" data-pi="${i}">${x.av ? avatar(x.av, 's') : ic(x.ic)}<span class="clamp1">${esc(x.t)}</span><span class="k">${esc(x.k)}</span></div>`).join('') || '<div class="empty sm">Aucun résultat</div>';
+  $('#palList .on')?.scrollIntoView({block:'nearest'});
+}
+function openPalette(){ $('#pal').hidden = false; const i = $('#palIn'); i.value = ''; PAL = {items:palItems(''), i:0}; drawPal(); setTimeout(() => i.focus(), 20); }
+function closePalette(){ $('#pal').hidden = true; }
+$('#palIn').addEventListener('input', e => { PAL = {items:palItems(e.target.value), i:0}; drawPal(); });
+$('#palIn').addEventListener('keydown', e => {
+  if(e.key === 'ArrowDown'){ e.preventDefault(); PAL.i = Math.min(PAL.items.length - 1, PAL.i + 1); drawPal(); }
+  if(e.key === 'ArrowUp'){ e.preventDefault(); PAL.i = Math.max(0, PAL.i - 1); drawPal(); }
+  if(e.key === 'Enter'){ e.preventDefault(); const x = PAL.items[PAL.i]; closePalette(); x?.run(); }
+  if(e.key === 'Escape') closePalette();
+});
+$('#palList').addEventListener('click', e => { const it = e.target.closest('[data-pi]'); if(!it) return; const x = PAL.items[+it.dataset.pi]; closePalette(); x?.run(); });
+$('#pal').addEventListener('click', e => { if(e.target.id === 'pal') closePalette(); });
+
+/* ================================================================
+   Événements
+================================================================ */
 document.addEventListener('click', async e => {
   if(e.target.id === 'modal') return closeModal();
+  const tf = e.target.closest('[data-tf]'); if(tf){ TF.app = tf.dataset.tf; render(); return; }
+  const st = e.target.closest('[data-stab]'); if(st && SHEET){ appSheet(SHEET.repo, st.dataset.stab); $('#modal .sheet').scrollTop = 0; return; }
+  const vi = e.target.closest('[data-vitesse]'); if(vi){ setReg({vitesse:vi.dataset.vitesse}); render(); return; }
   const el = e.target.closest('[data-action],[data-go]'); if(!el) return;
-  if(el.dataset.go){ closeModal(); go(el.dataset.go); return; }
+  if(el.dataset.go){ go(el.dataset.go); return; }
   const fn = ACTIONS[el.dataset.action]; if(!fn) return;
   e.preventDefault();
   try{ await fn(el); }catch(err){ toast(err.message || String(err), true); console.error(err); }
 });
+document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); });
+document.addEventListener('input', e => {
+  if(e.target.id === 'tq'){ TF.q = e.target.value; render(); }
+  if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 140) + 'px'; }
+});
 document.addEventListener('change', e => {
   const el = e.target;
-  if(el.dataset.set){ S[el.dataset.set] = el.value.trim() || (el.dataset.set === 'model' ? 'auto' : ''); saveS(); if(el.dataset.set === 'model') render(); }
+  if(el.dataset.local){
+    const k = el.dataset.local, v = el.value.trim(), avant = L[k];
+    L[k] = v; saveL();
+    if(k === 'geminiKey' && v) partagerCle();
+    if(k === 'ghToken' && v !== avant){ Cloud.joined = false; Cloud.etag = null; Cloud.head = null; Cloud.start(); syncAll(true); }
+    if(k === 'nomAppareil') Cloud.schedule();
+    renderChrome();
+  }
+  if(el.dataset.reg){ setReg({[el.dataset.reg]:el.value.trim() || (el.dataset.reg === 'model' ? 'auto' : '')}); if(el.dataset.reg === 'model') render(); }
   if(el.dataset.app !== undefined){
     let v = el.value.trim(); if(el.dataset.field === 'repo' || el.dataset.field === 'donnees') v = el.value = normRepo(v);
-    S.apps[+el.dataset.app][el.dataset.field] = v; saveS();
+    setReg({apps:appsAll().map((a, i) => i === +el.dataset.app ? Object.assign({}, a, {[el.dataset.field]:v}) : a)}); renderChrome();
   }
 });
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') closeModal();
-  if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn'){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); }
+  const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('#pal').hidden ? openPalette() : closePalette(); return; }
+  if(e.key === 'Escape'){ if(!$('#pal').hidden) closePalette(); else closeModal(); return; }
+  if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.id === 'capText'){ e.preventDefault(); ACTIONS.sendCapture().catch(err => toast(err.message, true)); return; }
+  if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn' && !matchMedia('(pointer:coarse)').matches){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); return; }
+  if(e.key === 'Enter' && e.target.id === 'onTok'){ ACTIONS.onbGo(); return; }
+  if(typing || e.ctrlKey || e.metaKey || e.altKey || !$('#modal').hidden || !$('#pal').hidden || !$('#onb').hidden) return;
+  const k = e.key.toLowerCase();
+  if(k === 'n'){ e.preventDefault(); ACTIONS.capture(); }
+  if(k === '/'){ e.preventDefault(); openPalette(); }
+  if(k === 'r'){ e.preventDefault(); syncAll(); }
+  const v = ['today','apps','tasks','chef','settings'][+k - 1]; if(v){ e.preventDefault(); go(v); }
 });
-addEventListener('online', () => { if((C.pending||[]).length) syncAll(true); });
-document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && S.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
-
-/* ================= Gestes téléphone ================= */
+addEventListener('online', () => { Cloud.tick(true); if((C.pending||[]).length) syncAll(true); });
+document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && L.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
 (function gestes(){
   let y0 = null, dy = 0, lastY = 0;
   const ptr = $('#ptr');
   addEventListener('touchstart', e => { if(!$('#modal').hidden || view === 'chef') return; y0 = scrollY <= 0 ? e.touches[0].clientY : null; dy = 0; }, {passive:true});
-  addEventListener('touchmove', e => {
-    if(y0 == null) return;
-    dy = Math.max(0, e.touches[0].clientY - y0);
-    ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 60}px) rotate(${dy * 3}deg)`;
-  }, {passive:true});
-  addEventListener('touchend', () => {
-    if(y0 == null) return;
-    ptr.style.transform = '';
-    if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); }
-    y0 = null;
-  });
-  // Feuille : glisser vers le bas depuis la poignée pour fermer
-  let s0 = null, sd = 0;
-  const sh = $('#modal .sheet');
-  sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') || sh.scrollTop <= 0 && e.target.closest('.grab, h2')) { s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
+  addEventListener('touchmove', e => { if(y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 70}px) rotate(${dy * 3}deg)`; }, {passive:true});
+  addEventListener('touchend', () => { if(y0 == null) return; ptr.style.transform = ''; if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); } y0 = null; });
+  let s0 = null, sd = 0; const sh = $('#modal .sheet');
+  sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') && matchMedia('(max-width:899px)').matches){ s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
   sh.addEventListener('touchmove', e => { if(s0 == null) return; sd = Math.max(0, e.touches[0].clientY - s0); sh.style.transform = `translateY(${sd}px)`; }, {passive:true});
-  sh.addEventListener('touchend', () => { if(s0 == null) return; sh.style.transition = ''; if(sd > 110) closeModal(); else sh.style.transform = ''; s0 = null; });
-  // En-tête qui se marque et bouton + qui se cache quand on descend
+  sh.addEventListener('touchend', () => { if(s0 == null) return; sh.style.transition = 'transform .2s'; if(sd > 110) closeModal(); else sh.style.transform = ''; s0 = null; });
   addEventListener('scroll', () => {
-    $('header').classList.toggle('scrolled', scrollY > 4);
+    $('#top').classList.toggle('scrolled', scrollY > 4);
     const fab = $('#fab'); if(scrollY > lastY + 8 && scrollY > 120) fab.classList.add('hide'); else if(scrollY < lastY - 8) fab.classList.remove('hide');
     lastY = scrollY;
   }, {passive:true});
-  // Zone de saisie du chef qui grandit avec le texte
-  document.addEventListener('input', e => { if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'; } });
 })();
 
-/* ================= Démarrage ================= */
+/* ================================================================
+   Démarrage
+================================================================ */
+(function activation(){
+  const m = location.hash.match(/[#&]a=([A-Za-z0-9_-]+)/); if(!m) return;
+  try{ const j = JSON.parse(unb64url(m[1])); if(j.t){ L.ghToken = j.t; if(j.g) L.geminiKey = j.g; saveL(); setTimeout(() => toast('Atelier connecté'), 400); } }catch{}
+  if(matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) history.replaceState(null, '', location.pathname);
+})();
+addEventListener('hashchange', () => { if(/[#&]a=/.test(location.hash)) location.reload(); });
+if(/Mac|iPhone|iPad/.test(navigator.platform)) $('#kbdK').textContent = '⌘ K';
 render();
-if(navigator.onLine && S.ghToken && tracked().length && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true);
+if(!L.ghToken) showOnboarding();
+else {
+  Cloud.start();
+  adopterCles().then(() => { if(L.geminiKey && !get('cles', null)) partagerCle(); });
+  if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
+}
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
