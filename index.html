@@ -403,7 +403,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.1.2';
+const VERSION = '3.1.3';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1966,7 +1966,20 @@ else {
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
 }
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
+/* Nouvelle version publiée : on le signale et on recharge en un geste */
+let MAJ_VUE = false;
+async function verifierVersion(){
+  if(MAJ_VUE || !navigator.onLine || !/github\.io$/.test(location.hostname)) return;
+  try{
+    const t = await (await fetch('./index.html?v=' + Date.now(), {cache:'no-store'})).text();
+    const v = (t.match(/const VERSION = '([^']+)'/)||[])[1];
+    if(v && v !== VERSION){ MAJ_VUE = true; toast(`Nouvelle version ${v} disponible`, false, {label:'Mettre à jour', run:async () => { try{ const r = await navigator.serviceWorker?.getRegistration(); await r?.update(); }catch{} location.reload(); }}); clearTimeout(toastT); }
+  }catch{}
+}
+setTimeout(verifierVersion, 3000);
+setInterval(verifierVersion, 10*60e3);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) verifierVersion(); });
 </script>
 </body>
 </html>
