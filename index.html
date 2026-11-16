@@ -285,6 +285,49 @@ details[open]>summary::before{transform:rotate(90deg)}
 .appedit input[type=color]{padding:4px;height:46px}
 .dev{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
 .dev:last-of-type{border-bottom:0}
+/* ===== Synchro (3.1) ===== */
+.badge.warn{background:var(--wa)}
+.banner{display:flex;gap:14px;align-items:center;border-radius:20px;padding:16px;margin:6px 0 14px;border:1px solid var(--bd);background:var(--s1);box-shadow:var(--sh2)}
+.banner .bic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff}
+.banner.ok .bic{background:var(--ok)} .banner.att .bic{background:var(--wa)} .banner.pb .bic{background:var(--ko)} .banner.inf .bic{background:var(--ac)}
+.banner.pb{border-color:color-mix(in srgb,var(--ko) 45%,var(--bd))}
+.banner b{font-size:17px}
+@media (max-width:520px){.banner{flex-wrap:wrap}.banner>.btn{width:100%}}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pl 2s infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.sgrid{display:grid;gap:0 16px}
+@media (min-width:1100px){.sgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.scard{border-top:3px solid var(--c)}
+.stp{display:inline-flex;gap:5px;align-items:center;font-size:12.5px;font-weight:650;border-radius:99px;padding:3px 10px}
+.stp.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)} .stp.att{background:color-mix(in srgb,var(--wa) 18%,transparent);color:var(--wa)} .stp.pb{background:color-mix(in srgb,var(--ko) 15%,transparent);color:var(--ko)}
+.srow{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--bd)}
+.srow .snm{font-weight:600;font-size:14.5px}
+.sic{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;margin-top:1px}
+.sic.ok{background:var(--ok)} .sic.att{background:var(--wa)} .sic.pb{background:var(--ko)} .sic.inf{background:var(--gr)}
+.tl{display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:8px}
+.tl i{flex:1;max-width:12px;border-radius:2px;background:var(--c,var(--ac));opacity:.85}
+.tl i.z{background:var(--s3);opacity:1}
+.tlx{display:flex;justify-content:space-between;max-width:330px}
+/* ===== Discussions (3.1) ===== */
+.chefw{display:block}
+@media (min-width:900px){.chefw{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start} body.chef .composer{left:calc(260px + 32px + 322px)}}
+.dlist{position:sticky;top:96px;max-height:calc(100vh - 120px);overflow:auto;padding-bottom:20px}
+.ditem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:none;border-radius:12px;padding:9px 8px;cursor:pointer}
+.ditem:hover{background:var(--s2)} .ditem.on{background:var(--acs)}
+.ditem .dt{display:block;font-weight:600;font-size:14.5px}
+.thd{position:sticky;top:calc(env(safe-area-inset-top) + 64px);z-index:4;display:flex;gap:10px;align-items:center;padding:10px 0;background:var(--bg)}
+@media (min-width:900px){.thd{top:86px}}
+.thd .ibtn{width:36px;height:36px}
+.msg .mt{display:block;font-size:11px;opacity:.6;margin-top:4px;text-align:right}
+.msg .mact .mt{margin:0 0 0 auto;align-self:center}
+.send.stop{background:var(--ko)}
+#micBtn.on{background:var(--ko);color:#fff;animation:pl 1.5s infinite}
+.md .code{position:relative}
+.md .code .cpy{position:absolute;top:6px;right:6px;border:0;border-radius:8px;background:var(--s1);color:var(--tx2);width:30px;height:30px;display:grid;place-items:center;cursor:pointer;box-shadow:var(--sh1)}
+.hero .md .code .cpy{background:rgba(255,255,255,.2);color:#fff}
+.dpick{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-top:10px}
+.dpick button{display:flex;gap:10px;align-items:center;border:1px solid var(--bd);background:var(--s1);border-radius:14px;padding:10px;cursor:pointer;font-weight:600;text-align:left}
+.dpick button:hover{border-color:var(--ac)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -305,6 +348,7 @@ details[open]>summary::before{transform:rotate(90deg)}
       <div><h1 id="vtitle">Atelier</h1><small id="vsub"></small></div>
       <div class="hacts">
         <button class="ibtn phone-only" data-action="palette" aria-label="Rechercher"><svg class="i"><use href="#i-search"/></svg></button>
+        <button class="ibtn phone-only" data-go="settings" aria-label="Réglages"><svg class="i"><use href="#i-settings"/></svg></button>
         <button class="ibtn" id="syncBtn" data-action="sync" aria-label="Actualiser"><svg class="i"><use href="#i-sync"/></svg></button>
       </div>
     </header>
@@ -343,12 +387,20 @@ details[open]>summary::before{transform:rotate(90deg)}
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M9 15l6-6M10.5 6.5l1.8-1.8a4 4 0 0 1 5.7 5.7l-1.8 1.8M13.5 17.5l-1.8 1.8a4 4 0 0 1-5.7-5.7l1.8-1.8"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 4 4H6l4-4zM12 14v7"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
   <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
 </svg>
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.0.0';
+const VERSION = '3.1.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -401,7 +453,7 @@ function md(src){
   let out = '', list = null, inCode = false, code = '';
   const close = () => { if(list){ out += `</${list}>`; list = null; } };
   for(const l of esc(src).split('\n')){
-    if(/^\s*```/.test(l)){ if(inCode){ out += `<pre>${code}</pre>`; code = ''; inCode = false; } else { close(); inCode = true; } continue; }
+    if(/^\s*```/.test(l)){ if(inCode){ out += blocCode(code); code = ''; inCode = false; } else { close(); inCode = true; } continue; }
     if(inCode){ code += l + '\n'; continue; }
     let m;
     if((m = l.match(/^\s*[-*•]\s+(.*)/))){ if(list !== 'ul'){ close(); out += '<ul>'; list = 'ul'; } out += `<li>${inline(m[1])}</li>`; continue; }
@@ -410,9 +462,10 @@ function md(src){
     if((m = l.match(/^#{1,6}\s+(.*)/))){ out += `<h4>${inline(m[1])}</h4>`; continue; }
     if(l.trim()) out += `<p>${inline(l)}</p>`;
   }
-  close(); if(inCode) out += `<pre>${code}</pre>`;
+  close(); if(inCode) out += blocCode(code);
   return `<div class="md">${out}</div>`;
 }
+function blocCode(code){ return `<div class="code"><button class="cpy" data-action="copyCode" aria-label="Copier" title="Copier">${ic('copy','s')}</button><pre>${code}</pre></div>`; }
 const spin = t => `<span class="spinner"></span>${t ? esc(t) : ''}`;
 
 /* ================================================================
@@ -597,7 +650,6 @@ const Cloud = {
   setJoined(){ this.joined = true; LS.set('atelier.cloud.joined', true); },
   snapshot(){
     const keys = Object.assign({}, SH);
-    if(keys.chat) keys.chat = {t:keys.chat.t, v:(keys.chat.v||[]).slice(-40)};
     return JSON.stringify({v:1, device:L.device, platform:PLATEFORME, nom:L.nomAppareil || PLATEFORME, updated:Date.now(), version:VERSION, keys});
   },
   async push(){
@@ -746,7 +798,7 @@ function reflexion(m){
   if(/^gemini-([3-9]|\d\d)/.test(m)) return {thinkingLevel:deep ? 'low' : 'minimal'};
   return null;
 }
-async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null}={}){
+async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input;
   let last = null;
@@ -759,8 +811,8 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
       const enFlux = !!onText && !json;
       let r;
       try{
-        r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body)});
-      }catch{ throw new Error('Pas de réseau pour joindre Gemini'); }
+        r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body), signal});
+      }catch(e){ if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Gemini'); }
       if(!r.ok){
         const d = await r.json().catch(() => ({}));
         last = new Error(gemErr(r.status, d));
@@ -831,6 +883,172 @@ ${cerveau}`;
 const contexteGlobal = () => tracked().map(a => ficheApp(a)).join('\n\n');
 
 /* ================================================================
+   Suivi des synchros (3.1) : chaque app, ses envois, sa publication, ses sites
+================================================================ */
+const SUIVI_DEFAUT = {
+  'oiriaure/boussole':[{type:'donnees', repo:'oiriaure/boussole-donnees', nom:'Envoi des données au téléphone', seuil:15}, {type:'site', url:'https://oiriaure.github.io/boussole-mobile/', nom:'Site du téléphone'}],
+  'oiriaure/revisions':[{type:'donnees', repo:'oiriaure/revisions-sync', nom:'Synchro entre appareils', seuil:1440}, {type:'site', url:'https://oiriaure.github.io/revisions-mobile/', nom:'Site du téléphone'}]
+};
+const suiviDe = a => a.suivi || SUIVI_DEFAUT[a.repo] || [];
+const ST = {ok:{ic:'check', cls:'ok', l:'OK'}, att:{ic:'alert', cls:'att', l:'À surveiller'}, pb:{ic:'x', cls:'pb', l:'Problème'}, info:{ic:'pulse', cls:'inf', l:'Info'}};
+function dureeTxt(ms){ const m = Math.round(ms/60000); if(m < 1) return 'moins d\'une minute'; if(m < 60) return m + ' min'; const hh = Math.round(m/60); if(hh < 48) return hh + ' h'; return Math.round(hh/24) + ' jours'; }
+function serie24(dates){ const out = Array(24).fill(0), now = Date.now(); for(const d of dates){ const x = Math.floor((now - new Date(d))/3600e3); if(x >= 0 && x < 24) out[23 - x]++; } return out; }
+const dateCommit = c => c.commit?.committer?.date || c.commit?.author?.date;
+const appareilDe = msg => ((msg||'').match(/depuis\s+(.+)$/i)||[])[1]?.trim();
+async function chkDonnees(s){
+  const since = new Date(Date.now() - 24*3600e3).toISOString(), q = s.chemin ? `&path=${encodeURIComponent(s.chemin)}` : '';
+  const id = 'd:' + s.repo + (s.chemin||'');
+  try{
+    const [recents, dernier] = await Promise.all([gh(`/repos/${s.repo}/commits?since=${since}&per_page=100${q}`), gh(`/repos/${s.repo}/commits?per_page=1${q}`)]);
+    const last = dernier[0] ? dateCommit(dernier[0]) : null, age = last ? Date.now() - new Date(last) : Infinity;
+    const appareils = {};
+    for(const c of recents){ const ap = appareilDe(c.commit.message.split('\n')[0]), t = dateCommit(c); if(ap && (!appareils[ap] || appareils[ap] < t)) appareils[ap] = t; }
+    const seuil = (s.seuil||60) * 60e3;
+    let statut = 'ok', detail;
+    if(!last){ statut = 'att'; detail = 'Aucun envoi pour l\'instant'; }
+    else if(age <= seuil) detail = `Dernier envoi il y a ${dureeTxt(age)} · ${plural(recents.length, 'envoi')} en 24 h`;
+    else { statut = 'att'; detail = `Pas d'envoi depuis ${dureeTxt(age)} (normalement au moins toutes les ${dureeTxt(seuil)}) : l'appareil qui envoie est peut-être éteint`; }
+    return {id, nom:s.nom, statut, detail, quand:last, serie:serie24(recents.map(dateCommit)), appareils};
+  }catch(e){
+    return {id, nom:s.nom, statut:'pb', detail:(e.status === 404 || e.status === 403) ? `Le token Atelier n'a pas accès à ${s.repo} (à ajouter au token)` : e.message};
+  }
+}
+async function chkSite(s){
+  const t0 = performance.now(), id = 's:' + s.url, nom = s.nom || 'Site';
+  try{
+    const r = await fetch(s.url + '?v=' + Date.now(), {cache:'no-store'}).catch(() => fetch(s.url, {mode:'no-cors', cache:'no-store'}));
+    const ms = Math.round(performance.now() - t0);
+    if(r.type === 'opaque' || r.ok) return {id, nom, statut:'ok', detail:`En ligne · répond en ${ms} ms`, lien:s.url};
+    return {id, nom, statut:'pb', detail:`Le site répond avec une erreur ${r.status}`, lien:s.url};
+  }catch{ return {id, nom, statut:navigator.onLine ? 'pb' : 'att', detail:navigator.onLine ? 'Le site ne répond pas' : 'Hors ligne', lien:s.url}; }
+}
+async function chkPublication(a){
+  const repo = a.repo, id = 'pub', nom = 'Publication des mises à jour';
+  try{
+    const [vtxt, vc] = await Promise.all([ghRaw(repo, 'publication/version.json'), gh(`/repos/${repo}/commits?path=publication/version.json&per_page=1`)]);
+    if(!vtxt) return {id, nom, statut:'info', detail:'Pas de publication automatique (publication/version.json absent)'};
+    let v; try{ v = JSON.parse(vtxt); }catch{ return {id, nom, statut:'pb', detail:'publication/version.json est illisible : les mises à jour automatiques sont bloquées'}; }
+    if(!Array.isArray(v.fichiers || v.files) && !v.version) return {id, nom, statut:'att', detail:'publication/version.json ne contient pas de version'};
+    const D = vc[0] ? dateCommit(vc[0]) : null;
+    const apres = D ? (await gh(`/repos/${repo}/commits?since=${encodeURIComponent(D)}&per_page=50`)).filter(c => c.sha !== vc[0].sha) : [];
+    if(!apres.length) return {id, nom, statut:'ok', detail:`Version ${v.version || '?'} publiée il y a ${D ? dureeTxt(Date.now() - new Date(D)) : '?'} · tout est publié`, quand:D};
+    const vieux = Date.now() - new Date(dateCommit(apres[apres.length - 1])) > 2*864e5;
+    return {id, nom, statut:vieux ? 'att' : 'info', detail:`Version ${v.version || '?'} · ${plural(apres.length, 'modification')} pas encore publiée${apres.length > 1 ? 's' : ''} (dernière : « ${apres[0].commit.message.split('\n')[0].slice(0, 80)} »)`, quand:D};
+  }catch(e){ return {id, nom, statut:'att', detail:e.message}; }
+}
+async function verifierApp(a){
+  const items = [], repo = a.repo;
+  let info;
+  try{ info = await gh(`/repos/${repo}`); items.push({id:'code', nom:'Code sur GitHub', statut:'ok', detail:`Accessible · dernière modification il y a ${dureeTxt(Date.now() - new Date(info.pushed_at))}`, quand:info.pushed_at}); }
+  catch(e){ items.push({id:'code', nom:'Code sur GitHub', statut:'pb', detail:e.message}); return items; }
+  const [pub, prs, suivis] = await Promise.all([chkPublication(a), gh(`/repos/${repo}/pulls?state=open&per_page=20`).catch(() => []), Promise.all(suiviDe(a).map(s => s.type === 'site' ? chkSite(s) : chkDonnees(s)))]);
+  items.push(pub, ...suivis);
+  const props = (prs||[]).filter(x => (x.head?.ref||'').startsWith('atelier/'));
+  if(props.length) items.push({id:'pr', nom:'Propositions de cerveau', statut:'att', detail:`${plural(props.length, 'proposition')} à relire et fusionner`, lien:props[0].html_url});
+  const d = C.apps[repo];
+  if(d?.issuesErr) items.push({id:'issues', nom:'Tâches (Issues)', statut:'att', detail:d.issuesErr});
+  return items;
+}
+async function verifierAtelier(){
+  const ce = cloudEtat();
+  const apps = {[(L.nomAppareil || PLATEFORME) + ' (cet appareil)']:new Date(Cloud.st.pushed || Date.now()).toISOString()};
+  for(const r of Object.values(C.remote)) if(r.updated) apps[r.nom || r.platform] = new Date(r.updated).toISOString();
+  const [envois, site] = await Promise.all([chkDonnees({repo:Cloud.repo, nom:'Envois des appareils au cloud', seuil:1440}), chkSite({url:'https://oiriaure.github.io/atelier-mobile/', nom:'Site d\'Atelier'})]);
+  delete envois.appareils;
+  return [
+    {id:'cloud', nom:'Cloud Atelier', statut:Cloud.st.err ? (Cloud.st.err === 'hors ligne' ? 'att' : 'pb') : 'ok', detail:Cloud.st.err || ce.txt + (Cloud.st.last ? ' · vérifié il y a ' + dureeTxt(Date.now() - Cloud.st.last) : ''), appareils:apps},
+    envois, site,
+    {id:'ia', nom:'Chef de projet (Gemini)', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? `Clé présente${C.lastModel ? ' · dernier modèle : ' + C.lastModel : ''}` : 'Ajoute la clé Gemini dans les Réglages'}
+  ];
+}
+function compterSante(repo){
+  const n = {pb:0, att:0}, s = C.sante; if(!s) return n;
+  const its = repo ? (repo === 'atelier' ? s.atelier : s.apps[repo]) || [] : [...Object.values(s.apps).flat(), ...(s.atelier||[])];
+  for(const it of its) if(n[it.statut] != null) n[it.statut]++;
+  return n;
+}
+const pireDe = items => !items ? null : items.some(i => i.statut === 'pb') ? 'pb' : items.some(i => i.statut === 'att') ? 'att' : 'ok';
+function majIncidents(res){
+  const inc = [...(get('incidents', [])||[])]; let ch = false; const now = Date.now();
+  const all = [...Object.entries(res.apps).flatMap(([repo, its]) => its.map(it => Object.assign({app:repo}, it))), ...(res.atelier||[]).map(it => Object.assign({app:'atelier'}, it))];
+  for(const it of all){
+    const key = it.app + '|' + it.id, open = inc.find(x => x.key === key && !x.fin);
+    if(it.statut === 'pb' || it.statut === 'att'){
+      if(!open){ inc.unshift({key, app:it.app, nom:it.nom, statut:it.statut, msg:it.detail, debut:now, par:L.nomAppareil || PLATEFORME}); ch = true; }
+      else if(open.statut !== it.statut){ open.statut = it.statut; open.msg = it.detail; ch = true; }
+    } else if(open){ open.fin = now; ch = true; }
+  }
+  if(ch) put('incidents', inc.slice(0, 40));
+}
+async function verifierTout(manuel=false){
+  if(!L.ghToken || busy.verif) return;
+  busy.verif = true; if(view === 'sync') render(); else renderChrome();
+  try{
+    const res = {at:Date.now(), apps:{}, atelier:[]};
+    await Promise.all([...tracked().map(async a => { res.apps[a.repo] = await verifierApp(a); }), (async () => { res.atelier = await verifierAtelier(); })()]);
+    C.sante = res; saveC(); majIncidents(res);
+    if(manuel){ const n = compterSante(); toast(n.pb ? `${plural(n.pb, 'problème')} détecté${n.pb > 1 ? 's' : ''}` : n.att ? `Tout marche · ${plural(n.att, 'point')} à surveiller` : 'Tout fonctionne', !!n.pb); }
+  }catch(e){ console.warn(e); }
+  finally{ busy.verif = false; if(view === 'sync') render(); else renderChrome(); }
+}
+function santeTexte(repo){
+  const s = C.sante; if(!s) return '(pas encore vérifiée)';
+  const its = repo ? (s.apps[repo]||[]) : [...Object.entries(s.apps).flatMap(([r, its]) => its.map(i => Object.assign({}, i, {nom:appBy(r).name + ' · ' + i.nom}))), ...(s.atelier||[]).map(i => Object.assign({}, i, {nom:'Atelier · ' + i.nom}))];
+  return its.map(i => `- ${(ST[i.statut]||ST.info).l} — ${i.nom} : ${i.detail}`).join('\n') || '(rien)';
+}
+
+/* ================================================================
+   Discussions avec le chef (3.1) : une rubrique du cloud par discussion
+================================================================ */
+const DP = 'disc:';
+function discs(){ return Object.entries(SH).filter(([k, e]) => k.startsWith(DP) && e && e.v).map(([, e]) => e.v).sort((a, b) => ((b.epingle ? 1 : 0) - (a.epingle ? 1 : 0)) || (b.maj - a.maj)); }
+const discGet = id => id ? get(DP + id, null) : null;
+function discPut(d){ d.maj = Date.now(); put(DP + d.id, d); }
+function discNew(app=null, titre=''){
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6), a = app ? appBy(app) : null;
+  const d = {id, app, titre:titre || (a ? a.name : 'Discussion générale'), msgs:[], cree:Date.now(), maj:Date.now(), epingle:false, auto:!titre};
+  discPut(d); return d;
+}
+let CHEF = {id:LS.get('atelier.disc', null), liste:false, q:''};
+function discOuvrir(id){ CHEF.id = id; CHEF.liste = false; LS.set('atelier.disc', id); }
+function discCourante(){ let d = discGet(CHEF.id); if(!d){ d = discs()[0] || null; if(d) CHEF.id = d.id; } return d; }
+function discPourApp(repo){ return discs().find(d => d.app === repo) || discNew(repo); }
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micOk = !!SR && !/Electron/.test(navigator.userAgent);
+let CTRL = null, REC = null;
+const heure = t => t ? new Date(t).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : '';
+function agoCourt(t){ const m = Math.round((Date.now() - t)/60000); if(m < 1) return 'maint.'; if(m < 60) return m + ' min'; const h2 = Math.round(m/60); if(h2 < 24) return h2 + ' h'; const j = Math.round(h2/24); return j === 1 ? 'hier' : j + ' j'; }
+const scrollBas = () => window.scrollTo(0, document.body.scrollHeight);
+async function titrer(d){
+  try{
+    const t = await gemini(`Donne un titre de 2 à 5 mots, sans guillemets ni point final, à une discussion qui commence par : « ${d.msgs[0]?.t.slice(0, 300)} ». Réponds uniquement le titre.`, {tier:'rapide', temperature:0.3});
+    const d2 = discGet(d.id); if(!d2 || !d2.auto) return;
+    d2.titre = t.replace(/^["«»\s]+|["«».\s]+$/g, '').slice(0, 60) || d2.titre; d2.auto = false; discPut(d2); if(view === 'chef') render();
+  }catch{}
+}
+async function envoyer(q, d){
+  d.msgs.push({r:'u', t:q, at:Date.now()}); d.msgs = d.msgs.slice(-80); discPut(d);
+  busy.chat = d.id; render(); scrollBas();
+  CTRL = new AbortController();
+  let partiel = '';
+  try{
+    const a = d.app ? appBy(d.app) : null;
+    const ctx = a ? `Cette discussion porte sur l'app ${a.name}. Nous sommes le ${dateFR(Date.now())}.\n\n${ficheApp(a)}\n\nSynchro et santé de ${a.name} :\n${santeTexte(a.repo)}`
+                  : `Vue d'ensemble (${dateFR(Date.now())}) :\n\n${contexteGlobal()}\n\nSynchro et santé :\n${santeTexte()}`;
+    const hist = d.msgs.slice(-16).map(m => ({role:m.r === 'u' ? 'user' : 'model', parts:[{text:m.t}]}));
+    const text = await gemini([{role:'user', parts:[{text:ctx}]}, {role:'model', parts:[{text:'Compris.'}]}, ...hist],
+      {system:ROLE_CHEF + '\nQuand Clément demande une consigne pour Claude, mets-la dans un bloc de code.', signal:CTRL.signal,
+       onText:t => { partiel = t; const el = $('#chatLive'); if(el){ el.innerHTML = md(t); if(innerHeight + scrollY > document.body.scrollHeight - 260) scrollBas(); } }});
+    const d2 = discGet(d.id) || d; d2.msgs.push({r:'m', t:text, at:Date.now()}); discPut(d2);
+    if(d2.auto && d2.msgs.length <= 2) titrer(d2);
+  }catch(e){
+    const d2 = discGet(d.id) || d;
+    if(e.name === 'AbortError'){ if(partiel){ d2.msgs.push({r:'m', t:partiel + '\n\n*(réponse arrêtée)*', at:Date.now()}); discPut(d2); } }
+    else { d2.msgs.pop(); discPut(d2); busy.chat = false; CTRL = null; render(); if($('#chatIn')) $('#chatIn').value = q; throw e; }
+  }finally{ busy.chat = false; CTRL = null; render(); scrollBas(); }
+}
+
+/* ================================================================
    Calculs d'affichage
 ================================================================ */
 function allCommits(){
@@ -871,7 +1089,8 @@ function cloudEtat(){
 /* ================================================================
    Vues
 ================================================================ */
-const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
+const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
+const ORDRE = ['today','apps','tasks','chef','sync','settings'];
 const empty = (big, t, s, btn) => `<div class="empty"><div class="big">${big}</div><h3>${esc(t)}</h3><p>${esc(s)}</p>${btn||''}</div>`;
 
 function liveCard(a, folded=true){
@@ -926,6 +1145,8 @@ function vToday(){
       </section>
     </div>
     <div>
+      ${(() => { const sn = compterSante(), s = C.sante; if(!s) return ''; const cls = sn.pb ? 'pb' : sn.att ? 'att' : 'ok';
+        return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros : tout fonctionne' : cls === 'pb' ? `Synchros : ${plural(sn.pb, 'problème')}` : `Synchros : ${plural(sn.att, 'point')} à surveiller`}</b><div class="xs muted">Vérifié ${esc(ago(s.at))} · voir le détail</div></div>${ic('chev','s')}</section>`; })()}
       ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
       ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi automatique dès le retour du réseau.</div></section>` : ''}
       <section class="card">
@@ -979,20 +1200,82 @@ function vTasks(){
       || empty('🎉', filtre ? 'Rien ne correspond' : 'Rien à faire', filtre ? 'Change le filtre.' : 'Ajoute une idée avec le bouton +.')}`;
 }
 
-const SUGG = ['Sur quelle app je devrais passer du temps cette semaine ?', 'Quels risques vois-tu dans mes apps en ce moment ?', 'Rédige une consigne pour Claude : la prochaine amélioration la plus utile', 'Explique-moi simplement comment Boussole se met à jour depuis GitHub'];
+const SUGG = ['Sur quelle app je devrais passer du temps cette semaine ?', 'Quels risques vois-tu dans mes apps en ce moment ?', 'Rédige une consigne pour Claude : la prochaine amélioration la plus utile', 'Est-ce que toutes mes synchros fonctionnent ?'];
+const suggApp = a => [`Où en est ${a.name} ?`, `Quelle est la prochaine amélioration la plus utile pour ${a.name} ?`, `Explique-moi simplement comment ${a.name} est construite`, `Rédige la consigne pour la tâche la plus urgente de ${a.name}`];
+const LARGE = () => matchMedia('(min-width:900px)').matches;
+function itemDisc(x, d){
+  const a = x.app ? appBy(x.app) : null, last = x.msgs[x.msgs.length - 1];
+  return `<button class="ditem ${d && d.id === x.id ? 'on' : ''}" data-disc="${esc(x.id)}">${a ? avatar(a, 's') : '<span class="av s" style="--c:#6366f1">✦</span>'}<span style="flex:1;min-width:0"><span class="dt clamp1">${x.epingle ? '📌 ' : ''}${esc(x.titre)}</span><span class="xs muted clamp1" style="display:block">${last ? esc(last.t.replace(/[#*`>_]/g, '').slice(0, 90)) : 'Nouvelle discussion'}</span></span><span class="xs muted" style="white-space:nowrap">${esc(agoCourt(x.maj))}</span></button>`;
+}
+function listeDiscs(all, d){
+  const q = CHEF.q.toLowerCase();
+  const f = all.filter(x => !q || (x.titre + ' ' + x.msgs.map(m => m.t).join(' ')).toLowerCase().includes(q));
+  const grp = (t, arr) => arr.length ? `<div class="slabel" style="margin:14px 4px 6px">${t}</div>${arr.map(x => itemDisc(x, d)).join('')}` : '';
+  return `<aside class="dlist"><div style="display:flex;gap:8px;margin-top:4px"><input id="dq" type="search" placeholder="Rechercher…" value="${esc(CHEF.q)}"><button class="btn primary" data-action="newDisc" title="Nouvelle discussion" aria-label="Nouvelle discussion">${ic('plus','s')}</button></div>
+    ${grp('Épinglées', f.filter(x => x.epingle))}${grp('Par app', f.filter(x => !x.epingle && x.app))}${grp('Générales', f.filter(x => !x.epingle && !x.app))}
+    ${!all.length ? '<p class="muted sm" style="padding:10px 4px">Aucune discussion pour l\'instant. Crée-en une pour une app précise ou pour l\'ensemble de tes projets.</p>' : q && !f.length ? '<p class="muted sm" style="padding:10px 4px">Rien ne correspond.</p>' : ''}</aside>`;
+}
+function bulle(m, i, last){
+  if(m.r === 'u') return `<div class="msg u">${esc(m.t)}<span class="mt">${heure(m.at)}</span></div>`;
+  return `<div class="msg m">${md(m.t)}<div class="mact"><button class="btn sm ghost" data-action="copyMsg" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tasksFrom" data-src="chat" data-i="${i}">${ic('plus','s')} Tâches</button>${last && !busy.chat ? `<button class="btn sm ghost" data-action="regen" title="Refaire la réponse">${ic('redo','s')}</button>` : ''}<span class="mt">${heure(m.at)}</span></div></div>`;
+}
+function fil(d){
+  const a = d.app ? appBy(d.app) : null, large = LARGE();
+  const pire = a ? pireDe(C.sante?.apps?.[a.repo]) : pireDe(C.sante ? [...Object.values(C.sante.apps).flat(), ...(C.sante.atelier||[])] : null);
+  const ctx = a ? [C.apps[a.repo]?.brain ? 'son cerveau' : 'pas de cerveau', plural((C.apps[a.repo]?.issues||[]).length, 'tâche'), (C.apps[a.repo]?.commits||[]).length ? 'ses commits' : null, pire ? 'synchro ' + ST[pire].l.toLowerCase() : null]
+                : [plural(tracked().length, 'app'), plural(nbTaches(), 'tâche'), pire ? 'synchro ' + ST[pire].l.toLowerCase() : null];
+  return `<section class="thread">
+    <div class="thd">${large ? '' : `<button class="ibtn" data-action="discListe" aria-label="Toutes les discussions">${ic('back')}</button>`}${a ? avatar(a) : '<span class="av" style="--c:#6366f1">✦</span>'}
+      <div style="flex:1;min-width:0"><b class="clamp1" style="display:block">${esc(d.titre)}</b><div class="xs muted clamp1">Le chef connaît : ${esc(ctx.filter(Boolean).join(' · '))}</div></div>
+      ${d.id ? `<button class="ibtn phone-only" data-action="discMenu" aria-label="Options de la discussion">⋯</button>` : ''}
+      ${d.id ? `<button class="ibtn desk-only" data-action="discPin" title="${d.epingle ? 'Désépingler' : 'Épingler'}" aria-label="Épingler">${ic('pin','s')}</button><button class="ibtn desk-only" data-action="discRename" title="Renommer" aria-label="Renommer">${ic('edit','s')}</button><button class="ibtn desk-only" data-action="discDel" title="Supprimer" aria-label="Supprimer">${ic('trash','s')}</button>` : ''}
+    </div>
+    ${d.msgs.length ? '' : `<div class="empty" style="padding:18px 8px 6px"><div class="big">${a ? esc(a.emoji) : '✦'}</div><h3>${a ? 'Parlons de ' + esc(a.name) : 'Que veux-tu savoir ?'}</h3><p>${a ? 'Le chef connaît son cerveau, ses tâches, ses commits et l\'état de sa synchro.' : 'Le chef connaît toutes tes apps et l\'état de leurs synchros.'}</p></div>
+      <div class="sugg">${(a ? suggApp(a) : SUGG).map(q => `<button data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`}
+    <div class="chat">${d.msgs.map((m, i) => bulle(m, i, i === d.msgs.length - 1)).join('')}${busy.chat === d.id ? `<div class="msg m" id="chatLive">${spin('')}</div>` : ''}</div>
+  </section>
+  <div class="composer"><div class="in">${micOk ? `<button class="ibtn" data-action="dicter" id="micBtn" aria-label="Dicter" style="width:46px;height:46px;border-radius:23px">${ic('mic')}</button>` : ''}<textarea id="chatIn" rows="1" placeholder="${a ? 'Une question sur ' + esc(a.name) + '…' : 'Écris au chef…'}" enterkeyhint="send"></textarea>${busy.chat ? `<button class="send stop" data-action="stopChat" aria-label="Arrêter la réponse">${ic('stop')}</button>` : `<button class="send" data-action="send" aria-label="Envoyer">${ic('send')}</button>`}</div></div>`;
+}
 function vChef(){
   if(!L.geminiKey) return empty('💬', 'Le chef de projet', 'Ajoute ta clé Gemini dans les Réglages pour discuter avec lui.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
-  const msgs = get('chat', []) || [];
-  return `<div class="chatwrap">
-    ${msgs.length ? '' : `<div class="empty" style="padding:20px 8px 8px"><div class="big">✦</div><h3>Que veux-tu savoir ?</h3><p>Le chef connaît le cerveau, les commits et les tâches de toutes tes apps.</p></div>
-    <div class="sugg">${SUGG.map(q => `<button data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`}
-    <div class="chat">${msgs.map((m, i) => m.role === 'user' ? `<div class="msg u">${esc(m.text)}</div>` : `<div class="msg m">${md(m.text)}
-      <div class="mact"><button class="btn sm ghost" data-action="copyMsg" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tasksFrom" data-src="chat" data-i="${i}">${ic('plus','s')} Tâches</button></div></div>`).join('')}
-      ${busy.chat ? `<div class="msg m" id="chatLive">${spin('')}</div>` : ''}
-    </div>
-    ${msgs.length ? `<div class="btns" style="justify-content:center"><button class="btn sm ghost" data-action="newChat">Nouvelle conversation</button></div>` : ''}
-  </div>
-  <div class="composer"><div class="in"><textarea id="chatIn" rows="1" placeholder="Écris au chef…" enterkeyhint="send"></textarea><button class="send" data-action="send" aria-label="Envoyer">${ic('send')}</button></div></div>`;
+  const all = discs(), d = discCourante(), large = LARGE();
+  const vide = {id:null, app:null, titre:'Discussion générale', msgs:[]};
+  if(large) return `<div class="chefw">${listeDiscs(all, d)}<div>${fil(d || vide)}</div></div>`;
+  if(CHEF.liste && all.length) return listeDiscs(all, d);
+  return fil(d || vide);
+}
+
+function ligneSante(it, repo, couleur){
+  const st = ST[it.statut] || ST.info;
+  return `<div class="srow" style="--c:${esc(couleur||'var(--ac)')}"><span class="sic ${st.cls}">${ic(st.ic,'s')}</span><div style="flex:1;min-width:0">
+    <div class="snm">${esc(it.nom)}${it.lien ? ` <a href="${esc(it.lien)}" target="_blank" rel="noopener" aria-label="Ouvrir">${ic('ext','s')}</a>` : ''}</div>
+    <div class="sm muted">${esc(it.detail || '')}</div>
+    ${it.serie ? `<div class="tl" title="Envois des dernières 24 h (une barre par heure)">${it.serie.map(v => `<i class="${v ? '' : 'z'}" style="height:${v ? 5 + Math.min(v, 12)/12*19 : 3}px"></i>`).join('')}</div><div class="tlx xs muted"><span>il y a 24 h</span><span>maintenant</span></div>` : ''}
+    ${it.appareils && Object.keys(it.appareils).length ? `<div class="kv">${Object.entries(it.appareils).sort((x, y) => new Date(y[1]) - new Date(x[1])).map(([k, t]) => `<span class="pill">${ic(/iPhone|iPad|Android|Mobile|téléphone/i.test(k) ? 'phone' : 'desk','s')} ${esc(k)} · ${esc(ago(t))}</span>`).join('')}</div>` : ''}
+    ${(it.statut === 'pb' || it.statut === 'att') && L.geminiKey ? `<button class="btn sm ghost" style="margin-top:8px" data-action="askFix" data-repo="${esc(repo)}" data-msg="${esc(it.nom + ' : ' + it.detail)}">${ic('chef','s')} Demander au chef</button>` : ''}
+  </div></div>`;
+}
+function carteSante(nom, av, items, repo, couleur){
+  if(!items) return `<section class="card scard" style="--c:${esc(couleur)}"><div class="hd"><div style="display:flex;gap:10px;align-items:center">${av}<h2>${esc(nom)}</h2></div></div><div class="skel"></div><div class="skel" style="width:70%"></div></section>`;
+  const pire = pireDe(items);
+  return `<section class="card scard" style="--c:${esc(couleur)}"><div class="hd"><div style="display:flex;gap:10px;align-items:center">${av}<h2>${esc(nom)}</h2></div><span class="stp ${pire}">${ic(ST[pire].ic,'s')} ${ST[pire].l}</span></div>
+    ${items.map(it => ligneSante(it, repo, couleur)).join('')}</section>`;
+}
+const nomApp = k => k === 'atelier' ? 'Atelier' : appBy(k).name;
+function vSync(){
+  const s = C.sante, n = compterSante();
+  const ban = !s ? {cls:'inf', ic:'pulse', t:'Première vérification…', d:'Atelier contrôle chaque app : son code, sa publication, ses envois de données et ses sites.'}
+    : n.pb ? {cls:'pb', ic:'x', t:`${plural(n.pb, 'problème')} à régler`, d:'Touche « Demander au chef » sur la ligne concernée pour un diagnostic et la marche à suivre.'}
+    : n.att ? {cls:'att', ic:'alert', t:`Tout marche · ${plural(n.att, 'point')} à surveiller`, d:'Rien de bloquant : détails ci-dessous.'}
+    : {cls:'ok', ic:'check', t:'Tout fonctionne', d:'Toutes tes apps, leurs envois et leurs sites répondent normalement.'};
+  const inc = get('incidents', []) || [];
+  return `<section class="banner ${ban.cls}"><div class="bic">${ic(ban.ic)}</div><div style="flex:1;min-width:0"><b>${esc(ban.t)}</b><div class="sm muted">${esc(ban.d)}</div>
+      <div class="xs muted" style="margin-top:4px">${busy.verif ? spin(' Vérification en cours…') : s ? `<span class="pulse"></span>Vérifié ${esc(ago(s.at))} · automatiquement toutes les 5 min` : ''}</div></div>
+      <button class="btn sm" data-action="verifier" ${busy.verif ? 'disabled' : ''}>${ic('sync','s')} Vérifier</button></section>
+    <div class="sgrid">${tracked().map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av" style="--c:#6366f1"><img src="icon.svg" alt="" style="width:26px;height:26px;border-radius:7px"></span>', s?.atelier, 'atelier', '#6366f1')}</div>
+    <section class="card"><div class="hd"><h2>${ic('alert')} Journal des incidents</h2>${inc.length ? '<button class="btn sm ghost" data-action="clearInc">Vider</button>' : ''}</div>
+      ${inc.length ? `<div class="feed">${inc.slice(0, 20).map(x => `<div class="fi"><span class="sic ${x.fin ? 'ok' : x.statut === 'pb' ? 'pb' : 'att'}">${ic(x.fin ? 'check' : x.statut === 'pb' ? 'x' : 'alert','s')}</span><span class="tx sm"><b>${esc(nomApp(x.app))}</b> · ${esc(x.nom)}<br><span class="muted">${esc(x.msg)}</span></span><span class="when">${x.fin ? 'réglé · a duré ' + esc(dureeTxt(x.fin - x.debut)) : 'en cours · ' + esc(ago(x.debut))}</span></div>`).join('')}</div>` : '<p class="muted sm" style="margin:0">Aucun incident enregistré. Chaque problème détecté apparaîtra ici avec sa durée, sur tous tes appareils.</p>'}
+    </section>`;
 }
 
 const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
@@ -1073,7 +1356,7 @@ function vSettings(){
   <h3 class="sec">Données</h3>
   <section class="card">
     <div class="btns" style="margin-top:0"><button class="btn sm" data-action="exportCfg">Exporter</button><button class="btn sm" data-action="importCfg">Importer</button><button class="btn sm ghost" data-action="clearCache">Vider le cache de cet appareil</button></div>
-    <p class="help">Atelier ${VERSION} · ${esc(PLATEFORME)} · raccourcis : N nouvelle idée, 1 à 5 les onglets, R actualiser, Ctrl+K rechercher.</p>
+    <p class="help">Atelier ${VERSION} · ${esc(PLATEFORME)} · raccourcis : N nouvelle idée, 1 à 6 les écrans, R actualiser, Ctrl+K rechercher.</p>
   </section></div>`;
 }
 
@@ -1101,26 +1384,28 @@ function onbFin(){ $('#onb').hidden = true; render(); syncAll(true); }
 /* ================================================================
    Rendu général
 ================================================================ */
-function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' ? document.body.scrollHeight : 0); }
+function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' && !CHEF.liste ? document.body.scrollHeight : 0); if(v === 'sync' && Date.now() - (C.sante?.at||0) > 60e3) verifierTout(); }
 function renderChrome(){
   const ce = cloudEtat(), n = nbTaches();
   $('#vtitle').textContent = VUES[view]?.t || 'Atelier';
   $('#vsub').innerHTML = busy.sync ? `<span class="cloud">${spin('')} Actualisation…</span>` : `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
   $('#sideCloud').innerHTML = `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
-  const nav = side => Object.entries(VUES).map(([k, v]) => `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${k === 'tasks' && n ? `<span class="badge">${n > 99 ? '99+' : n}</span>` : ''}</button>`).join('');
+  const sn = compterSante();
+  const badge = k => k === 'tasks' && n ? `<span class="badge">${n > 99 ? '99+' : n}</span>` : k === 'sync' && (sn.pb || sn.att) ? `<span class="badge ${sn.pb ? '' : 'warn'}">${sn.pb || sn.att}</span>` : '';
+  const nav = side => ORDRE.filter(k => side || k !== 'settings').map(k => { const v = VUES[k]; return `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${badge(k)}</button>`; }).join('');
   $('#tabs').innerHTML = nav(false);
   $('#snav').innerHTML = nav(true);
-  $('#sideApps').innerHTML = tracked().map(a => { const h = health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
+  $('#sideApps').innerHTML = tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
   $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
   $('#fab').hidden = view === 'settings' || view === 'chef';
   document.body.classList.toggle('chef', view === 'chef');
   document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
 function render(){
-  const keep = $('#chatIn')?.value, keepTq = document.activeElement?.id === 'tq';
-  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, settings:vSettings}[view] || vToday)();
+  const keep = $('#chatIn')?.value, focusId = ['tq', 'dq', 'chatIn'].find(id => document.activeElement?.id === id);
+  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, sync:vSync, settings:vSettings}[view] || vToday)();
   if(keep && $('#chatIn')) $('#chatIn').value = keep;
-  if(keepTq){ const t = $('#tq'); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+  if(focusId && $('#' + focusId)){ const t = $('#' + focusId); t.focus(); try{ t.setSelectionRange(t.value.length, t.value.length); }catch{} }
   renderChrome();
   if(SHEET && !SHEET.lock && !$('#modal').hidden) appSheet(SHEET.repo, SHEET.tab, true);
 }
@@ -1150,6 +1435,7 @@ function appSheet(repo, tab='apercu'){
   if(tab === 'apercu') body = `
     ${(v.notes||[]).length ? `<h3 class="sec">Dernière version${v.date ? ' · ' + esc(ago(v.date)) : ''}</h3>${md(v.notes.map(n => '- ' + n).join('\n'))}` : ''}
     ${d.live || d.liveErr ? `<h3 class="sec">En direct</h3><div class="card live" style="margin:0">${liveCard(a)}</div>` : ''}
+    ${C.sante?.apps?.[repo] ? `<h3 class="sec">Synchro <span class="stp ${pireDe(C.sante.apps[repo])}">${ST[pireDe(C.sante.apps[repo])].l}</span></h3>${C.sante.apps[repo].map(it => ligneSante(it, repo, a.couleur)).join('')}` : ''}
     <h3 class="sec">Intelligence</h3>
     <div class="btns" style="margin-top:0">
       <button class="btn sm" data-action="review" ${busy['review'+repo] ? 'disabled' : ''}>${busy['review'+repo] ? spin('Revue…') : ic('search','s') + ' Revue du code récent'}</button>
@@ -1168,7 +1454,7 @@ function appSheet(repo, tab='apercu'){
     ${d.brain ? `<details><summary>${esc(d.brain.path)} complet · ${d.brain.text.split('\n').length} lignes</summary>${md(d.brain.text)}</details>` : '<p class="muted">Pas encore de cerveau (CLAUDE.md) dans ce dépôt.</p>'}`;
   modal(`<div style="display:flex;gap:14px;align-items:center;margin-top:2px">${avatar(a,'l')}<div style="flex:1"><h2 style="margin:0">${esc(a.name)}</h2>
       <div class="xs muted" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · version ' + esc(v.version) : ''} · ${esc(repo)}</div></div></div>
-    <div class="btns">${d.info ? `<a class="btn sm ghost" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">${ic('git','s')} GitHub</a>` : ''}${site ? `<a class="btn sm ghost" href="${esc(site)}" target="_blank" rel="noopener">${ic('ext','s')} Site</a>` : ''}</div>
+    <div class="btns"><button class="btn sm primary" data-action="discApp" data-repo="${esc(repo)}">${ic('chef','s')} Discuter</button>${d.info ? `<a class="btn sm ghost" href="${esc(d.info.html_url)}" target="_blank" rel="noopener">${ic('git','s')} GitHub</a>` : ''}${site ? `<a class="btn sm ghost" href="${esc(site)}" target="_blank" rel="noopener">${ic('ext','s')} Site</a>` : ''}</div>
     ${d.error ? `<p class="err">${esc(d.error)}</p>` : ''}
     <div class="tabs2">${b('apercu', 'Aperçu')}${b('taches', 'Tâches · ' + (d.issues||[]).length)}${b('activite', 'Activité')}${b('cerveau', 'Cerveau')}</div>
     ${body}`, 'drawer');
@@ -1346,7 +1632,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     if(src === 'weekly') text = (get('weekly', [])||[])[0]?.text;
     else if(src === 'dups') text = get('dups', null)?.text;
     else if(src === 'review'){ repo = SHEET.repo; text = aiOf(repo).review?.text; }
-    else if(src === 'chat') text = (get('chat', [])||[])[+el.dataset.i]?.text;
+    else if(src === 'chat'){ const d = discCourante(); text = d?.msgs?.[+el.dataset.i]?.t; repo = d?.app || null; }
     if(!text) return;
     const old = el.innerHTML; el.disabled = true; el.innerHTML = spin('Extraction…');
     try{ await tasksFromText(text, repo); } finally { if(el.isConnected){ el.disabled = false; el.innerHTML = old; } }
@@ -1380,20 +1666,69 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
   ask(el){ $('#chatIn').value = el.dataset.q; return ACTIONS.send(); },
   async send(){
     const box = $('#chatIn'); const q = box?.value.trim(); if(!q || busy.chat) return;
+    if(REC){ try{ REC.stop(); }catch{} }
     box.value = ''; box.style.height = '';
-    const msgs = [...(get('chat', [])||[]), {role:'user', text:q}].slice(-40);
-    put('chat', msgs);
-    busy.chat = true; render(); window.scrollTo(0, document.body.scrollHeight);
-    try{
-      const hist = msgs.slice(-12).map(m => ({role:m.role === 'user' ? 'user' : 'model', parts:[{text:m.text}]}));
-      const text = await gemini([{role:'user', parts:[{text:`Contexte à jour (${dateFR(Date.now())}) :\n\n${contexteGlobal()}`}]}, {role:'model', parts:[{text:'Compris.'}]}, ...hist],
-        {system:ROLE_CHEF + '\nQuand Clément demande une consigne pour Claude, mets-la dans un bloc de code.', onText:t => { const el = $('#chatLive'); if(el){ el.innerHTML = md(t); if(innerHeight + scrollY > document.body.scrollHeight - 260) window.scrollTo(0, document.body.scrollHeight); } }});
-      put('chat', [...msgs, {role:'model', text}].slice(-40));
-    }catch(e){ put('chat', msgs.slice(0, -1)); busy.chat = false; render(); if($('#chatIn')) $('#chatIn').value = q; throw e; }
-    finally{ busy.chat = false; render(); window.scrollTo(0, document.body.scrollHeight); }
+    let d = discCourante(); if(!d){ d = discNew(null); discOuvrir(d.id); }
+    await envoyer(q, d);
   },
-  copyMsg(el){ const t = (get('chat', [])||[])[+el.dataset.i]?.text || ''; const m = t.match(/```[^\n]*\n([\s\S]*?)```/); copy(m ? m[1].trim() : t); },
-  newChat(){ if(confirm('Effacer la conversation (sur tous tes appareils) ?')){ put('chat', []); render(); } },
+  stopChat(){ CTRL?.abort(); },
+  async regen(){
+    const d = discCourante(); if(!d || busy.chat) return;
+    while(d.msgs.length && d.msgs[d.msgs.length - 1].r === 'm') d.msgs.pop();
+    const u = d.msgs.pop(); if(!u) return;
+    discPut(d); await envoyer(u.t, d);
+  },
+  copyMsg(el){ const t = discCourante()?.msgs?.[+el.dataset.i]?.t || ''; const m = t.match(/```[^\n]*\n([\s\S]*?)```/); copy(m ? m[1].trim() : t); },
+  copyCode(el){ copy(el.parentElement.querySelector('pre').textContent); },
+  discListe(){ CHEF.liste = true; render(); window.scrollTo(0, 0); },
+  newDisc(){
+    SHEET = null;
+    modal(`<h2>Nouvelle discussion</h2><p class="muted sm">Sur une app précise, le chef reçoit tout son contexte : cerveau, tâches, commits et synchro.</p>
+      <div class="dpick"><button data-action="newDiscGo" data-app=""><span class="av s" style="--c:#6366f1">✦</span>Générale</button>${tracked().map(a => `<button data-action="newDiscGo" data-app="${esc(a.repo)}">${avatar(a, 's')}${esc(a.name)}</button>`).join('')}</div>
+      <label class="f">Titre (facultatif)</label><input id="ndTitre" placeholder="Laisse vide : le chef le choisira">`);
+  },
+  newDiscGo(el){ const d = discNew(el.dataset.app || null, ($('#ndTitre')?.value || '').trim()); discOuvrir(d.id); closeModal(); go('chef'); setTimeout(() => $('#chatIn')?.focus(), 80); },
+  discApp(el){ const d = discPourApp(el.dataset.repo); discOuvrir(d.id); go('chef'); },
+  discMenu(){
+    const d = discCourante(); if(!d) return; SHEET = null;
+    modal(`<h2 class="clamp1">${esc(d.titre)}</h2><div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <button class="btn" data-action="discPin">${ic('pin','s')} ${d.epingle ? 'Désépingler' : 'Épingler en haut'}</button>
+      <button class="btn" data-action="discRename">${ic('edit','s')} Renommer</button>
+      <button class="btn" data-action="newDisc">${ic('plus','s')} Nouvelle discussion</button>
+      <button class="btn" data-action="discDel" style="color:var(--ko)">${ic('trash','s')} Supprimer</button></div>`);
+  },
+  discPin(){ const d = discCourante(); if(!d) return; d.epingle = !d.epingle; discPut(d); closeModal(); render(); toast(d.epingle ? 'Épinglée en haut de la liste' : 'Désépinglée'); },
+  discRename(){
+    const d = discCourante(); if(!d) return; SHEET = null;
+    modal(`<h2>Renommer la discussion</h2><input id="rnTitre" value="${esc(d.titre)}"><div class="btns"><button class="btn primary" data-action="discRenameGo">Enregistrer</button></div>`);
+    setTimeout(() => { const i2 = $('#rnTitre'); i2?.focus(); i2?.select(); }, 60);
+  },
+  discRenameGo(){ const d = discCourante(), t = $('#rnTitre').value.trim(); if(d && t){ d.titre = t.slice(0, 60); d.auto = false; discPut(d); } closeModal(); render(); },
+  discDel(){
+    const d = discCourante(); if(!d) return;
+    closeModal(); if(!confirm(`Supprimer « ${d.titre} » sur tous tes appareils ?`)) return;
+    put(DP + d.id, null); CHEF.id = null; CHEF.liste = true; render();
+    toast('Discussion supprimée', false, {label:'Annuler', run:() => { put(DP + d.id, d); discOuvrir(d.id); render(); }});
+  },
+  dicter(){
+    if(REC){ REC.stop(); return; }
+    const box = $('#chatIn'), base = box.value ? box.value.replace(/\s*$/, ' ') : '';
+    try{
+      REC = new SR(); REC.lang = 'fr-FR'; REC.interimResults = true; REC.continuous = false;
+      REC.onresult = e => { const b = $('#chatIn'); if(b) b.value = base + [...e.results].map(r => r[0].transcript).join(''); };
+      REC.onend = () => { REC = null; $('#micBtn')?.classList.remove('on'); };
+      REC.onerror = e => { if(e.error === 'not-allowed') toast('Autorise le micro pour dicter', true); };
+      REC.start(); $('#micBtn')?.classList.add('on');
+    }catch{ REC = null; toast('Dictée indisponible sur cet appareil', true); }
+  },
+  async askFix(el){
+    const repo = el.dataset.repo, msg = el.dataset.msg;
+    const d = repo === 'atelier' ? (discs().find(x => !x.app) || discNew(null)) : discPourApp(repo);
+    discOuvrir(d.id); go('chef');
+    await envoyer(`Atelier a détecté ceci sur ${nomApp(repo)} : « ${msg} ». Explique simplement ce qui se passe, si c'est grave, et ce que je dois faire (avec la consigne pour Claude si c'est du code).`, d);
+  },
+  verifier(){ return verifierTout(true); },
+  clearInc(){ if(confirm('Vider le journal des incidents (sur tous tes appareils) ?')){ put('incidents', (get('incidents', [])||[]).filter(x => !x.fin)); render(); } },
 
   capture(el){
     const apps = tracked(); if(!apps.length) return go('settings');
@@ -1473,6 +1808,9 @@ function palItems(q){
     {ic:'spark', t:'Que faire maintenant ?', k:'Analyse', run:() => { go('today'); ACTIONS.advise().catch(e => toast(e.message, true)); }},
     {ic:'chart', t:'Bilan de la semaine', k:'Analyse', run:() => { go('today'); ACTIONS.weekly().catch(e => toast(e.message, true)); }},
     {ic:'sync', t:'Tout actualiser', k:'R', run:() => syncAll()},
+    {ic:'pulse', t:'Vérifier les synchros', k:'Synchro', run:() => { go('sync'); verifierTout(true); }},
+    {ic:'chef', t:'Nouvelle discussion', k:'Chef', run:() => { go('chef'); ACTIONS.newDisc(); }},
+    ...discs().map(d => ({av:d.app ? appBy(d.app) : {emoji:'✦', couleur:'#6366f1'}, t:d.titre, k:'Discussion', run:() => { discOuvrir(d.id); go('chef'); }})),
     ...tracked().map(a => ({av:a, t:a.name, k:'App', run:() => appSheet(a.repo)})),
     ...tracked().flatMap(a => (C.apps[a.repo]?.issues||[]).map(i => ({av:a, t:i.title, k:'Tâche #' + i.number, run:() => ACTIONS.issuePrompt({dataset:{repo:a.repo, n:i.number}}).catch(e => toast(e.message, true))})))
   ];
@@ -1500,6 +1838,7 @@ $('#pal').addEventListener('click', e => { if(e.target.id === 'pal') closePalett
 document.addEventListener('click', async e => {
   if(e.target.id === 'modal') return closeModal();
   const tf = e.target.closest('[data-tf]'); if(tf){ TF.app = tf.dataset.tf; render(); return; }
+  const dc = e.target.closest('[data-disc]'); if(dc){ discOuvrir(dc.dataset.disc); render(); scrollBas(); if(!LARGE()) setTimeout(scrollBas, 50); return; }
   const st = e.target.closest('[data-stab]'); if(st && SHEET){ appSheet(SHEET.repo, st.dataset.stab); $('#modal .sheet').scrollTop = 0; return; }
   const vi = e.target.closest('[data-vitesse]'); if(vi){ setReg({vitesse:vi.dataset.vitesse}); render(); return; }
   const el = e.target.closest('[data-action],[data-go]'); if(!el) return;
@@ -1511,6 +1850,7 @@ document.addEventListener('click', async e => {
 document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); });
 document.addEventListener('input', e => {
   if(e.target.id === 'tq'){ TF.q = e.target.value; render(); }
+  if(e.target.id === 'dq'){ CHEF.q = e.target.value; render(); }
   if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 140) + 'px'; }
 });
 document.addEventListener('change', e => {
@@ -1532,7 +1872,7 @@ document.addEventListener('change', e => {
 document.addEventListener('keydown', e => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('#pal').hidden ? openPalette() : closePalette(); return; }
-  if(e.key === 'Escape'){ if(!$('#pal').hidden) closePalette(); else closeModal(); return; }
+  if(e.key === 'Escape'){ if(!$('#pal').hidden) closePalette(); else if(!$('#modal').hidden) closeModal(); else if(busy.chat) CTRL?.abort(); return; }
   if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.id === 'capText'){ e.preventDefault(); ACTIONS.sendCapture().catch(err => toast(err.message, true)); return; }
   if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn' && !matchMedia('(pointer:coarse)').matches){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); return; }
   if(e.key === 'Enter' && e.target.id === 'onTok'){ ACTIONS.onbGo(); return; }
@@ -1541,7 +1881,7 @@ document.addEventListener('keydown', e => {
   if(k === 'n'){ e.preventDefault(); ACTIONS.capture(); }
   if(k === '/'){ e.preventDefault(); openPalette(); }
   if(k === 'r'){ e.preventDefault(); syncAll(); }
-  const v = ['today','apps','tasks','chef','settings'][+k - 1]; if(v){ e.preventDefault(); go(v); }
+  const v = ORDRE[+k - 1]; if(v){ e.preventDefault(); go(v); }
 });
 addEventListener('online', () => { Cloud.tick(true); if((C.pending||[]).length) syncAll(true); });
 document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && L.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
@@ -1572,12 +1912,22 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden && nav
 })();
 addEventListener('hashchange', () => { if(/[#&]a=/.test(location.hash)) location.reload(); });
 if(/Mac|iPhone|iPad/.test(navigator.platform)) $('#kbdK').textContent = '⌘ K';
+(function migrerChat(){
+  const old = get('chat', null);
+  if(!Array.isArray(old) || !old.length || discs().length) return;
+  const d = discNew(null, 'Discussion générale');
+  d.msgs = old.map(m => ({r:m.role === 'user' ? 'u' : 'm', t:m.text, at:SH.chat?.t || Date.now()})); d.auto = false;
+  discPut(d); put('chat', []);
+})();
+setInterval(() => { if(!document.hidden && L.ghToken && navigator.onLine && Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 30e3);
+setInterval(() => { if(view === 'sync' && !document.hidden && $('#modal').hidden && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName||'')) render(); }, 20e3);
 render();
 if(!L.ghToken) showOnboarding();
 else {
   Cloud.start();
   adopterCles().then(() => { if(L.geminiKey && !get('cles', null)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
+  setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
