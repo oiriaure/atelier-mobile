@@ -87,16 +87,7 @@ main{max-width:1180px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bo
 .brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--sh1)}
 .brand b{font-size:17px;letter-spacing:-.01em}
 .brand small{display:block;color:var(--mu);font-size:12px}
-.snav{display:flex;flex-direction:column;gap:2px}
-.snav button{display:flex;align-items:center;gap:11px;border:0;background:none;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--tx2);font-weight:550;text-align:left}
-.snav button:hover{background:var(--s2)}
-.snav button.on{background:var(--acs);color:var(--ac)}
-.snav button .badge{margin-left:auto;background:var(--s3);color:var(--tx2)}
-.snav button.on .badge{background:var(--ac);color:#fff}
 .slabel{font-size:11.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);padding:0 10px;margin-top:4px}
-.sapp{display:flex;align-items:center;gap:10px;border:0;background:none;padding:7px 10px;border-radius:10px;cursor:pointer;text-align:left;width:100%}
-.sapp:hover{background:var(--s2)}
-.sapp .nm{flex:1;font-weight:550;font-size:14.5px}
 .sfoot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
 .kbd{font:11px var(--mono);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:1px 6px;color:var(--mu)}
 .searchbtn{display:flex;align-items:center;gap:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);border-radius:10px;padding:8px 10px;cursor:pointer;width:100%}
@@ -282,12 +273,12 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 #onb .card{text-align:left}
 
 /* ===== Divers ===== */
-#toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 66px);z-index:60;display:flex;gap:10px;align-items:center;
+#toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 66px);z-index:60;display:flex;gap:10px;align-items:center;width:max-content;
   background:var(--tx);color:var(--bg);padding:11px 14px;border-radius:14px;font-size:14px;font-weight:550;max-width:min(92vw,520px);box-shadow:var(--sh3)}
 #toast[hidden]{display:none}
 #toast.bad{background:var(--ko);color:#fff}
 #toast button{border:0;background:rgba(127,127,127,.25);color:inherit;border-radius:8px;padding:4px 10px;font-weight:650;cursor:pointer}
-@media (min-width:900px){#toast{top:auto;bottom:24px;left:calc(50% + 130px)}}
+@media (min-width:900px){#toast{top:auto;bottom:24px;left:calc(50% + var(--sidew,256px) / 2)}}
 #ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 60px);z-index:4;transform:translate(-50%,-70px);width:38px;height:38px;border-radius:19px;background:var(--s1);border:1px solid var(--bd);display:grid;place-items:center;color:var(--ac);transition:transform .2s;box-shadow:var(--sh2)}
 .cloud{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mu);font-weight:550}
 .cloud.ok svg{color:var(--ok)} .cloud.err{color:var(--ko)}
@@ -396,13 +387,7 @@ html.verre .scard{border-top:1px solid var(--g-bord2);box-shadow:inset 0 3px 0 -
 /* Barre du haut et barre latérale */
 html.verre #top,html.verre #top.scrolled{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;box-shadow:none}
 @media (min-width:900px){
-  html.verre #shell{grid-template-columns:284px minmax(0,1fr)}
-  html.verre #side{position:sticky;top:12px;height:calc(100vh - 24px);margin:12px 0 12px 12px;border-radius:30px;padding:18px 14px}
-  html.verre body.chef .composer{left:calc(284px + 32px + 322px)}
 }
-html.verre .snav button,html.verre .sapp{border-radius:14px;transition:background .2s}
-html.verre .snav button:hover,html.verre .sapp:hover{background:rgba(255,255,255,.22)}
-html.verre .snav button.on{background:var(--g-fort);color:var(--ac);box-shadow:inset 0 1px 0 var(--g-reflet),0 4px 14px rgba(31,38,90,.12)}
 
 /* Barre d'onglets du téléphone : une capsule de verre qui flotte */
 @media (max-width:899px){
@@ -449,7 +434,8 @@ html.verre .msg.u{border-radius:22px 22px 8px 22px}
 html.verre .composer{background:transparent;border-top:0;-webkit-backdrop-filter:none;backdrop-filter:none}
 html.verre .composer textarea{background:var(--g-fort);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre);border-radius:24px}
 html.verre .send{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(99,102,241,.35)}
-html.verre #toast{border-radius:999px}
+html.verre #toast:not(#x){border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 10px 30px rgba(0,0,0,.25);background:color-mix(in srgb,var(--tx) 90%,transparent);color:var(--bg);border-color:transparent}
+html.verre #toast.bad:not(#x){background:var(--ko);color:#fff}
 html.verre .gbox{background:transparent}
 html.verre .thd{background:color-mix(in srgb,var(--g-bg) 70%,transparent);-webkit-backdrop-filter:var(--g-flou2);backdrop-filter:var(--g-flou2);border-radius:20px;padding:10px 12px}
 html.verre .gtools input{background:var(--g-bg)}
@@ -497,22 +483,274 @@ button.rg{cursor:pointer}button.rg:active{background:var(--s2)}
 html.verre .grp{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border:1px solid var(--g-bord);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre);border-radius:22px}
 html.verre .rg+.rg::before{background:rgba(127,127,160,.18)}
 html.verre .chip{color:var(--tx)}
+/* ===== 4.0 : barre latérale façon app (sections repliables, profil, barre d'icônes) ===== */
+@media (min-width:900px){
+  :root{--sidew:256px}
+  body.rail{--sidew:68px}
+  #shell,html.verre #shell{grid-template-columns:var(--sidew) minmax(0,1fr)}
+  #side,html.verre #side{display:flex;flex-direction:column;gap:0;position:sticky;top:0;height:100vh;margin:0;padding:12px 10px 10px;border-radius:0;border:0;border-right:1px solid var(--bd);background:color-mix(in srgb,var(--s1) 70%,var(--bg));box-shadow:none;overflow:hidden}
+  html.verre #side{background:var(--g-bg);border-right-color:var(--g-bord2);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou)}
+  .composer,html.verre .composer{left:var(--sidew)}
+  body.chef .composer,html.verre body.chef .composer{left:calc(var(--sidew) + 32px + 322px)}
+}
+.sbtop{display:flex;align-items:center;gap:10px;padding:4px 4px 14px}
+.sblogo{width:30px;height:30px;border-radius:8px;flex:none;box-shadow:0 2px 6px rgba(16,24,40,.2)}
+.sbname{flex:1;min-width:0;line-height:1.2}
+.sbname b{display:block;font-size:15px;letter-spacing:-.01em}
+.sbname small,.sbname .cloud{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbname .cloud.ok svg{color:var(--ok)}.sbname .cloud.err svg{color:var(--ko)}
+.sbname svg.i{width:12px;height:12px;flex:none}
+.sbtn{flex:none;width:28px;height:28px;border:0;border-radius:8px;background:none;color:var(--mu);display:grid;place-items:center;cursor:pointer}
+.sbtn:hover{background:color-mix(in srgb,var(--tx) 7%,transparent);color:var(--tx)}
+.sbacts{display:flex;gap:6px;padding:0 0 14px}
+.sbsearch{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:32px;padding:0 9px;border:1px solid var(--bd);border-radius:9px;background:color-mix(in srgb,var(--tx) 4%,transparent);color:var(--mu);font:inherit;font-size:13px;cursor:pointer}
+.sbsearch:hover{color:var(--tx)}
+.sbsearch .kbd{margin-left:auto;font-size:10.5px}
+.sbnew{flex:none;width:30px;height:30px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 10px rgba(91,91,240,.35)}
+.sbnew svg.i{width:16px;height:16px;stroke-width:2.2}
+body.rail .sbtop .sbnew{order:3}
+.snav{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;margin:0 -10px;padding:0 10px 10px;scrollbar-width:thin}
+.sgrp+.sgrp{margin-top:16px}
+.sghr{display:flex;align-items:center}
+.sgh{flex:1;display:flex;align-items:center;gap:4px;border:0;background:none;color:var(--mu);font:inherit;font-size:11.5px;font-weight:650;letter-spacing:.02em;padding:0 8px 6px;cursor:pointer;text-align:left}
+.sgh svg.i{width:11px;height:11px;transform:rotate(90deg);transition:transform .2s,opacity .2s;opacity:0}
+.sgrp:hover .sgh svg.i,.sgrp.plie .sgh svg.i{opacity:.8}
+.sgrp.plie .sgh svg.i{transform:none}
+.sgrp.plie .sgl{display:none}
+.sgadd{border:0;background:none;color:var(--mu);width:22px;height:22px;border-radius:6px;display:grid;place-items:center;cursor:pointer;opacity:0;margin:0 4px 6px 0}
+.sgrp:hover .sgadd{opacity:1}.sgadd:hover{background:color-mix(in srgb,var(--tx) 7%,transparent);color:var(--tx)}
+.sgl{display:flex;flex-direction:column;gap:1px}
+.sni{display:flex;align-items:center;gap:10px;width:100%;min-height:32px;padding:0 8px;border:0;border-radius:8px;background:none;color:var(--tx2);font:inherit;font-size:13.5px;font-weight:520;cursor:pointer;text-align:left;position:relative;transition:background .12s}
+.sni svg.i{width:18px;height:18px;color:var(--mu);flex:none;stroke-width:1.9}
+.sni:hover{background:color-mix(in srgb,var(--tx) 6%,transparent)}
+.sni.on,html.verre .sni.on{background:color-mix(in srgb,var(--ac) 15%,transparent);color:var(--tx);font-weight:620;box-shadow:none}
+.sni.on svg.i{color:var(--ac)}
+.snl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sni .cnt{font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums}
+.badge.doux{background:color-mix(in srgb,var(--ac) 18%,transparent);color:var(--ac)}
+.sni .av.xs{width:20px;height:20px;border-radius:6px;font-size:12px;vertical-align:0}
+.sni .dot{width:7px;height:7px;flex:none}
+.sfoot{border-top:1px solid var(--bd);margin:0 -10px;padding:8px 10px 0}
+html.verre .sfoot{border-top-color:rgba(127,127,160,.2)}
+.sme{display:flex;align-items:center;gap:10px;width:100%;padding:6px;border:0;border-radius:10px;background:none;color:var(--tx);font:inherit;cursor:pointer;text-align:left}
+.sme:hover,.sme.on{background:color-mix(in srgb,var(--tx) 6%,transparent)}
+.sav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:700;font-size:13px;display:grid;place-items:center;flex:none}
+.sme .snl{line-height:1.2}.sme b{display:block;font-size:13.5px;font-weight:600}.sme small{font-size:11.5px;color:var(--mu)}
+.sme>svg.i{color:var(--mu);flex:none}
+body.rail .snl,body.rail .sgh,body.rail .sgadd,body.rail .sni .cnt,body.rail .sme>svg.i{display:none}
+body.rail .sbtop{flex-direction:column;gap:10px;padding-bottom:12px}
+body.rail .sbacts{flex-direction:column;align-items:center}
+body.rail .sbsearch{flex:none;width:36px;height:36px;padding:0;justify-content:center}
+body.rail .sbnew{width:36px;height:36px}
+body.rail .sbtop .sbtn{order:4}
+body.rail .sgrp+.sgrp{margin-top:8px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent)}
+body.rail .sgrp.plie .sgl{display:flex}
+body.rail .sni{justify-content:center;width:44px;min-height:40px;margin:0 auto;padding:0}
+body.rail .sni .badge{position:absolute;top:2px;right:0;min-width:16px;height:16px;line-height:16px;font-size:9.5px;padding:0 4px}
+body.rail .sni .dot{position:absolute;bottom:6px;right:6px;box-shadow:0 0 0 2px var(--s1)}
+body.rail .sme{justify-content:center;padding:6px 0}
+@media (min-width:900px){#top{padding-top:20px}}
+.rg.actif{background:color-mix(in srgb,var(--ac) 10%,transparent)}
+
+/* ===== 4.0 : Idées ===== */
+.idees{max-width:880px;margin:0 auto}.idees.large{max-width:1120px}
+.idseg{margin:4px 0 14px}
+.idseg button{display:flex;align-items:center;justify-content:center;gap:6px}
+.idseg button svg.i{width:16px;height:16px}
+.idseg .cn{font-size:11px;min-width:18px;height:18px;line-height:18px;padding:0 5px;border-radius:9px;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);font-weight:700}
+.idcomp{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:10px 12px;margin:12px 0 20px;transition:box-shadow .2s,border-color .2s}
+.idcomp.open{border-color:color-mix(in srgb,var(--ac) 45%,var(--bd));box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 12%,transparent)}
+.idcomp-in{display:flex;gap:10px;align-items:flex-start}
+.idcomp-ic{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;margin-top:3px;box-shadow:0 3px 10px rgba(245,158,11,.35)}
+.idcomp-ic svg.i{width:17px;height:17px;stroke-width:2.2}
+#idIn,html.verre #idIn{flex:1;border:0;background:none;box-shadow:none;resize:none;font:inherit;font-size:16px;line-height:1.45;padding:6px 0;min-height:36px;color:var(--tx);outline:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.idcomp-b{display:none;flex-direction:column;gap:10px;padding-top:10px;margin-top:8px;border-top:1px solid var(--bd)}
+.idcomp.open .idcomp-b{display:flex}
+.idapps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:2px}
+.idapps::-webkit-scrollbar{display:none}
+.idapp{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--s2);color:var(--tx2);border-radius:99px;padding:5px 12px 5px 6px;font:inherit;font-size:13px;font-weight:550;cursor:pointer;transition:all .15s}
+.idapp .av.xs{width:20px;height:20px;border-radius:6px;vertical-align:0}
+.idapp.on{background:color-mix(in srgb,var(--c) 16%,var(--s1));border-color:color-mix(in srgb,var(--c) 65%,transparent);color:var(--tx);box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent)}
+.idcomp-act{display:flex;align-items:center;gap:8px}
+#idMic.on{background:var(--ko);color:#fff}
+#idIn2{min-height:150px;margin-top:12px;line-height:1.5}
+.idg{margin:0 0 22px}
+.idgh{display:flex;align-items:center;gap:10px;margin:0 2px 10px}
+.idgh b{font-size:16px;letter-spacing:-.01em}
+.idgh .cn,.idfaites .cn{font-size:12px;color:var(--mu);font-weight:600;font-variant-numeric:tabular-nums}
+.idl{display:flex;flex-direction:column;gap:10px}
+.idc{display:flex;flex-direction:column;gap:4px;width:100%;text-align:left;border:1px solid var(--bd);background:var(--s1);border-radius:18px;padding:13px 14px 12px 18px;cursor:pointer;color:var(--tx);font:inherit;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .15s}
+.idc::after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--v)}
+.idc:active{transform:scale(.985)}
+@media (hover:hover){.idc:hover{border-color:color-mix(in srgb,var(--v) 45%,var(--bd))}}
+.idc-t{font-weight:650;font-size:15.5px;line-height:1.3;letter-spacing:-.005em}
+.idc-x{font-size:13.5px;color:var(--tx2);line-height:1.45}
+.idc-m{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--mu);min-width:0}
+.vpill{--v:var(--ac);display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 9px 3px 7px;border-radius:99px;font-size:12px;font-weight:650;color:var(--v);background:color-mix(in srgb,var(--v) 14%,transparent);white-space:nowrap}
+.idc .vpill,.avis .vpill{--v:inherit}
+.idc .vpill{color:var(--v);background:color-mix(in srgb,var(--v) 14%,transparent)}
+.vpill svg.i{width:13px;height:13px;stroke-width:2.4}
+.vpill .spinner{width:11px;height:11px}
+.vpill.fort{margin-left:auto}
+.vpill.mini{font-size:11px;padding:1px 7px;margin-left:8px}
+.idc-m .th{min-width:0;flex:0 1 auto}
+.idc-m .when{margin-left:auto;flex:none}
+.idc.faite{opacity:.72}.idc.faite .idc-t{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--tx) 35%,transparent)}
+.idfaites{margin:10px 0 22px}
+.idfaites>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--mu);font-weight:600;font-size:14px;padding:8px 2px}
+.idfaites>summary::-webkit-details-marker{display:none}
+.idfaites[open]>summary{margin-bottom:8px}
+.idvide{text-align:center;padding:14px 8px 30px;color:var(--mu)}
+.idvide.grand{padding:46px 16px}
+.idvide h3{color:var(--tx);margin:14px 0 6px;font-size:19px}
+.idvide p{max-width:430px;margin:0 auto 16px;font-size:14.5px;line-height:1.5}
+.idvide-ic{width:64px;height:64px;margin:0 auto;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 10px 30px rgba(91,91,240,.35)}
+.idvide-ic svg.i{width:30px;height:30px}
+.etapes3{display:flex;align-items:flex-start;justify-content:center;gap:2px;margin:8px 0 18px}
+.etapes3>div{display:flex;flex-direction:column;align-items:center;gap:3px;width:98px}
+.etapes3>div>span{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;color:#fff;margin-bottom:6px;box-shadow:0 6px 18px rgba(31,38,90,.18)}
+.etapes3>div>span svg.i{width:22px;height:22px}
+.etapes3>div:nth-child(1)>span{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+.etapes3>div:nth-child(3)>span{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+.etapes3>div:nth-child(5)>span{background:linear-gradient(135deg,#38bdf8,#0284c7)}
+.etapes3 b{color:var(--tx);font-size:13.5px}.etapes3 small{font-size:11.5px;line-height:1.3}
+.etapes3>i{flex:none;width:20px;height:2px;margin-top:24px;background:var(--bd);border-radius:2px}
+/* Fiche d'une idée */
+.idsheet{display:flex;flex-direction:column}
+.idh{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);margin:2px 0 8px}
+.idtitre{font-size:22px;line-height:1.25;margin:0 0 12px;letter-spacing:-.015em}
+.idnote{font-size:15.5px;line-height:1.55;background:var(--s2);border-radius:16px;padding:6px 14px;margin-bottom:12px}
+.idlink{display:flex;align-items:center;gap:8px;width:100%;border:1px solid color-mix(in srgb,#0ea5e9 35%,var(--bd));background:color-mix(in srgb,#0ea5e9 9%,transparent);color:var(--tx);border-radius:14px;padding:10px 12px;font:inherit;font-size:14px;cursor:pointer;margin-bottom:12px;text-align:left}
+.idlink>svg:first-child{color:#0ea5e9;flex:none}.idlink>span{flex:1}
+.avis{--v:#8b5cf6;border-radius:20px;padding:14px 16px;margin:2px 0 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--v) 12%,var(--s1)),var(--s1) 70%);border:1px solid color-mix(in srgb,var(--v) 32%,var(--bd))}
+.avis.vide,.avis.lit{--v:#94a3b8}
+.avh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.avh b{font-size:15px}
+.avic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--v);color:#fff;flex:none}
+.avic svg.i{width:15px;height:15px;stroke-width:2.4}
+.avis .vpill{color:var(--v);background:color-mix(in srgb,var(--v) 16%,transparent)}
+.compris{font-style:italic;color:var(--tx2);margin:6px 0 10px;padding-left:12px;border-left:3px solid color-mix(in srgb,var(--v) 55%,transparent);line-height:1.5}
+.avtxt{margin:8px 0;line-height:1.55}
+.perime{font-size:12.5px;color:var(--mu);display:flex;gap:6px;align-items:center;margin:0 0 6px}
+.prop{background:var(--s1);border:1px dashed color-mix(in srgb,var(--v) 60%,transparent);border-radius:14px;padding:10px 12px;margin:12px 0}
+.proph{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:750;color:var(--v);text-transform:uppercase;letter-spacing:.05em}
+.okv{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:600;font-size:14px;margin:10px 0 4px}
+.qs{margin:12px 0 6px}.qs>b,.liens>b{display:block;font-size:11.5px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.q{display:flex;gap:8px;align-items:flex-start;padding:5px 0;font-size:14px;line-height:1.45}
+.q svg.i{flex:none;margin-top:2px;color:var(--v,var(--ac))}
+.lecture .q svg.i{color:var(--wa)}
+.lnk{border:0;background:none;color:var(--ac);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;text-align:left}
+.lnk:disabled{opacity:.5;cursor:default}
+.liens{margin:12px 0 4px}.liens>div{display:flex;flex-wrap:wrap;gap:6px}
+.lien{display:inline-flex;align-items:center;gap:6px;max-width:100%;border:1px solid var(--bd);background:var(--s2);color:var(--tx);border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer;min-width:0}
+.lien .rel{font-size:10.5px;font-weight:750;text-transform:uppercase;letter-spacing:.03em;color:var(--mu);flex:none}
+.lien.rel-contredit .rel{color:var(--ko)}.lien.rel-doublon .rel{color:var(--wa)}
+.avkv{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.avkv .pill svg.i{width:12px;height:12px}
+.avf{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--v) 20%,var(--bd))}
+.idactions{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.row3{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.skel.w80{width:80%}.skel.w70{width:70%}.skel.w50{width:50%}
+/* Préparer un prompt */
+#modal .pickrow{cursor:pointer;min-height:54px}
+#modal .pickrow input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--mu);background:none;box-shadow:none;margin:0;display:grid;place-items:center;cursor:pointer;transition:background .15s,border-color .15s;-webkit-backdrop-filter:none;backdrop-filter:none}
+#modal .pickrow input[type=checkbox]:checked{background:var(--ac);border-color:var(--ac)}
+#modal .pickrow input[type=checkbox]:checked::after{content:"";width:10px;height:5px;border:2.5px solid #fff;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+.pickrow .rgt{white-space:normal;line-height:1.3}
+.pickrow small{display:flex;align-items:center;gap:6px;margin-top:2px}
+.dotv{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.grp.in .pickrow+.pickrow::before{left:50px}
+/* Rédaction et fiche d'un prompt */
+.ecrit{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,var(--ac) 10%,transparent);color:var(--ac);margin:4px 0 12px}
+.ecrit b{color:var(--tx)}.ecrit small{flex-basis:100%;color:var(--mu);padding-left:25px}
+.pdoc{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:18px 20px;font-size:14.5px;line-height:1.6;margin-bottom:6px;overflow-wrap:anywhere}
+.pdoc .md h3{font-size:19px;line-height:1.3;margin:2px 0 10px;letter-spacing:-.01em}
+.pdoc .md h4{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ac);margin:18px 0 6px;padding-top:14px;border-top:1px solid var(--bd)}
+.pdoc .md h5{font-size:14.5px;margin:12px 0 4px}
+.md li.ck{list-style:none;margin-left:-20px;padding-left:26px;position:relative}
+.md li.ck::before{content:"";position:absolute;left:2px;top:5px;width:13px;height:13px;border:1.8px solid var(--mu);border-radius:4px}
+.md li.ck.x::before{background:var(--ok);border-color:var(--ok)}
+.faitrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--bd);background:var(--s1);border-radius:16px;padding:12px 14px;font:inherit;color:var(--tx);cursor:pointer;margin-bottom:10px;transition:background .2s,border-color .2s}
+.faitrow .ck{width:30px;height:30px;border-radius:50%;border:2px solid var(--mu);display:grid;place-items:center;color:transparent;flex:none;transition:all .2s}
+.faitrow .ck svg.i{width:16px;height:16px;stroke-width:3}
+.faitrow.on{background:color-mix(in srgb,var(--ok) 10%,var(--s1));border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.faitrow.on .ck{background:var(--ok);border-color:var(--ok);color:#fff}
+.faitrow .ft{display:flex;flex-direction:column}.faitrow small{color:var(--mu);font-size:12.5px}
+.pacts{display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.pacts .btn.primary{flex:1}
+.pacts .ibtn{width:44px;height:44px}
+textarea.mono{font:13px/1.55 var(--mono);min-height:55vh}
+/* Liste des prompts */
+.plist{display:flex;flex-direction:column;gap:10px}
+.pc{display:flex;align-items:center;gap:12px;border:1px solid var(--bd);background:var(--s1);border-radius:18px;padding:12px 10px 12px 12px}
+.pck{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid color-mix(in srgb,var(--c) 60%,var(--bd));background:none;color:transparent;display:grid;place-items:center;cursor:pointer;transition:all .2s;padding:0}
+.pck svg.i{width:16px;height:16px;stroke-width:3}
+@media (hover:hover){.pck:hover{color:color-mix(in srgb,var(--ok) 75%,transparent);border-color:var(--ok)}}
+.pc.fait .pck{background:var(--ok);border-color:var(--ok);color:#fff}
+.pcb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;border:0;background:none;text-align:left;color:var(--tx);font:inherit;cursor:pointer;padding:0}
+.pct{font-weight:650;font-size:15px;line-height:1.3}
+.pcx{font-size:13px;color:var(--tx2);line-height:1.45}
+.pcm{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mu);margin-top:3px}
+.pc.fait .pct{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--tx) 30%,transparent);color:var(--tx2)}
+.pc .ibtn{width:38px;height:38px}
+/* Carte mentale */
+.carte{background:var(--s1);border:1px solid var(--bd);border-radius:24px;padding:0 0 12px;margin:8px 0 14px;overflow:hidden}
+.carte-svg{overflow-x:auto}
+.mindmap{display:block;margin:0 auto;font-family:inherit}
+.mnr{fill:var(--s1);stroke:var(--bd);stroke-width:1;transition:stroke .15s}
+.mn{cursor:pointer}.mn:hover .mnr,.mn:focus .mnr{stroke:var(--ac);stroke-width:1.8}
+.mn:focus{outline:none}
+.mnt{fill:var(--tx);font-weight:560}
+.mn.faite .mnt{fill:var(--mu);text-decoration:line-through}
+.mtt{font-size:12px;font-weight:750}
+.mc{cursor:pointer}.mct{fill:#fff;font-size:13.5px;font-weight:750}.mcs{fill:rgba(255,255,255,.85);font-size:11px;font-weight:600}
+.legende{display:flex;flex-wrap:wrap;gap:6px 14px;padding:2px 16px 0;font-size:12px;color:var(--mu)}
+.legende span{display:inline-flex;align-items:center;gap:6px}.legende i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.legende i.pt{width:16px;height:0;border-radius:0;border-top:1.6px dashed var(--mu)}
+.lecture .synth{line-height:1.6;margin:0 0 6px}
+.ordre{margin:4px 0;padding-left:22px}.ordre li{margin:4px 0}
+/* Formation du chef */
+.form-h{display:flex;align-items:center;gap:12px;margin:2px 0 12px}
+.form-ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;flex:none;box-shadow:0 6px 18px rgba(56,189,248,.3)}
+.form-ic svg.i{width:26px;height:26px}
+.form-bar{height:6px;border-radius:6px;background:var(--s2);margin:0 0 10px;overflow:hidden}.form-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#38bdf8,#6366f1,#a855f7)}
+.fmod{border:1px solid var(--bd);border-radius:14px;margin:8px 0;background:var(--s1);overflow:hidden}
+.fmod>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:11px 12px;cursor:pointer}
+.fmod>summary::-webkit-details-marker{display:none}
+.fmi{width:36px;height:36px;border-radius:10px;background:var(--s2);display:grid;place-items:center;font-size:18px;flex:none}
+.fmod .rgt{white-space:normal;font-weight:620;font-size:14.5px;line-height:1.3}
+.fmod .rgt small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:12.5px;color:var(--mu);margin-top:2px}
+.fmod[open] .rgt small{display:block}
+.fmh{flex:none;font-size:12px;font-weight:700;color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent);padding:3px 8px;border-radius:8px}
+.fmc{padding:4px 14px 12px;font-size:14px;border-top:1px solid var(--bd)}
+.fmc .md h5{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:14px 0 4px}
+.fmc .md h3,.fmc .md h4{font-size:14px;margin:10px 0 4px}
+/* Accueil : carte Idées */
+.idtoday{cursor:pointer}
+.idtoday .hd{margin-bottom:6px}
+.idtoday .kv{display:flex;flex-wrap:wrap;gap:6px}
+/* Verre */
+html.verre :is(.idcomp,.idc,.pc,.carte,.pdoc,.faitrow,.fmod){background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border-color:var(--g-bord2);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
+html.verre .idc,html.verre .pc{border-radius:22px}
+html.verre .carte{border-radius:28px}
+html.verre .mnr{fill:var(--g-fort)}
+html.verre .avis{background:linear-gradient(180deg,color-mix(in srgb,var(--v) 18%,transparent),transparent 75%),var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border-color:color-mix(in srgb,var(--v) 35%,var(--g-bord2));box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
+html.verre .idnote,html.verre .prop{background:var(--g-bg2)}
+html.verre .faitrow.on{background:color-mix(in srgb,var(--ok) 16%,transparent)}
+html.verre .idcomp.open{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 14%,transparent),inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
 @media (prefers-reduced-transparency:reduce){html.verre :is(.card,.kpi,.trow,#side,#tabs,#modal .sheet){background:var(--g-fort)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<script src="formation.js"></script>
 <div id="fond" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 <div id="onb" hidden></div>
 <div id="shell">
   <aside id="side">
-    <div class="brand"><img src="icones/atelier.png" alt=""><div><b>Atelier</b><small id="sideCloud"></small></div></div>
-    <button class="btn primary block" data-action="capture"><svg class="i"><use href="#i-plus"/></svg>Nouvelle idée</button>
-    <button class="searchbtn" data-action="palette"><svg class="i s"><use href="#i-search"/></svg>Rechercher…<span class="kbd" id="kbdK">Ctrl K</span></button>
-    <div class="snav" id="snav"></div>
-    <div class="slabel">Mes apps</div>
-    <div id="sideApps"></div>
-    <div class="sfoot"><div class="xs muted" id="sideVer"></div></div>
+    <div class="sbtop"><img class="sblogo" src="icones/atelier.png" alt=""><div class="snl sbname"><b>Atelier</b><small id="sideCloud"></small></div><button class="sbnew" data-action="capture" title="Nouvelle idée (N)" aria-label="Nouvelle idée"><svg class="i s"><use href="#i-edit"/></svg></button><button class="sbtn" data-action="sideRail" aria-label="Replier la barre latérale" title="Replier ou déplier (Ctrl+B)"><svg class="i s"><use href="#i-side"/></svg></button></div>
+    <div class="sbacts"><button class="sbsearch" data-action="palette" title="Rechercher (Ctrl K)" aria-label="Rechercher"><svg class="i s"><use href="#i-search"/></svg><span class="snl">Rechercher</span><span class="kbd snl" id="kbdK">Ctrl K</span></button></div>
+    <nav class="snav" id="snav" aria-label="Navigation"></nav>
+    <div class="sfoot" id="sfoot"></div>
   </aside>
   <div id="col">
     <header id="top">
@@ -541,6 +779,15 @@ html.verre .chip{color:var(--tx)}
   <symbol id="i-chef" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.6L3.5 21l1.4-4.7A8.5 8.5 0 1 1 21 12z"/><path d="M12 8.2l.9 2 2 .8-2 .9-.9 2-.9-2-2-.9 2-.8z"/></symbol>
   <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-idea" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2V16h5v-.1c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="6" r="1.8"/><circle cx="19.5" cy="6" r="1.8"/><circle cx="4.5" cy="18" r="1.8"/><circle cx="19.5" cy="18" r="1.8"/><path d="M9.8 10.6L6 7.1M14.2 10.6L18 7.1M9.8 13.4L6 16.9M14.2 13.4L18 16.9"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.3-2.4 3.8M12 17.2v.1"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></symbol>
+  <symbol id="i-side" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9.5 4v16"/></symbol>
+  <symbol id="i-grad" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
   <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
@@ -575,7 +822,7 @@ html.verre .chip{color:var(--tx)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.9.0';
+const VERSION = '4.0.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -623,7 +870,7 @@ async function copy(text){
   catch{ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
   toast('Copié');
 }
-function md(src){
+function md(src, doc=false){
   const inline = s => s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<i>$2</i>');
   let out = '', list = null, inCode = false, code = '';
   const close = () => { if(list){ out += `</${list}>`; list = null; } };
@@ -631,10 +878,10 @@ function md(src){
     if(/^\s*```/.test(l)){ if(inCode){ out += blocCode(code); code = ''; inCode = false; } else { close(); inCode = true; } continue; }
     if(inCode){ code += l + '\n'; continue; }
     let m;
-    if((m = l.match(/^\s*[-*•]\s+(.*)/))){ if(list !== 'ul'){ close(); out += '<ul>'; list = 'ul'; } out += `<li>${inline(m[1])}</li>`; continue; }
+    if((m = l.match(/^\s*[-*•]\s+(.*)/))){ if(list !== 'ul'){ close(); out += '<ul>'; list = 'ul'; } const ck = m[1].match(/^\[( |x|X)\]\s+(.*)/); out += ck ? `<li class="ck ${ck[1] === ' ' ? '' : 'x'}">${inline(ck[2])}</li>` : `<li>${inline(m[1])}</li>`; continue; }
     if((m = l.match(/^\s*\d+[.)]\s+(.*)/))){ if(list !== 'ol'){ close(); out += '<ol>'; list = 'ol'; } out += `<li>${inline(m[1])}</li>`; continue; }
     close();
-    if((m = l.match(/^#{1,6}\s+(.*)/))){ out += `<h4>${inline(m[1])}</h4>`; continue; }
+    if((m = l.match(/^(#{1,6})\s+(.*)/))){ const n = doc ? Math.min(5, m[1].length + 2) : 4; out += `<h${n}>${inline(m[2])}</h${n}>`; continue; }
     if(l.trim()) out += `<p>${inline(l)}</p>`;
   }
   close(); if(inCode) out += blocCode(code);
@@ -902,7 +1149,7 @@ const Cloud = {
         const changed = await this.pull();
         this.st.ok = true; this.st.err = null; this.st.last = Date.now();
         if(this.joined && !REG().atelierAjoute) ajouterAtelier();
-        if(changed){ render(); if(!force) toast('Mis à jour depuis un autre appareil'); }
+        if(changed){ if(view === 'idees' && enSaisie()) IDV.sale = true; else render(); if(IDSHEET && !IDSHEET.edit && !$('#modal').hidden && /^(idee|prompt)$/.test(IDSHEET.type) && !enSaisie()) rouvrirSheet(); if(!force) toast('Mis à jour depuis un autre appareil'); }
       }catch(e){ this.st.ok = false; this.st.err = !navigator.onLine ? 'hors ligne' : e.message; }
       finally{ this.st.busy = false; renderChrome(); }
     });
@@ -982,9 +1229,9 @@ async function modelChain(tier){
   const ok = list.filter(m => C.blocked?.[m] !== today());
   return ok.length ? ok : list;
 }
-function reflexion(m){
+function reflexion(m, pense=false){
   if(C.noThink?.[m]) return null;
-  const deep = REG().vitesse === 'approfondi';
+  const deep = pense || REG().vitesse === 'approfondi';
   if(/^gemini-2\.5-flash-lite/.test(m)) return deep ? {thinkingBudget:512} : null;
   if(/^gemini-2\.5-flash/.test(m)) return {thinkingBudget:deep ? 2048 : 0};
   if(/^gemini-([3-9]|\d\d)/.test(m)) return {thinkingLevel:deep ? 'low' : 'minimal'};
@@ -1003,7 +1250,7 @@ async function garde(){
   if(C.gemMin.length >= 12) await sleep(60e3 - (Date.now() - C.gemMin[0]) + 200);
   C.gemMin.push(Date.now()); a.n++; saveC();
 }
-async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null}={}){
+async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null, pense=false}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = (typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input).map(c => ({...c, parts:c.parts.map(p => p.text != null ? {...p, text:masquer(p.text)} : p)}));
   system = masquer(system);
@@ -1011,7 +1258,7 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
   for(const m of await modelChain(tier)){
     for(let essai = 0; essai < 2; essai++){
       const body = {contents, generationConfig:{temperature}};
-      const th = reflexion(m); if(th) body.generationConfig.thinkingConfig = th;
+      const th = reflexion(m, pense); if(th) body.generationConfig.thinkingConfig = th;
       if(system) body.systemInstruction = {parts:[{text:system}]};
       if(json) body.generationConfig.responseMimeType = 'application/json';
       const enFlux = !!onText && !json;
@@ -1058,8 +1305,10 @@ function flux(id){ let raf = 0, txt = ''; return t => { txt = t; if(raf) return;
 /* ================================================================
    Contexte du chef (résumés de cerveau : prompts courts = réponses rapides)
 ================================================================ */
+const F = window.FORMATION || {modules:[], critique:'', essentiels:'', total:0, texte:() => ''};
 const ROLE_CHEF = `Tu es le chef de projet et directeur technique de Clément, étudiant qui développe seul plusieurs apps (Electron pour Mac/Windows avec une version téléphone sur GitHub Pages, mises à jour publiées sur GitHub). Le code est écrit par une IA (Claude Code) à qui Clément donne des consignes : tu l'aides à décider quoi faire, à comprendre son code et à rédiger des consignes claires.
-Réponds en français, directement, de façon concrète et courte. Appuie-toi sur les faits fournis ; dis quand une information manque au lieu d'inventer.`;
+Réponds en français, directement, de façon concrète et courte. Appuie-toi sur les faits fournis ; dis quand une information manque au lieu d'inventer.
+Esprit critique : tu ne valides jamais par politesse. Dis franchement ce qui ne va pas (valeur, coût, risque, cohérence avec l'existant) et propose mieux ; si c'est bon, dis-le simplement sans inventer de défaut. Tu as suivi une formation de ${F.total} h en développement d'applications web (${F.modules.map(m => m.titre.toLowerCase()).join(', ')}), dont la rédaction de prompts structurés pour Claude Code.`;
 let resumeEnCours = false;
 async function resumerCerveaux(){
   if(resumeEnCours || !L.geminiKey) return;
@@ -1075,7 +1324,7 @@ async function resumerCerveaux(){
   }catch(e){ console.warn('résumé', e.message); }
   finally{ resumeEnCours = false; }
 }
-function ficheApp(a, profond=false){
+function ficheApp(a, profond=false, avecIdees=true){
   const d = C.apps[a.repo] || {}, v = d.version || {}, l = d.live;
   const res = get('resumes', {})[a.repo]?.text;
   const cerveau = profond ? clip(cerveauTexte(d) || '(pas de cerveau)', 40000) : (res || clip(cerveauTexte(d) || '(pas de cerveau)', 2500));
@@ -1084,10 +1333,200 @@ Version publiée : ${v.version || '?'}${v.date ? ' du ' + new Date(v.date).toLoc
 Notes de version : ${(v.notes||[]).join(' | ') || '—'}
 Derniers commits : ${(d.commits||[]).slice(0,5).map(c => c.msg).join(' | ') || '—'}
 Tâches ouvertes : ${(d.issues||[]).slice(0,12).map(i => '#'+i.number+' '+i.title).join(' | ') || 'aucune'}
-${l ? `En direct (${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => x.texte).join(' | ') || ''}\n` : ''}Cerveau${profond ? '' : ' (résumé)'} :
+${l ? `En direct (${ago(l.t)}) : ${l.climat?.titre || ''} ${l.alertes?.map(x => x.texte).join(' | ') || ''}\n` : ''}${avecIdees && typeof ideesTexte === 'function' && ideesTexte(a.repo) ? ideesTexte(a.repo) + '\n' : ''}Cerveau${profond ? '' : ' (résumé)'} :
 ${cerveau}`;
 }
 const contexteGlobal = () => tracked().map(a => ficheApp(a)).join('\n\n');
+
+/* ================================================================
+   Idées (4.0) : Clément note ses idées par app ; le chef les lit avec un
+   esprit critique (avis), les range sur une carte mentale (lecture d'ensemble)
+   et, sur demande, en fait un prompt structuré pour Claude Code, rangé et cochable.
+   Rubriques partagées : idee:<id>, prompt:<id> (une par élément, null = supprimé), carte:<repo>.
+================================================================ */
+const IP = 'idee:', PP = 'prompt:', CP = 'carte:';
+const nouvelId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const rubriques = p => Object.entries(SH).filter(([k, e]) => k.startsWith(p) && e && e.v).map(([, e]) => e.v);
+function idees(repo){ return rubriques(IP).filter(x => !repo || x.app === repo).sort((a, b) => b.cree - a.cree); }
+function prompts(repo){ return rubriques(PP).filter(x => !repo || x.app === repo).sort((a, b) => (!!a.fait - !!b.fait) || (b.cree - a.cree)); }
+const ideeGet = id => id ? get(IP + id, null) : null;
+const promptGet = id => id ? get(PP + id, null) : null;
+const carteGet = repo => get(CP + repo, null);
+function ideePut(x){ x.maj = Date.now(); put(IP + x.id, x); }
+function promptPut(p){ p.maj = Date.now(); put(PP + p.id, p); }
+const txt = v => typeof v === 'string' ? v.trim() : v == null ? '' : String(v).trim();
+const tab = v => Array.isArray(v) ? v : [];
+// L'empreinte ignore le titre trouvé par le chef, sinon il relirait sans fin
+const empreinte = x => hashTxt(`${x.app}\n${x.titreAuto ? '' : x.titre || ''}\n${x.texte}`);
+const avisAJour = x => !!x.avis && x.avis.h === empreinte(x);
+const ouverte = x => x.statut !== 'faite' && x.statut !== 'archivee';
+const VERDICTS = {
+  bonne:{l:'Validée', c:'#10b981', i:'check'},
+  a_preciser:{l:'À préciser', c:'#f59e0b', i:'help'},
+  a_ameliorer:{l:'À améliorer', c:'#8b5cf6', i:'spark'},
+  a_revoir:{l:'À revoir', c:'#ef4444', i:'alert'}
+};
+function etatIdee(x){
+  if(x.statut === 'faite') return {k:'faite', l:'Réalisée', c:'#10b981', i:'check'};
+  if(busy['idee' + x.id] || (FILE_AVIS.has(x.id) && L.geminiKey && navigator.onLine)) return {k:'lit', l:'Le chef lit…', c:'#8b5cf6', i:'spark'};
+  if(!avisAJour(x)) return {k:'attente', l:L.geminiKey ? 'En attente du chef' : 'Sans avis', c:'#94a3b8', i:'clock'};
+  const v = VERDICTS[x.avis.verdict] || VERDICTS.a_preciser;
+  return Object.assign({k:x.avis.verdict}, v, x.statut === 'prompt' ? {l:'Dans un prompt', c:'#0ea5e9', i:'doc'} : {});
+}
+const themeDe = x => carteGet(x.app)?.themes?.[x.id] || x.avis?.theme || '';
+const titreIdee = x => x.titre || txt(x.texte).split('\n')[0].slice(0, 70) || 'Idée';
+
+function ideeAjouter(app, texte, titre=''){
+  const x = {id:nouvelId(), app, titre:txt(titre), titreAuto:false, texte:txt(texte), cree:Date.now(), maj:Date.now(), appareil:L.device, statut:'ouverte'};
+  ideePut(x); LS.set('atelier.idees.app', app); planifierAvis(x.id); return x;
+}
+
+/* ----- Avis du chef : une idée lue avec les autres idées de l'app ----- */
+const FILE_AVIS = new Set(); let avisTourne = false, avisT = 0;
+function planifierAvis(id, delai=900){ FILE_AVIS.add(id); clearTimeout(avisT); avisT = setTimeout(traiterAvis, delai); }
+async function traiterAvis(){
+  if(avisTourne || !L.geminiKey || !navigator.onLine) return;
+  avisTourne = true;
+  try{
+    while(FILE_AVIS.size){
+      const id = FILE_AVIS.values().next().value; FILE_AVIS.delete(id);
+      const x = ideeGet(id); if(!x || !ouverte(x) || avisAJour(x)) continue;
+      try{ await analyserIdee(x); }
+      catch(e){ C.avisErr = Object.assign({}, C.avisErr, {[id]:{h:empreinte(x), at:Date.now(), msg:e.message}}); saveC(); if(view === 'idees' || IDSHEET) toast('Avis du chef : ' + e.message, true); }
+    }
+  }finally{ avisTourne = false; majIdees(); }
+}
+// Idées sans avis (écrites hors ligne, ou sur un appareil sans clé) : l'appareil qui l'a écrite d'abord, les autres après 3 min
+function avisEnAttente(){
+  if(!L.geminiKey || !navigator.onLine || !Cloud.joined) return;
+  for(const x of idees()){
+    if(!ouverte(x) || avisAJour(x)) continue;
+    const err = C.avisErr?.[x.id]; if(err && err.h === empreinte(x) && Date.now() - err.at < 3600e3) continue;
+    if(x.appareil === L.device || Date.now() - x.maj > 3*60e3) FILE_AVIS.add(x.id);
+  }
+  if(FILE_AVIS.size) traiterAvis();
+}
+const ligneIdee = y => `- [${y.id}] ${titreIdee(y)} : ${clip(y.texte, 360).replace(/\s*\n\s*/g, ' ')}${y.avis ? ` (verdict : ${VERDICTS[y.avis.verdict]?.l || '?'} ; thème : ${themeDe(y) || '?'})` : ''}${y.statut === 'faite' ? ' [RÉALISÉE]' : y.statut === 'prompt' ? ' [déjà dans un prompt]' : ''}`;
+async function analyserIdee(x){
+  const a = appBy(x.app), h = empreinte(x);
+  busy['idee' + x.id] = true; majIdees();
+  try{
+    const autres = idees(x.app).filter(y => y.id !== x.id && y.statut !== 'archivee').slice(0, 30);
+    const themes = [...new Set(autres.map(themeDe).filter(Boolean))];
+    const r = await gemini(`${ficheApp(a, false, false)}
+
+## Autres idées de Clément pour ${a.name}
+${autres.map(ligneIdee).join('\n') || 'aucune pour l\'instant'}
+
+## Prompts déjà rédigés pour ${a.name}
+${prompts(x.app).slice(0, 12).map(p => `- ${p.titre}${p.fait ? ' [fait]' : ''}`).join('\n') || 'aucun'}
+
+## L'idée à lire (note de Clément, telle qu'il l'a écrite)
+"""
+${x.titre && !x.titreAuto ? x.titre + '\n' : ''}${x.texte}
+"""
+
+Lis cette idée avec ton esprit critique, en tenant compte de l'app, de son cerveau, de ses tâches, des prompts déjà faits et des autres idées. Réponds en JSON strict :
+{"titre":"titre court, 2 à 6 mots","compris":"ce que tu as compris de son intention, 1 ou 2 phrases","verdict":"bonne | a_preciser | a_ameliorer | a_revoir","avis":"ton avis franc en 2 à 4 phrases : valeur, coût, risques, cohérence avec l'existant","amelioration":"la note réécrite en mieux, prête à remplacer l'originale (garde son intention, précise le comportement attendu, 2 à 6 lignes) ; chaîne vide si l'idée est bonne telle quelle","questions":["0 à 3 questions courtes qui débloquent une décision"],"liens":[{"id":"identifiant d'une autre idée ci-dessus","relation":"complète | dépend de | contredit | doublon"}],"theme":"thème de 1 à 3 mots${themes.length ? ' (réutilise si possible : ' + themes.join(', ') + ')' : ''}","effort":"petit | moyen | gros","impact":"faible | moyen | fort"}
+Verdicts : bonne = claire et utile, à faire telle quelle (alors amelioration vide, n'invente aucun défaut) ; a_preciser = l'intention est bonne mais des décisions manquent (pose les questions) ; a_ameliorer = une meilleure version existe (donne-la) ; a_revoir = déjà faite, en double, risquée, contraire à une règle du cerveau ou peu utile (dis pourquoi et propose une alternative).`,
+      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\nTa formation (${F.total} h) :\n${F.essentiels}\n\n${F.texte(['produit'])}`});
+    const y = ideeGet(x.id); if(!y) return;
+    const ids = new Set(autres.map(z => z.id)), verdict = VERDICTS[r.verdict] ? r.verdict : 'a_preciser';
+    let amelioration = verdict === 'bonne' ? '' : txt(r.amelioration);
+    if(amelioration && hashTxt(amelioration) === hashTxt(txt(y.texte))) amelioration = '';
+    y.avis = {at:Date.now(), h, verdict, compris:txt(r.compris), avis:txt(r.avis), amelioration,
+      questions:tab(r.questions).map(txt).filter(Boolean).slice(0, 3),
+      liens:tab(r.liens).filter(l => l && ids.has(l.id)).slice(0, 6).map(l => ({id:l.id, rel:txt(l.relation) || 'complète'})),
+      theme:txt(r.theme).slice(0, 32) || 'Divers', effort:txt(r.effort) || '?', impact:txt(r.impact) || '?'};
+    if((!y.titre || y.titreAuto) && txt(r.titre)){ y.titre = txt(r.titre).replace(/^["«\s]+|["».\s]+$/g, '').slice(0, 70); y.titreAuto = true; }
+    if(C.avisErr?.[y.id]){ delete C.avisErr[y.id]; saveC(); }
+    ideePut(y);
+    planifierSynthese(y.app);
+  }finally{ delete busy['idee' + x.id]; majIdees(); }
+}
+
+/* ----- Lecture d'ensemble (alimente la carte mentale) ----- */
+const SYNT = {};
+const empreinteCarte = repo => hashTxt(idees(repo).filter(x => x.statut !== 'archivee').map(x => `${x.id}:${x.avis?.at || 0}:${x.statut}`).join('|'));
+function planifierSynthese(repo, delai=5000){ clearTimeout(SYNT[repo]); SYNT[repo] = setTimeout(() => syntheseIdees(repo).catch(e => console.warn('synthèse', e.message)), delai); }
+async function syntheseIdees(repo, force=false){
+  const list = idees(repo).filter(x => x.statut !== 'archivee');
+  const actives = list.filter(ouverte);
+  if(actives.length < 2 || !L.geminiKey || !navigator.onLine) return;
+  const h = empreinteCarte(repo), c = carteGet(repo);
+  if(!force && c?.h === h) return;
+  const a = appBy(repo);
+  busy['carte' + repo] = true; majIdees();
+  try{
+    const r = await gemini(`${ficheApp(a, false, false)}
+
+## Toutes les idées de Clément pour ${a.name}
+${list.map(x => ligneIdee(x) + (x.avis?.avis ? `\n  Avis : ${x.avis.avis}` : '')).join('\n')}
+
+Fais la lecture d'ensemble de ces idées, comme un directeur produit exigeant. JSON strict :
+{"synthese":"3 à 5 phrases : ce qui se dégage, la cohérence de l'ensemble, ton avis global franc","ordre":["identifiants des idées non réalisées, dans l'ordre conseillé (les plus utiles et les plus sûres d'abord, les dépendances avant)"],"tensions":["contradictions, doublons ou choix à trancher (0 à 4)"],"manques":["ce qui manque pour que l'ensemble tienne (0 à 3)"],"themes":{"identifiant":"thème de 1 à 3 mots, harmonisé (5 thèmes au plus pour toute l'app)"}}`,
+      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\n${F.texte(['produit'])}`});
+    const ids = new Set(list.map(x => x.id)), themes = {};
+    for(const [k, v] of Object.entries(r.themes || {})) if(ids.has(k) && txt(v)) themes[k] = txt(v).slice(0, 32);
+    put(CP + repo, {at:Date.now(), h, synthese:txt(r.synthese), ordre:tab(r.ordre).filter(id => ids.has(id)), tensions:tab(r.tensions).map(txt).filter(Boolean).slice(0, 4), manques:tab(r.manques).map(txt).filter(Boolean).slice(0, 3), themes});
+  }finally{ delete busy['carte' + repo]; majIdees(); }
+}
+
+/* ----- Prompt structuré pour Claude Code ----- */
+let PCTRL = null;
+async function genererPrompt(repo, ids, precision='', base=null){
+  const a = appBy(repo), choisies = ids.map(ideeGet).filter(Boolean);
+  if(!choisies.length) throw new Error('Choisis au moins une idée');
+  const autres = idees(repo).filter(x => !ids.includes(x.id) && ouverte(x));
+  const carte = carteGet(repo);
+  const p = base ? Object.assign({}, base) : {id:nouvelId(), app:repo, cree:Date.now(), fait:false};
+  p.idees = choisies.map(x => x.id); p.precision = txt(precision);
+  busy.prompt = p.id; PCTRL = new AbortController();
+  promptEcriture(p, choisies);
+  try{
+    const texte = await gemini(`${ficheApp(a, true, false)}
+
+## Idées à réaliser dans ce prompt
+${choisies.map((x, i) => `### ${i + 1}. ${titreIdee(x)}
+Note de Clément : ${x.texte}${x.avis ? `
+Compris par le chef : ${x.avis.compris}
+Avis du chef : ${x.avis.avis}${x.avis.amelioration ? `\nVersion améliorée proposée par le chef (pas encore adoptée par Clément) : ${x.avis.amelioration}` : ''}${x.avis.questions.length ? `\nQuestions encore ouvertes : ${x.avis.questions.join(' | ')}` : ''}` : ''}`).join('\n\n')}
+
+## Autres idées en attente (HORS PÉRIMÈTRE de ce prompt, à ne pas réaliser)
+${autres.map(x => `- ${titreIdee(x)}`).join('\n') || 'aucune'}
+${carte?.synthese ? `\n## Lecture d'ensemble du chef\n${carte.synthese}` : ''}
+${p.precision ? `\n## Précision de Clément pour ce prompt\n${p.precision}` : ''}
+
+Rédige maintenant LE prompt complet que Clément enverra tel quel à Claude Code pour réaliser ces idées dans ${a.name} (dépôt ${repo}). Suis exactement le modèle de ta formation (titres « ## »). Appuie-toi sur le cerveau de l'app : cite les fichiers, fonctions, règles et la procédure de publication qui s'y trouvent ; n'invente pas de fichier. Tranche toi-même les questions ouvertes de façon raisonnable et écris-les dans « Points à trancher » comme hypothèses. Si plusieurs idées, ordonne-les en étapes. Textes de l'interface exacts entre guillemets « ». Aucune clé ni donnée personnelle.
+Réponds uniquement par le prompt, en markdown, première ligne « # Titre ». Pas de bloc de code autour, pas de phrase avant ni après.`,
+      {system:`${ROLE_CHEF}\n\n${F.critique}\n\nTa formation complète (${F.total} h) :\n\n${F.texte()}`, temperature:0.35, pense:true, signal:PCTRL.signal,
+       onText:t => { const el = $('#promptLive'); if(el){ el.innerHTML = md(t); const sh = $('#modal .sheet'); if(sh && sh.scrollHeight - sh.scrollTop - sh.clientHeight < 240) sh.scrollTop = sh.scrollHeight; } }});
+    p.texte = texte.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
+    p.titre = (p.texte.match(/^#\s+(.+)$/m) || [])[1]?.replace(/[*_`]/g, '').trim().slice(0, 100) || titreIdee(choisies[0]);
+    p.regen = (p.regen || 0) + (base ? 1 : 0);
+    promptPut(p);
+    for(const x of choisies){ const y = ideeGet(x.id); if(y && y.statut !== 'faite'){ y.statut = 'prompt'; y.prompt = p.id; ideePut(y); } }
+    return p;
+  }finally{ busy.prompt = null; PCTRL = null; }
+}
+function promptFait(id, fait){
+  const p = promptGet(id); if(!p) return;
+  p.fait = fait; p.faitAt = fait ? Date.now() : null; promptPut(p);
+  for(const i of p.idees || []){ const x = ideeGet(i); if(x){ x.statut = fait ? 'faite' : 'prompt'; x.prompt = p.id; ideePut(x); } }
+  planifierSynthese(p.app, 2000);
+}
+function promptSupprimer(id){
+  const p = promptGet(id); if(!p) return;
+  for(const i of p.idees || []){ const x = ideeGet(i); if(x && x.prompt === id){ x.statut = 'ouverte'; delete x.prompt; ideePut(x); } }
+  put(PP + id, null);
+}
+// Ce que le chef sait des idées dans ses discussions
+function ideesTexte(repo){
+  const ids = idees(repo).filter(ouverte).slice(0, 15), ps = prompts(repo).filter(p => !p.fait).slice(0, 6);
+  if(!ids.length && !ps.length) return '';
+  return `Idées de Clément (onglet Idées) : ${ids.map(x => `${titreIdee(x)} [${etatIdee(x).l}]`).join(' | ') || 'aucune'}${ps.length ? `\nPrompts rédigés pas encore faits : ${ps.map(p => p.titre).join(' | ')}` : ''}`;
+}
+
 
 /* ================================================================
    Cerveaux Obsidian (3.2) : l'app Atelier du PC lit les coffres et les envoie au cloud,
@@ -1690,8 +2129,8 @@ function cloudEtat(){
 /* ================================================================
    Vues
 ================================================================ */
-const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, notes:{t:'Obsidian', c:'Obsidian', i:'vault'}, github:{t:'GitHub et tokens', c:'GitHub', i:'key'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
-const ORDRE = ['today','apps','tasks','chef','notes','sync','github','settings'];
+const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, idees:{t:'Idées', c:'Idées', i:'idea'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, notes:{t:'Obsidian', c:'Obsidian', i:'vault'}, github:{t:'GitHub et tokens', c:'GitHub', i:'key'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'gear'}};
+const ORDRE = ['today','apps','idees','chef','tasks','notes','sync','github','settings'];
 const empty = (big, t, s, btn) => `<div class="empty"><div class="big">${big}</div><h3>${esc(t)}</h3><p>${esc(s)}</p>${btn||''}</div>`;
 
 function liveCard(a, folded=true){
@@ -1748,6 +2187,10 @@ function vToday(){
     <div>
       ${(() => { const sn = compterSante(), s = C.sante; if(!s) return ''; const cls = sn.pb ? 'pb' : sn.att ? 'att' : 'ok';
         return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros : tout fonctionne' : cls === 'pb' ? `Synchros : ${plural(sn.pb, 'problème')}` : `Synchros : ${plural(sn.att, 'point')} à surveiller`}</b><div class="xs muted">Vérifié ${esc(ago(s.at))}</div></div>${ic('chev','s')}</section>`; })()}
+      ${(() => { const ids = idees().filter(ouverte), ps = prompts().filter(p => !p.fait); if(!ids.length && !ps.length) return '';
+        const n = k => ids.filter(x => avisAJour(x) && x.avis.verdict === k && x.statut !== 'prompt').length, att = ids.filter(x => !avisAJour(x)).length;
+        return `<section class="card idtoday" data-action="idSeg" data-v="${ps.length ? 'prompts' : 'idees'}"><div class="hd"><h2>${ic('idea')} Idées</h2>${ic('chev','s')}</div>
+          <div class="kv">${ids.length ? `<span class="pill">${plural(ids.length, 'idée')} en cours</span>` : ''}${n('a_preciser') ? `<span class="vpill" style="--v:#f59e0b">${n('a_preciser')} à préciser</span>` : ''}${n('a_ameliorer') ? `<span class="vpill" style="--v:#8b5cf6">${n('a_ameliorer')} à améliorer</span>` : ''}${n('bonne') ? `<span class="vpill" style="--v:#10b981">${n('bonne')} validée${n('bonne') > 1 ? 's' : ''}</span>` : ''}${att ? `<span class="pill">${att} en lecture</span>` : ''}${ps.length ? `<span class="vpill" style="--v:#0ea5e9">${plural(ps.length, 'prompt')} à envoyer</span>` : ''}</div></section>`; })()}
       ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
       ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi au retour du réseau.</div></section>` : ''}
       <section class="card">
@@ -1790,7 +2233,7 @@ function vTasks(){
   const filtre = TF.q || TF.app !== 'all';
   return `<div class="toolbar">
       <input id="tq" placeholder="Rechercher" value="${esc(TF.q)}" style="flex:1;min-width:180px" type="search">
-      <button class="btn primary desk-only" data-action="capture">${ic('plus','s')} Nouvelle tâche</button>
+      <button class="btn primary desk-only" data-action="captureTache">${ic('plus','s')} Nouvelle tâche</button>
     </div>
     <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes<span class="cn">${all.length}</span></button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${avatar(a,'xs')}${esc(a.name)}<span class="cn">${(C.apps[a.repo]?.issues||[]).length}</span></button>`).join('')}</div>
     ${errs.map(a => `<p class="err">${esc(a.name)} : ${esc(C.apps[a.repo]?.issuesErr || 'les Issues sont désactivées sur ce dépôt')}</p>`).join('')}
@@ -1922,7 +2365,8 @@ function vSettings(){
     rangee({ic:'spark', c:'#8b5cf6', t:'Clé Gemini', v:L.geminiKey ? (C.gemErr ? '<span class="ko">Erreur</span>' : 'Active') : 'Absente', act:'regGemini'}),
     rangee({ic:'bolt', c:'#ec4899', t:'Vitesse', v:vit[reg.vitesse] || 'Équilibré', act:'regVitesse'}),
     rangee({ic:'brain', c:'#6366f1', t:'Modèle', v:esc(reg.model === 'auto' || !reg.model ? 'Automatique' : reg.model), act:'regModele'}),
-    rangee({ic:'alert', c:'#ef4444', t:'Limite par jour', v:`${appelsJour().n} / ${plafondJour()}`, act:'regLimite'})
+    rangee({ic:'alert', c:'#ef4444', t:'Limite par jour', v:`${appelsJour().n} / ${plafondJour()}`, act:'regLimite'}),
+    rangee({ic:'grad', c:'#0ea5e9', t:'Formation', v:`${F.total} h`, act:'regFormation'})
   ])}
 
   ${groupe('Apparence', [
@@ -1946,6 +2390,11 @@ let REGM = null;   // fenêtre de réglage ouverte (pour la redessiner après un
 function regModal(f){ REGM = f; SHEET = null; modal(`<div class="regm">${f()}</div>`); }
 const champ = (lab, input, aide) => `<label class="f">${lab}</label>${input}${aide ? `<p class="help">${aide}</p>` : ''}`;
 const REGF = {
+  regFormation: () => `<div class="form-h"><div class="form-ic">${ic('grad')}</div><div><h2 style="margin:0">Formation du chef</h2><p class="muted sm" style="margin:2px 0 0">${F.modules.length} modules · ${F.total} h · terminée</p></div></div>
+    <div class="form-bar"><i></i></div>
+    <p class="sm muted" style="margin:0 0 12px">Ce que le chef applique quand il lit tes idées et rédige tes prompts.</p>
+    <details class="fmod"><summary><span class="fmi">🧭</span><span class="rgt">Esprit critique<small>Comment il juge une idée</small></span></summary><div class="fmc">${md(F.critique.replace(/^ESPRIT CRITIQUE.*\n/, ''))}</div></details>
+    ${F.modules.map(m => `<details class="fmod"><summary><span class="fmi">${m.icone}</span><span class="rgt">${esc(m.titre)}<small>${esc(m.resume)}</small></span><span class="fmh">${m.h} h</span></summary><div class="fmc">${md(m.contenu, true)}</div></details>`).join('')}`,
   regProfil: () => `<h2>Profil</h2>${champ('Prénom', `<input data-reg="prenom" value="${esc(REG().prenom||'')}" placeholder="Ton prénom">`)}${champ('Nom de cet appareil', `<input data-local="nomAppareil" value="${esc(L.nomAppareil||'')}" placeholder="${esc(PLATEFORME)}">`)}`,
   regCloud: () => { const ce = cloudEtat(); return `<h2>Synchronisation</h2><div class="grp in">${rangee({ic:ce.ic, c:ce.cls === 'err' ? '#ef4444' : '#0ea5e9', t:esc(ce.txt), sous:`${esc(Cloud.repo)}${Cloud.st.last ? ' · ' + esc(ago(Cloud.st.last)) : ''}`})}</div>${Cloud.st.err && Cloud.st.err !== 'hors ligne' ? `<p class="err">${esc(Cloud.st.err)}</p>` : ''}<div class="btns"><button class="btn primary block" data-action="cloudNow">${ic('sync','s')} Synchroniser</button></div>`; },
   regAppareils: () => { const devs = Object.values(C.remote).sort((x, y) => (y.updated||0) - (x.updated||0));
@@ -2097,30 +2546,350 @@ function modaleDemande(pre){
    Rendu général
 ================================================================ */
 function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' && !CHEF.liste ? document.body.scrollHeight : 0); if(v === 'sync' && Date.now() - (C.sante?.at||0) > 60e3) verifierTout(); }
+const SECTIONS = [{id:'', vues:['today']}, {id:'projets', t:'Projets', vues:['apps', 'tasks']}, {id:'creation', t:'Création', vues:['idees', 'chef', 'notes']}, {id:'suivi', t:'Suivi', vues:['sync', 'github']}];
+function badgeVue(k, rail=false){
+  const n = nbTaches(), sn = compterSante();
+  if(k === 'sync' && (sn.pb || sn.att)) return `<span class="badge ${sn.pb ? '' : 'warn'}">${sn.pb || sn.att}</span>`;
+  if(k === 'tasks' && n) return rail ? `<span class="badge doux">${n > 99 ? '99+' : n}</span>` : `<span class="cnt">${n > 99 ? '99+' : n}</span>`;
+  if(k === 'idees'){ const p = typeof prompts === 'function' ? prompts().filter(x => !x.fait).length : 0, i = typeof idees === 'function' ? idees().filter(ouverte).length : 0; return p ? `<span class="badge doux" title="${plural(p, 'prompt')} à envoyer">${p}</span>` : i ? `<span class="cnt">${i}</span>` : ''; }
+  return '';
+}
 function renderChrome(){
-  const ce = cloudEtat(), n = nbTaches();
+  const ce = cloudEtat();
   $('#vtitle').textContent = VUES[view]?.t || 'Atelier';
   $('#vsub').innerHTML = busy.sync ? `<span class="cloud">${spin('')} Actualisation…</span>` : `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
-  $('#sideCloud').innerHTML = `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
+  $('#sideCloud').innerHTML = `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(busy.sync ? 'Actualisation…' : ce.txt.split(' · ')[0])}</span>`;
   const sn = compterSante();
-  const badge = k => k === 'tasks' && n ? `<span class="badge">${n > 99 ? '99+' : n}</span>` : k === 'sync' && (sn.pb || sn.att) ? `<span class="badge ${sn.pb ? '' : 'warn'}">${sn.pb || sn.att}</span>` : '';
-  const nav = side => ORDRE.filter(k => side || (k !== 'settings' && k !== 'github')).map(k => { const v = VUES[k]; return `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${badge(k)}</button>`; }).join('');
-  $('#tabs').innerHTML = nav(false);
-  $('#snav').innerHTML = nav(true);
-  $('#sideApps').innerHTML = tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
-  $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
-  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes' || view === 'github' || view === 'sync';
+  // Téléphone : 4 onglets + « Plus »
+  const plusOn = PLUS.includes(view);
+  $('#tabs').innerHTML = ONGLETS_TEL.map(k => { const v = VUES[k], b = k === 'idees' ? badgeVue(k, true) : ''; return `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(v.c)}${b.includes('cnt') ? '' : b}</button>`; }).join('')
+    + `<button data-action="plus" class="${plusOn ? 'on' : ''}" ${plusOn ? 'aria-current="page"' : ''}>${ic(plusOn ? VUES[view].i : 'more')}${esc(plusOn ? VUES[view].c : 'Plus')}${sn.pb ? `<span class="badge">${sn.pb}</span>` : ''}</button>`;
+  // Ordinateur : sections repliables, apps, profil
+  const plie = new Set(LS.get('atelier.side.plie', [])), rail = document.body.classList.contains('rail');
+  const item = k => { const v = VUES[k]; return `<button data-go="${k}" class="sni ${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''} title="${esc(v.t)}">${ic(v.i)}<span class="snl">${esc(v.t)}</span>${badgeVue(k, rail)}</button>`; };
+  const sect = (id, t, corps, extra='') => `<div class="sgrp ${id && plie.has(id) ? 'plie' : ''}">${t ? `<div class="sghr"><button class="sgh" data-action="sideSection" data-s="${id}" aria-expanded="${!plie.has(id)}">${esc(t)}${ic('chev','s')}</button>${extra}</div>` : ''}<div class="sgl">${corps}</div></div>`;
+  $('#snav').innerHTML = SECTIONS.map(s => sect(s.id, s.t, s.vues.map(item).join(''))).join('')
+    + sect('apps', 'Apps', tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sni sapp" data-action="openApp" data-repo="${esc(a.repo)}" title="${esc(a.name)} · ${esc(h.label)}">${avatar(a, 'xs')}<span class="snl">${esc(a.name)}</span><span class="dot ${h.cls}"></span></button>`; }).join(''), `<button class="sgadd" data-go="settings" title="Ajouter une app" aria-label="Ajouter une app">${ic('plus','s')}</button>`);
+  const p = (REG().prenom || '').trim();
+  $('#sfoot').innerHTML = `<button class="sme ${view === 'settings' ? 'on' : ''}" data-go="settings" title="Réglages"><span class="sav">${esc((p || 'A')[0].toUpperCase())}</span><span class="snl"><b>${esc(p || 'Réglages')}</b><small>${esc(L.nomAppareil || PLATEFORME)} · ${esc(VERSION)}</small></span>${ic('gear','s')}</button>`;
+  const fab = $('#fab');
+  fab.hidden = ['settings', 'chef', 'notes', 'github', 'sync', 'idees'].includes(view);
+  fab.dataset.action = view === 'tasks' ? 'captureTache' : 'capture'; fab.setAttribute('aria-label', view === 'tasks' ? 'Nouvelle tâche' : 'Nouvelle idée');
   document.body.classList.toggle('chef', view === 'chef');
   $('#gearBtn').style.visibility = view === 'settings' ? 'hidden' : '';
   document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
 function render(){
-  const keep = $('#chatIn')?.value, focusId = ['tq', 'dq', 'chatIn'].find(id => document.activeElement?.id === id);
-  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, notes:vNotes, github:vGithub, sync:vSync, settings:vSettings}[view] || vToday)();
+  const keep = $('#chatIn')?.value, keepIdee = $('#idIn')?.value, focusId = ['tq', 'dq', 'chatIn', 'idIn'].find(id => document.activeElement?.id === id);
+  $('#main').innerHTML = ({today:vToday, apps:vApps, idees:vIdees, tasks:vTasks, chef:vChef, notes:vNotes, github:vGithub, sync:vSync, settings:vSettings}[view] || vToday)();
+  if(view === 'idees' && keepIdee && $('#idIn')){ $('#idIn').value = keepIdee; }
   if(keep && $('#chatIn')) $('#chatIn').value = keep;
   if(focusId && $('#' + focusId)){ const t = $('#' + focusId); t.focus(); try{ t.setSelectionRange(t.value.length, t.value.length); }catch{} }
   renderChrome();
   if(SHEET && !SHEET.lock && !$('#modal').hidden) appSheet(SHEET.repo, SHEET.tab, true);
+}
+
+
+/* ================================================================
+   Écran Idées (4.0) : segments Idées / Carte / Prompts
+================================================================ */
+let IDV = {seg:LS.get('atelier.idees.seg', 'idees'), app:LS.get('atelier.idees.filtre', 'all'), carte:LS.get('atelier.idees.carte', null), ouvert:false, appNouv:null, sale:false};
+let IDSHEET = null;   // feuille ouverte : {type:'idee'|'prompt'|'compose'|'ecrit'|'nouvelle', id, edit}
+const enSaisie = () => /^(idIn|idIn2|ideeT|ideeX|promptX|ppPrec)$/.test(document.activeElement?.id || '');
+function majIdees(){
+  if(view === 'idees'){ if(enSaisie()) IDV.sale = true; else render(); } else renderChrome();
+  if(IDSHEET && !$('#modal').hidden && !IDSHEET.edit && (IDSHEET.type === 'idee' || IDSHEET.type === 'prompt') && !enSaisie()) rouvrirSheet();
+}
+function rouvrirSheet(){ if(!IDSHEET) return; if(IDSHEET.type === 'idee') ideeSheet(IDSHEET.id); else if(IDSHEET.type === 'prompt') promptSheet(IDSHEET.id); }
+const filtreActif = apps => IDV.app !== 'all' && apps.some(a => a.repo === IDV.app) ? IDV.app : null;
+const chipsApps = (apps, compte, action='idFiltre', actif=IDV.app, tout=true) => `<div class="chips">${tout ? `<button class="chip ${!apps.some(a => a.repo === actif) ? 'on' : ''}" data-action="${action}" data-repo="all">Toutes${compte(null) ? `<span class="cn">${compte(null)}</span>` : ''}</button>` : ''}${apps.map(a => `<button class="chip ${actif === a.repo ? 'on' : ''}" data-action="${action}" data-repo="${esc(a.repo)}">${avatar(a, 'xs')}${esc(a.name)}${compte(a.repo) ? `<span class="cn">${compte(a.repo)}</span>` : ''}</button>`).join('')}</div>`;
+
+function vIdees(){
+  const apps = tracked();
+  if(!apps.length) return empty('🧩', 'Aucune app suivie', 'Ajoute tes apps dans les Réglages.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
+  const toutes = idees().filter(x => x.statut !== 'archivee');
+  const nI = toutes.filter(ouverte).length, nP = prompts().filter(p => !p.fait).length;
+  const seg = `<div class="seg idseg" role="tablist">${[['idees', 'Idées', 'idea', nI], ['carte', 'Carte', 'map', 0], ['prompts', 'Prompts', 'doc', nP]].map(([k, l, i, n]) => `<button role="tab" class="${IDV.seg === k ? 'on' : ''}" data-action="idSeg" data-v="${k}" aria-selected="${IDV.seg === k}">${ic(i, 's')}<span>${l}</span>${n ? `<span class="cn">${n}</span>` : ''}</button>`).join('')}</div>`;
+  return `<div class="idees ${IDV.seg === 'carte' ? 'large' : ''}">${seg}${IDV.seg === 'carte' ? vCarte(apps) : IDV.seg === 'prompts' ? vPrompts(apps) : vListeIdees(apps, toutes)}</div>`;
+}
+
+/* ----- Zone d'écriture ----- */
+function appNouvelle(apps){
+  const voulu = IDV.appNouv || (IDV.app !== 'all' ? IDV.app : LS.get('atelier.idees.app', ''));
+  return IDV.appNouv = apps.some(a => a.repo === voulu) ? voulu : apps[0].repo;
+}
+const choixApps = (apps, sel, action='idPick') => `<div class="idapps">${apps.map(a => `<button class="idapp ${a.repo === sel ? 'on' : ''}" data-action="${action}" data-repo="${esc(a.repo)}" style="--c:${esc(a.couleur || '#6366f1')}">${avatar(a, 'xs')}<span>${esc(a.name)}</span></button>`).join('')}</div>`;
+function compositeur(apps){
+  const sel = appNouvelle(apps);
+  return `<section class="idcomp ${IDV.ouvert ? 'open' : ''}" id="idComp">
+    <div class="idcomp-in"><span class="idcomp-ic">${ic('idea')}</span><textarea id="idIn" rows="1" placeholder="Note une idée…" aria-label="Nouvelle idée"></textarea></div>
+    <div class="idcomp-b">
+      ${choixApps(apps, sel)}
+      <div class="idcomp-act">${micOk ? `<button class="ibtn" data-action="idDicter" id="idMic" aria-label="Dicter">${ic('mic')}</button>` : ''}<span class="xs muted desk-only">Ctrl+Entrée</span><span style="flex:1"></span><button class="btn ghost sm" data-action="idAnnuler">Annuler</button><button class="btn primary sm" data-action="idAjouter">${ic('plus','s')} Ajouter</button></div>
+    </div></section>`;
+}
+function nouvelleIdeeSheet(pre){
+  const apps = tracked(); if(!apps.length) return go('settings');
+  if(pre) IDV.appNouv = pre;
+  const sel = appNouvelle(apps);
+  IDSHEET = {type:'nouvelle'}; SHEET = null;
+  modal(`<h2>Nouvelle idée</h2>
+    ${choixApps(apps, sel)}
+    <textarea id="idIn2" rows="6" placeholder="Décris ton idée, même en vrac : le chef la lira et te dira ce qu'il en pense."></textarea>
+    <div class="idcomp-act" style="margin-top:12px">${micOk ? `<button class="ibtn" data-action="idDicter" id="idMic" aria-label="Dicter">${ic('mic')}</button>` : ''}<span style="flex:1"></span><button class="btn primary" data-action="idAjouter" data-src="sheet">${ic('plus','s')} Ajouter</button></div>`);
+  setTimeout(() => $('#idIn2')?.focus(), 80);
+}
+
+/* ----- Liste des idées ----- */
+function vListeIdees(apps, toutes){
+  const f = filtreActif(apps);
+  const list = toutes.filter(x => !f || x.app === f);
+  const actives = list.filter(ouverte), faites = list.filter(x => x.statut === 'faite');
+  const compte = repo => toutes.filter(x => ouverte(x) && (!repo || x.app === repo)).length;
+  let corps = '';
+  if(!toutes.length) corps = `<div class="idvide">
+      <div class="etapes3"><div><span>${ic('edit')}</span><b>Tu notes</b><small>en vrac, à la voix</small></div><i></i><div><span>${ic('spark')}</span><b>Le chef lit</b><small>avis franc, carte</small></div><i></i><div><span>${ic('doc')}</span><b>Un prompt</b><small>prêt pour Claude</small></div></div>
+      <p>Note ta première idée ci-dessus.</p></div>`;
+  else if(f) corps = actives.length ? groupeIdees(appBy(f), actives) : `<p class="muted c sm">Aucune idée en cours pour ${esc(appBy(f).name)}.</p>`;
+  else corps = apps.map(a => { const l = actives.filter(x => x.app === a.repo); return l.length ? groupeIdees(a, l) : ''; }).join('') || '<p class="muted c sm">Aucune idée en cours.</p>';
+  if(faites.length) corps += `<details class="idfaites"><summary>${ic('check','s')} Réalisées <span class="cn">${faites.length}</span></summary><div class="idl">${faites.map(carteIdee).join('')}</div></details>`;
+  return `${toutes.length ? chipsApps(apps, compte) : ''}${compositeur(apps)}${corps}`;
+}
+function groupeIdees(a, l){
+  const ordre = carteGet(a.repo)?.ordre || [];
+  l = l.slice().sort((x, y) => ((x.statut === 'prompt') - (y.statut === 'prompt')) || ((ordre.indexOf(x.id) + 1 || 999) - (ordre.indexOf(y.id) + 1 || 999)) || (y.cree - x.cree));
+  const libres = l.filter(x => x.statut !== 'prompt').length;
+  return `<section class="idg"><div class="idgh">${avatar(a, 's')}<b>${esc(a.name)}</b><span class="cn">${l.length}</span><span style="flex:1"></span>${libres ? `<button class="btn sm ghost" data-action="idCompose" data-repo="${esc(a.repo)}">${ic('doc','s')} Créer un prompt</button>` : ''}</div><div class="idl">${l.map(carteIdee).join('')}</div></section>`;
+}
+function carteIdee(x){
+  const e = etatIdee(x), a = appBy(x.app), th = themeDe(x), t = titreIdee(x);
+  const extrait = txt(x.texte).replace(/\s*\n\s*/g, ' ');
+  return `<button class="idc ${e.k}" data-action="idOuvrir" data-id="${esc(x.id)}" style="--c:${esc(a.couleur || '#6366f1')};--v:${e.c}">
+    <span class="idc-t">${esc(t)}</span>
+    ${extrait && extrait !== t ? `<span class="idc-x clamp2">${esc(extrait)}</span>` : ''}
+    <span class="idc-m"><span class="vpill">${e.k === 'lit' ? '<span class="spinner"></span>' : ic(e.i, 's')}${esc(e.l)}</span>${th ? `<span class="th clamp1">${esc(th)}</span>` : ''}<span class="when">${esc(agoCourt(x.cree))}</span></span>
+  </button>`;
+}
+
+/* ----- Fiche d'une idée ----- */
+function ideeSheet(id, edit=false){
+  const x = ideeGet(id); if(!x){ closeModal(); return; }
+  IDSHEET = {type:'idee', id, edit, app:IDSHEET?.id === id ? IDSHEET.app : null}; SHEET = null;
+  const a = appBy(x.app), kind = LARGE() ? 'drawer' : 'dialog';
+  if(edit){
+    const sel = IDSHEET.app || x.app; IDSHEET.app = sel;
+    return modal(`<div class="regm"><h2>Modifier l'idée</h2>
+      <label class="f">App</label>${choixApps(tracked(), sel, 'idEditApp')}
+      <label class="f">Titre</label><input id="ideeT" value="${x.titreAuto ? '' : esc(x.titre)}" placeholder="${esc(x.titre || 'Le chef en trouvera un')}">
+      <label class="f">Note</label><textarea id="ideeX" rows="9">${esc(x.texte)}</textarea>
+      ${x.avis?.questions?.length ? `<p class="help">Le chef se demande : ${esc(x.avis.questions.join(' · '))}</p>` : ''}
+      <div class="btns"><button class="btn primary" data-action="idEnregistrer" data-id="${esc(id)}">Enregistrer</button><button class="btn ghost" data-action="idOuvrir" data-id="${esc(id)}">Annuler</button></div></div>`, kind);
+  }
+  const e = etatIdee(x), p = promptGet(x.prompt);
+  modal(`<div class="idsheet">
+    <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${esc(ago(x.cree))}</span></div>
+    <h2 class="idtitre">${esc(titreIdee(x))}</h2>
+    <div class="idnote">${md(x.texte)}</div>
+    ${p ? `<button class="idlink" data-action="prOuvrir" data-id="${esc(p.id)}">${ic('doc','s')}<span class="clamp1">${p.fait ? 'Réalisée avec' : 'Dans'} « ${esc(p.titre)} »</span>${ic('chev','s')}</button>` : ''}
+    ${blocAvis(x, e)}
+    <div class="idactions">
+      ${ouverte(x) ? `<button class="btn primary block" data-action="idCompose" data-repo="${esc(x.app)}" data-id="${esc(x.id)}">${ic('doc','s')} ${x.statut === 'prompt' ? 'Refaire un prompt' : 'Créer le prompt'}</button>` : ''}
+      <div class="row3">
+        <button class="btn" data-action="idModifier" data-id="${esc(x.id)}">${ic('edit','s')} Modifier</button>
+        <button class="btn" data-action="idDiscuter" data-id="${esc(x.id)}">${ic('chef','s')} Discuter</button>
+        <button class="btn danger" data-action="idSupprimer" data-id="${esc(x.id)}" aria-label="Supprimer">${ic('trash','s')}</button>
+      </div>
+    </div></div>`, kind);
+}
+function blocAvis(x, e){
+  const av = x.avis, perime = av && !avisAJour(x);
+  if(!av){
+    const err = C.avisErr?.[x.id];
+    if(e.k === 'lit') return `<section class="avis lit"><div class="avh"><span class="avic">${ic('spark','s')}</span><b>Le chef lit ton idée…</b></div><div class="skel"></div><div class="skel w80"></div><div class="skel w50"></div></section>`;
+    return `<section class="avis vide"><div class="avh"><span class="avic">${ic('spark','s')}</span><b>Avis du chef</b></div>
+      <p class="muted sm">${!L.geminiKey ? 'Ajoute la clé Gemini dans les Réglages pour que le chef lise tes idées.' : err ? esc(err.msg) : 'Pas encore lue.'}</p>
+      ${L.geminiKey ? `<button class="btn sm" data-action="idRelire" data-id="${esc(x.id)}">${ic('spark','s')} Demander son avis</button>` : ''}</section>`;
+  }
+  const v = VERDICTS[av.verdict] || VERDICTS.a_preciser;
+  const liens = (av.liens || []).map(l => ({l, y:ideeGet(l.id)})).filter(o => o.y);
+  return `<section class="avis" style="--v:${v.c}">
+    <div class="avh"><span class="avic">${ic(v.i, 's')}</span><b>Avis du chef</b><span class="vpill fort">${esc(v.l)}</span></div>
+    ${perime ? `<p class="perime">${e.k === 'lit' ? '<span class="spinner"></span> Ta note a changé : le chef relit…' : 'Avis sur une version précédente de la note.'}</p>` : ''}
+    ${av.compris ? `<p class="compris">${esc(av.compris)}</p>` : ''}
+    ${av.avis ? `<p class="avtxt">${esc(av.avis)}</p>` : ''}
+    ${av.amelioration ? `<div class="prop"><div class="proph">${ic('spark','s')} Version proposée</div>${md(av.amelioration)}
+      <div class="btns"><button class="btn sm primary" data-action="idAppliquer" data-id="${esc(x.id)}">Remplacer ma note</button><button class="btn sm ghost" data-action="idAjoutProp" data-id="${esc(x.id)}">Ajouter à la suite</button></div></div>` : av.verdict === 'bonne' ? `<p class="okv">${ic('check','s')} Rien à changer : elle peut partir en prompt.</p>` : ''}
+    ${av.questions?.length ? `<div class="qs"><b>À trancher</b>${av.questions.map(q => `<div class="q">${ic('help','s')}<span>${esc(q)}</span></div>`).join('')}<button class="lnk" data-action="idModifier" data-id="${esc(x.id)}">${ic('edit','s')} Répondre dans la note</button></div>` : ''}
+    ${liens.length ? `<div class="liens"><b>Liée à</b><div>${liens.map(({l, y}) => `<button class="lien rel-${esc(sansAccent(l.rel).replace(/\W+/g, '-'))}" data-action="idOuvrir" data-id="${esc(y.id)}"><span class="rel">${esc(l.rel)}</span><span class="clamp1">${esc(titreIdee(y))}</span></button>`).join('')}</div></div>` : ''}
+    <div class="avkv">${themeDe(x) ? `<span class="pill">${ic('map','s')} ${esc(themeDe(x))}</span>` : ''}<span class="pill">Effort ${esc(av.effort)}</span><span class="pill">Impact ${esc(av.impact)}</span></div>
+    <div class="avf"><span class="xs muted">Lu ${esc(ago(av.at))}</span><button class="lnk" data-action="idRelire" data-id="${esc(x.id)}" ${e.k === 'lit' ? 'disabled' : ''}>${ic('redo','s')} Relire</button></div>
+  </section>`;
+}
+
+/* ----- Préparer un prompt ----- */
+function promptCompose(repo, preId){
+  const a = appBy(repo), c = carteGet(repo), ordre = c?.ordre || [];
+  const list = idees(repo).filter(ouverte).sort((x, y) => ((ordre.indexOf(x.id) + 1 || 999) - (ordre.indexOf(y.id) + 1 || 999)) || (y.cree - x.cree));
+  if(!list.length){ toast('Aucune idée en cours pour ' + a.name); return; }
+  const lies = id => (ideeGet(id)?.avis?.liens || []).filter(l => !/contredit|doublon/.test(l.rel)).map(l => l.id);
+  const pre = new Set(preId ? [preId, ...lies(preId)] : list.filter(x => x.statut !== 'prompt' && x.avis?.verdict !== 'a_revoir').map(x => x.id));
+  IDSHEET = {type:'compose', repo}; SHEET = null;
+  modal(`<div class="regm">
+    <div class="idh">${avatar(a, 's')}<span>${esc(a.name)}</span></div>
+    <h2>Créer un prompt</h2>
+    <p class="muted sm" style="margin:-4px 0 12px">Coche les idées à réaliser ensemble.${ordre.length ? ' Elles sont dans l’ordre conseillé par le chef.' : ''}</p>
+    <div class="grp in pick">${list.map(x => { const e = etatIdee(x); return `<label class="rg pickrow"><input type="checkbox" data-pp="${esc(x.id)}" ${pre.has(x.id) ? 'checked' : ''}><span class="rgt">${esc(titreIdee(x))}<small><i class="dotv" style="background:${e.c}"></i>${esc(e.l)}</small></span></label>`; }).join('')}</div>
+    <label class="f">Précision pour le chef <span class="muted">(facultatif)</span></label>
+    <textarea id="ppPrec" rows="2" placeholder="Ex : commence par la version téléphone"></textarea>
+    <div class="btns"><button class="btn primary block" data-action="prRediger" data-repo="${esc(repo)}" ${L.geminiKey ? '' : 'disabled'}>${ic('spark','s')} Rédiger le prompt</button></div>
+    ${L.geminiKey ? '' : '<p class="help">Il faut la clé Gemini (Réglages › Chef de projet).</p>'}</div>`, LARGE() ? 'drawer' : 'dialog');
+}
+function promptEcriture(p, choisies){
+  const a = appBy(p.app); IDSHEET = {type:'ecrit', id:p.id}; SHEET = null;
+  modal(`<div class="idsheet">
+    <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${plural(choisies.length, 'idée')}</span></div>
+    <div class="ecrit"><span class="spinner"></span><b>Le chef rédige ton prompt…</b><small>Il relit le cerveau de ${esc(a.name)} et applique sa méthode.</small></div>
+    <article class="pdoc" id="promptLive"><div class="skel"></div><div class="skel w80"></div><div class="skel w50"></div><div class="skel"></div></article>
+    <div class="btns"><button class="btn ghost" data-action="prStop">${ic('stop','s')} Arrêter</button></div></div>`, LARGE() ? 'drawer' : 'dialog');
+}
+
+/* ----- Fiche d'un prompt ----- */
+function promptSheet(id, edit=false){
+  const p = promptGet(id); if(!p){ closeModal(); return; }
+  IDSHEET = {type:'prompt', id, edit}; SHEET = null;
+  const a = appBy(p.app), ids = (p.idees || []).map(ideeGet).filter(Boolean), kind = LARGE() ? 'drawer' : 'dialog';
+  if(edit) return modal(`<div class="regm"><h2>Modifier le prompt</h2><textarea id="promptX" class="mono" rows="20">${esc(p.texte)}</textarea>
+    <div class="btns"><button class="btn primary" data-action="prEnregistrer" data-id="${esc(id)}">Enregistrer</button><button class="btn ghost" data-action="prOuvrir" data-id="${esc(id)}">Annuler</button></div></div>`, kind);
+  modal(`<div class="idsheet">
+    <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${esc(ago(p.cree))}${p.regen ? ' · refait' : ''}</span></div>
+    <h2 class="idtitre">${esc(p.titre)}</h2>
+    <button class="faitrow ${p.fait ? 'on' : ''}" data-action="prFait" data-id="${esc(p.id)}"><span class="ck">${ic('check')}</span><span class="ft"><b>${p.fait ? 'Fait' : 'Marquer comme fait'}</b><small>${p.fait ? 'Réalisé ' + esc(ago(p.faitAt)) : p.copie ? 'Copié ' + esc(ago(p.copie)) + ' · à cocher quand Claude l’a réalisé' : 'À cocher quand Claude l’a réalisé'}</small></span></button>
+    <div class="pacts"><button class="btn primary" data-action="prCopier" data-id="${esc(p.id)}">${ic('copy','s')} Copier</button>${navigator.share ? `<button class="btn" data-action="prPartager" data-id="${esc(p.id)}">${ic('share','s')} Partager</button>` : ''}<button class="ibtn" data-action="prModifier" data-id="${esc(p.id)}" aria-label="Modifier" title="Modifier">${ic('edit','s')}</button><button class="ibtn" data-action="prRefaire" data-id="${esc(p.id)}" aria-label="Refaire" title="Refaire">${ic('redo','s')}</button></div>
+    <article class="pdoc">${md(p.texte.replace(/^\s*#\s+.+\n+/, ''), true)}</article>
+    ${ids.length ? `<h3 class="sec">Idées incluses</h3><div class="liens"><div>${ids.map(x => `<button class="lien" data-action="idOuvrir" data-id="${esc(x.id)}"><span class="clamp1">${esc(titreIdee(x))}</span></button>`).join('')}</div></div>` : ''}
+    <div class="btns"><button class="btn sm ghost danger" data-action="prSupprimer" data-id="${esc(p.id)}">${ic('trash','s')} Supprimer le prompt</button></div></div>`, kind);
+}
+
+/* ----- Liste des prompts ----- */
+function vPrompts(apps){
+  const f = filtreActif(apps), tous = prompts();
+  if(!tous.length) return `<div class="idvide grand"><div class="idvide-ic">${ic('doc')}</div><h3>Aucun prompt pour l'instant</h3><p>Dans Idées, touche « Créer un prompt » : le chef rédige un prompt complet, prêt à envoyer à Claude. Il arrive ici, tu le coches quand c'est fait.</p><button class="btn primary" data-action="idSeg" data-v="idees">${ic('idea','s')} Voir mes idées</button></div>`;
+  const list = tous.filter(p => !f || p.app === f), afaire = list.filter(p => !p.fait), faits = list.filter(p => p.fait);
+  const compte = repo => tous.filter(p => !p.fait && (!repo || p.app === repo)).length;
+  return `${chipsApps(apps, compte)}
+    ${afaire.length ? `<h3 class="gh">À envoyer</h3><div class="plist">${afaire.map(cartePrompt).join('')}</div>` : `<div class="idvide"><p>${ic('check','s')} Tout est fait.</p></div>`}
+    ${faits.length ? `<details class="idfaites" ${afaire.length ? '' : 'open'}><summary>${ic('check','s')} Faits <span class="cn">${faits.length}</span></summary><div class="plist">${faits.map(cartePrompt).join('')}</div></details>` : ''}`;
+}
+function cartePrompt(p){
+  const a = appBy(p.app);
+  const obj = (p.texte.match(/##\s*Objectif\s*\n+([\s\S]*?)(\n##|$)/) || [])[1] || p.texte.replace(/^#.*\n/, '');
+  const extrait = obj.replace(/[*_`#>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 220);
+  return `<div class="pc ${p.fait ? 'fait' : ''}" style="--c:${esc(a.couleur || '#6366f1')}">
+    <button class="pck" data-action="prFait" data-id="${esc(p.id)}" aria-label="${p.fait ? 'Remettre à faire' : 'Marquer fait'}">${ic('check')}</button>
+    <button class="pcb" data-action="prOuvrir" data-id="${esc(p.id)}"><span class="pct">${esc(p.titre)}</span><span class="pcx clamp2">${esc(extrait)}</span><span class="pcm">${avatar(a, 'xs')}${esc(a.name)} · ${plural((p.idees || []).length, 'idée')} · ${esc(agoCourt(p.fait ? p.faitAt || p.cree : p.cree))}</span></button>
+    ${p.fait ? '' : `<button class="ibtn" data-action="prCopier" data-id="${esc(p.id)}" aria-label="Copier" title="Copier">${ic('copy','s')}</button>`}
+  </div>`;
+}
+
+/* ----- Carte mentale ----- */
+const PALETTE = ['#8b5cf6', '#0ea5e9', '#f59e0b', '#10b981', '#ec4899', '#6366f1', '#14b8a6', '#f97316'];
+function coupe(t, n, max){
+  const lignes = []; let l = '';
+  for(const m of String(t).split(/\s+/).filter(Boolean)){ if(l && (l + ' ' + m).length > n){ lignes.push(l); l = m; } else l = l ? l + ' ' + m : m; }
+  if(l) lignes.push(l);
+  const out = lignes.slice(0, max).map(x => x.length > n ? x.slice(0, n - 1) + '…' : x);
+  if(lignes.length > max) out[max - 1] = out[max - 1].replace(/.?…?$/, '') + '…';
+  return out.length ? out : [''];
+}
+function carteSVG(repo, W){
+  const a = appBy(repo), list = idees(repo).filter(x => x.statut !== 'archivee');
+  const groupes = new Map();
+  for(const x of list){ const t = themeDe(x) || 'À lire'; if(!groupes.has(t)) groupes.set(t, []); groupes.get(t).push(x); }
+  const themes = [...groupes.entries()].map(([nom, ids]) => ({nom, ids})).sort((p, q) => q.ids.length - p.ids.length);
+  themes.forEach((t, i) => { t.c = t.nom === 'À lire' ? '#94a3b8' : PALETTE[i % PALETTE.length]; });
+  const deux = W >= 680, M = deux ? 20 : 16;   // M : marge extérieure pour les liens entre idées
+  const CW = deux ? 150 : 78, TW = deux ? 150 : 106, G1 = deux ? 46 : 12, G2 = deux ? 34 : 10;
+  const IW = deux ? Math.max(150, Math.min(250, Math.floor(W / 2 - CW / 2 - G1 - TW - G2 - M))) : W - CW - G1 - TW - G2 - M;
+  const fs = deux ? 13 : 12, LH = fs + 4, cpl = Math.max(10, Math.floor((IW - 30) / (fs * .55))), cplT = Math.max(8, Math.floor((TW - 14) / 6.9));
+  function cote(ts){
+    let y = 0; const out = [];
+    for(const t of ts){
+      const debut = y, feuilles = [];
+      for(const x of t.ids){ const lignes = coupe(titreIdee(x), cpl, 3), h = 14 + lignes.length * LH; feuilles.push({x, lignes, y, h}); y += h + 8; }
+      y -= 8;
+      const tl = coupe(t.nom, cplT, 2), th = 14 + tl.length * 15;
+      let hb = y - debut;
+      if(hb < th){ const d = (th - hb) / 2; feuilles.forEach(f => f.y += d); y = debut + th; hb = th; }
+      out.push({t, tl, th, cy:debut + hb / 2, feuilles});
+      y += 20;
+    }
+    return {out, H:Math.max(0, y - 20)};
+  }
+  let droite = themes, gauche = [];
+  if(deux){ droite = []; let hd = 0, hg = 0; for(const t of themes){ const hh = t.ids.length * 42 + 20; if(hd <= hg){ droite.push(t); hd += hh; } else { gauche.push(t); hg += hh; } } }
+  const D = cote(droite), G = cote(gauche), pad = 18, CH = 96;
+  const H = Math.max(D.H, G.H, CH) + pad * 2, cx = deux ? W / 2 : CW / 2, cy = H / 2;
+  const parts = [], noeuds = [], pos = {};
+  const courbe = (x1, y1, x2, y2) => { const mx = (x1 + x2) / 2; return `M${x1.toFixed(1)},${y1.toFixed(1)} C${mx.toFixed(1)},${y1.toFixed(1)} ${mx.toFixed(1)},${y2.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}`; };
+  function dessiner(side, sens){
+    const off = pad + (H - pad * 2 - side.H) / 2;
+    for(const g of side.out){
+      const ty = off + g.cy, tx = sens > 0 ? cx + CW / 2 + G1 : cx - CW / 2 - G1 - TW;
+      parts.push(`<path d="${courbe(sens > 0 ? cx + CW / 2 : cx - CW / 2, cy, sens > 0 ? tx : tx + TW, ty)}" stroke="${g.t.c}" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".8"/>`);
+      noeuds.push(`<g class="mt"><rect x="${tx}" y="${(ty - g.th / 2).toFixed(1)}" width="${TW}" height="${g.th}" rx="${Math.min(14, g.th / 2)}" fill="${g.t.c}" fill-opacity=".16" stroke="${g.t.c}" stroke-opacity=".6"/>${g.tl.map((l, i) => `<text x="${tx + TW / 2}" y="${(ty - (g.tl.length - 1) * 7.5 + i * 15 + 4.5).toFixed(1)}" text-anchor="middle" class="mtt" fill="${g.t.c}">${esc(l)}</text>`).join('')}</g>`);
+      for(const f of g.feuilles){
+        const fy = off + f.y, fx = sens > 0 ? tx + TW + G2 : tx - G2 - IW, e = etatIdee(f.x);
+        parts.push(`<path d="${courbe(sens > 0 ? tx + TW : tx, ty, sens > 0 ? fx : fx + IW, fy + f.h / 2)}" stroke="${g.t.c}" stroke-width="1.5" fill="none" opacity=".45"/>`);
+        pos[f.x.id] = {x:fx, y:fy, h:f.h, sens};
+        noeuds.push(`<g class="mn ${e.k}" data-action="idOuvrir" data-id="${esc(f.x.id)}" role="button" tabindex="0" aria-label="${esc(titreIdee(f.x))}"><rect x="${fx}" y="${fy.toFixed(1)}" width="${IW}" height="${f.h}" rx="11" class="mnr"/><circle cx="${fx + 13}" cy="${(fy + f.h / 2).toFixed(1)}" r="4.5" fill="${e.c}"/>${f.lignes.map((l, i) => `<text x="${fx + 25}" y="${(fy + 7 + (i + 1) * LH - 4).toFixed(1)}" class="mnt" font-size="${fs}">${esc(l)}</text>`).join('')}</g>`);
+      }
+    }
+  }
+  dessiner(D, 1); if(deux) dessiner(G, -1);
+  const vus = new Set();
+  for(const x of list) for(const l of x.avis?.liens || []){
+    const k = [x.id, l.id].sort().join('|'), A = pos[x.id], B = pos[l.id];
+    if(vus.has(k) || !A || !B || A.sens !== B.sens) continue; vus.add(k);
+    const ax = A.sens > 0 ? A.x + IW : A.x, bx = B.sens > 0 ? B.x + IW : B.x, ay = A.y + A.h / 2, by = B.y + B.h / 2, b = A.sens * (M - 2);
+    const col = /contredit/.test(l.rel) ? '#ef4444' : /doublon/.test(l.rel) ? '#f59e0b' : 'var(--mu)';
+    parts.push(`<path d="M${ax},${ay.toFixed(1)} C${ax + b},${ay.toFixed(1)} ${bx + b},${by.toFixed(1)} ${bx},${by.toFixed(1)}" stroke="${col}" stroke-width="1.4" stroke-dasharray="3 4" fill="none" opacity=".75"><title>${esc(l.rel)}</title></path>`);
+  }
+  const ico = a.icone || ICONES[repo], col = a.couleur || '#6366f1', gid = 'mg' + slugApp(repo).replace(/\W/g, '');
+  noeuds.push(`<g class="mc" data-action="openApp" data-repo="${esc(repo)}" role="button" aria-label="${esc(a.name)}"><rect x="${cx - CW / 2}" y="${cy - CH / 2}" width="${CW}" height="${CH}" rx="24" fill="url(#${gid})"/>${ico ? `<image href="${esc(ico)}" x="${cx - 20}" y="${cy - 36}" width="40" height="40"/>` : `<text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="28">${esc(a.emoji || '📦')}</text>`}<text x="${cx}" y="${cy + 26}" text-anchor="middle" class="mct">${esc(coupe(a.name, deux ? 16 : 10, 1)[0])}</text><text x="${cx}" y="${cy + 40}" text-anchor="middle" class="mcs">${plural(list.filter(ouverte).length, 'idée')}</text></g>`);
+  return `<svg viewBox="0 0 ${W} ${H.toFixed(0)}" width="${W}" height="${H.toFixed(0)}" class="mindmap" role="img" aria-label="Carte des idées de ${esc(a.name)}"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".72"/></linearGradient></defs>${parts.join('')}${noeuds.join('')}</svg>`;
+}
+function vCarte(apps){
+  const avec = apps.filter(a => idees(a.repo).some(x => x.statut !== 'archivee'));
+  if(!avec.length) return `<div class="idvide grand"><div class="idvide-ic">${ic('map')}</div><h3>La carte est vide</h3><p>Note des idées : le chef les range par thème et dessine la carte de chaque app, avec ses liens.</p><button class="btn primary" data-action="idSeg" data-v="idees">${ic('idea','s')} Noter une idée</button></div>`;
+  const repo = [IDV.carte, IDV.app].find(r => avec.some(a => a.repo === r)) || avec[0].repo;
+  const c = carteGet(repo), actives = idees(repo).filter(ouverte), lit = busy['carte' + repo];
+  if(actives.length >= 2 && L.geminiKey && !lit && c?.h !== empreinteCarte(repo)) planifierSynthese(repo, 600);
+  const W = Math.round(Math.max(300, Math.min(1120, ($('#main')?.clientWidth || innerWidth) - (LARGE() ? 64 : 32)) - 2));
+  const ordre = (c?.ordre || []).map(ideeGet).filter(x => x && ouverte(x));
+  return `${chipsApps(avec, r => r ? idees(r).filter(ouverte).length : 0, 'idCarte', repo, false)}
+    <section class="carte"><div class="carte-svg">${carteSVG(repo, W)}</div>
+      <div class="legende">${Object.values(VERDICTS).map(v => `<span><i style="background:${v.c}"></i>${v.l}</span>`).join('')}<span><i style="background:#0ea5e9"></i>Dans un prompt</span><span><i class="pt"></i>Lien</span></div></section>
+    <section class="card lecture">
+      <div class="hd"><h2>${ic('brain')} Lecture d'ensemble</h2>${lit ? `<span class="xs muted">${spin('')} Le chef relit…</span>` : c ? `<span class="xs muted">${esc(ago(c.at))}</span>` : ''}</div>
+      ${actives.length < 2 ? '<p class="muted sm" style="margin:0">Il faut au moins deux idées en cours pour une lecture d’ensemble.</p>'
+        : !c ? (lit ? '<div class="skel"></div><div class="skel w80"></div>' : `<p class="muted sm" style="margin:0">${L.geminiKey ? 'Pas encore faite.' : 'Il faut la clé Gemini.'}</p>`)
+        : `<p class="synth">${esc(c.synthese)}</p>
+          ${ordre.length ? `<h3 class="sec">Ordre conseillé</h3><ol class="ordre">${ordre.map(x => `<li><button class="lnk" data-action="idOuvrir" data-id="${esc(x.id)}">${esc(titreIdee(x))}</button><span class="vpill mini" style="--v:${etatIdee(x).c}">${esc(etatIdee(x).l)}</span></li>`).join('')}</ol>` : ''}
+          ${c.tensions.length ? `<h3 class="sec">À trancher</h3>${c.tensions.map(t => `<div class="q">${ic('alert','s')}<span>${esc(t)}</span></div>`).join('')}` : ''}
+          ${c.manques.length ? `<h3 class="sec">Ce qui manque</h3>${c.manques.map(t => `<div class="q">${ic('plus','s')}<span>${esc(t)}</span></div>`).join('')}` : ''}`}
+      <div class="btns">${actives.length ? `<button class="btn sm primary" data-action="idCompose" data-repo="${esc(repo)}">${ic('doc','s')} Créer un prompt</button>` : ''}${actives.length >= 2 && L.geminiKey ? `<button class="btn sm ghost" data-action="idRelireTout" data-repo="${esc(repo)}" ${lit ? 'disabled' : ''}>${ic('redo','s')} Relire l'ensemble</button>` : ''}</div>
+    </section>`;
+}
+
+/* ----- Navigation du téléphone : feuille « Plus » ----- */
+const ONGLETS_TEL = ['today', 'apps', 'idees', 'chef'];
+const PLUS = ['tasks', 'notes', 'sync', 'github', 'settings'];
+const TUILES = {tasks:'#f59e0b', notes:'#8b5cf6', sync:'#10b981', github:'#334155', settings:'#64748b', idees:'#eab308', today:'#0ea5e9', apps:'#6366f1', chef:'#ec4899'};
+function plusSheet(){
+  IDSHEET = null; SHEET = null;
+  const sn = compterSante(), n = nbTaches();
+  const val = k => k === 'tasks' ? (n ? String(n) : '') : k === 'sync' ? (sn.pb ? `<span class="ko">${plural(sn.pb, 'problème')}</span>` : sn.att ? `${sn.att} à surveiller` : 'OK') : k === 'notes' ? ((OBS.index || C.obsIndex)?.coffres?.length ? plural((OBS.index || C.obsIndex).coffres.length, 'coffre') : '') : '';
+  modal(`<div class="regm"><h2>Plus</h2><section class="grp in">${PLUS.map(k => rangee({ic:VUES[k].i, c:TUILES[k], t:esc(VUES[k].t), v:val(k), go:k, cls:view === k ? 'actif' : ''})).join('')}</section></div>`);
 }
 
 /* ================================================================
@@ -2134,7 +2903,7 @@ function modal(html, kind='dialog'){
   m.hidden = false; document.body.style.overflow = 'hidden';
   if(wasOpen) sh.scrollTop = top; else { sh.scrollTop = 0; sh.style.animation = 'none'; sh.offsetHeight; sh.style.animation = ''; }
 }
-function closeModal(){ REGM = null; $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; SHEET = null; }
+function closeModal(){ REGM = null; IDSHEET = null; $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; SHEET = null; }
 function textModal(title, text, extra=''){
   SHEET = null;
   modal(`<h2>${esc(title)}</h2>${extra}<pre class="pre" id="mtext">${esc(text)}</pre><div class="btns"><button class="btn primary" data-action="copyModal">${ic('copy','s')} Copier</button></div>`);
@@ -2159,7 +2928,7 @@ function appSheet(repo, tab='apercu'){
       ${ai.ideas.list.map((x, i) => `<div style="padding:10px 0;border-top:1px solid var(--bd)"><b>${esc(x.titre)}</b><div class="sm muted">${esc(x.pourquoi)}</div><div class="kv"><span class="pill">effort ${esc(x.effort||'?')}</span><span class="pill">impact ${esc(x.impact||'?')}</span></div>
         <button class="btn sm" data-action="ideaIssue" data-i="${i}" ${x.cree ? 'disabled' : ''}>${x.cree ? ic('check','s') + ' Tâche créée' : ic('plus','s') + ' Créer la tâche'}</button></div>`).join('')}</div>` : ''}`;
   if(tab === 'taches') body = `<div style="margin-top:10px">${(d.issues||[]).map(i => `<div class="trow" style="--c:${esc(a.couleur)}"><span class="bar"></span><div class="tt">${esc(i.title)}<span class="meta">#${i.number} · ${esc(ago(i.created))}</span></div><div class="acts"><button class="ibtn" data-action="issuePrompt" data-repo="${esc(repo)}" data-n="${i.number}" aria-label="Consigne">${ic('brain')}</button><button class="ibtn" data-action="closeIssue" data-repo="${esc(repo)}" data-n="${i.number}" aria-label="Fait">${ic('check')}</button></div></div>`).join('') || empty('🎉', 'Aucune tâche ouverte', '')}
-    <div class="btns"><button class="btn sm primary" data-action="capture" data-repo="${esc(repo)}">${ic('plus','s')} Nouvelle tâche</button></div></div>`;
+    <div class="btns"><button class="btn sm primary" data-action="captureTache" data-repo="${esc(repo)}">${ic('plus','s')} Nouvelle tâche</button></div></div>`;
   if(tab === 'activite') body = `<div class="feed" style="margin-top:8px">${(d.commits||[]).slice(0,25).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener"><span class="tx sm">${esc(c.msg)}</span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted">—</p>'}</div>`;
   if(tab === 'cerveau') body = `
     <div class="btns"><button class="btn sm primary" data-action="brain" ${busy['brain'+repo] ? 'disabled' : ''}>${busy['brain'+repo] ? spin('Lecture…') : ic('brain','s') + (d.brain ? ' Mettre à jour le cerveau' : ' Créer le cerveau')}</button>${ai.pr ? `<a class="btn sm ghost" href="${esc(ai.pr)}" target="_blank" rel="noopener">Proposition en attente ${ic('ext','s')}</a>` : ''}</div>
@@ -2200,6 +2969,118 @@ JSON strict : {"taches":[{"repo":"pseudo/depot","titre":"…","corps":"…"}]}`,
    Actions
 ================================================================ */
 const ACTIONS = {
+  /* ----- Idées (4.0) ----- */
+  capture(el){ nouvelleIdeeSheet(el?.dataset?.repo); },
+  idSeg(el){ IDV.seg = el.dataset.v; LS.set('atelier.idees.seg', IDV.seg); if(view !== 'idees') go('idees'); else { render(); window.scrollTo(0, 0); } },
+  idFiltre(el){ IDV.app = el.dataset.repo; LS.set('atelier.idees.filtre', IDV.app); if(IDV.app !== 'all') IDV.appNouv = IDV.app; render(); },
+  idCarte(el){ IDV.carte = el.dataset.repo; LS.set('atelier.idees.carte', IDV.carte); render(); },
+  idPick(el){
+    IDV.appNouv = el.dataset.repo;
+    el.closest('.idapps').querySelectorAll('.idapp').forEach(b => b.classList.toggle('on', b === el));
+    ($('#idIn2') || $('#idIn'))?.focus();
+  },
+  idEditApp(el){ IDSHEET.app = el.dataset.repo; el.closest('.idapps').querySelectorAll('.idapp').forEach(b => b.classList.toggle('on', b === el)); },
+  idAnnuler(){ IDV.ouvert = false; const t = $('#idIn'); if(t){ t.value = ''; t.style.height = ''; t.blur(); } $('#idComp')?.classList.remove('open'); if(IDV.sale){ IDV.sale = false; render(); } },
+  idAjouter(el){
+    const box = el?.dataset?.src === 'sheet' ? $('#idIn2') : ($('#idIn2') && !$('#modal').hidden ? $('#idIn2') : $('#idIn'));
+    const t = txt(box?.value); if(!t){ box?.focus(); return; }
+    if(REC) REC.stop();
+    const x = ideeAjouter(IDV.appNouv || tracked()[0].repo, t);
+    IDV.ouvert = false; IDV.sale = false; box.value = '';
+    if(!$('#modal').hidden) closeModal();
+    if(view === 'idees'){ IDV.seg = 'idees'; LS.set('atelier.idees.seg', 'idees'); render(); }
+    toast(L.geminiKey && navigator.onLine ? `Idée notée pour ${appBy(x.app).name} · le chef la lit` : 'Idée notée', false, {label:'Voir', run:() => ideeSheet(x.id)});
+  },
+  idDicter(){
+    if(REC){ REC.stop(); return; }
+    const box = (!$('#modal').hidden && $('#idIn2')) || $('#idIn'); if(!box) return;
+    const base = box.value ? box.value.replace(/\s*$/, ' ') : '';
+    try{
+      REC = new SR(); REC.lang = 'fr-FR'; REC.interimResults = true; REC.continuous = false;
+      REC.onresult = e => { box.value = base + [...e.results].map(r => r[0].transcript).join(''); box.dispatchEvent(new Event('input', {bubbles:true})); };
+      REC.onend = () => { REC = null; $('#idMic')?.classList.remove('on'); };
+      REC.onerror = e => { if(e.error === 'not-allowed') toast('Autorise le micro pour dicter', true); };
+      REC.start(); $('#idMic')?.classList.add('on'); IDV.ouvert = true; $('#idComp')?.classList.add('open');
+    }catch{ REC = null; toast('Dictée indisponible sur cet appareil', true); }
+  },
+  idOuvrir(el){ ideeSheet(el.dataset.id); },
+  idModifier(el){ IDSHEET = {type:'idee', id:el.dataset.id, edit:true}; ideeSheet(el.dataset.id, true); setTimeout(() => $('#ideeX')?.focus(), 80); },
+  idEnregistrer(el){
+    const x = ideeGet(el.dataset.id); if(!x) return closeModal();
+    const texte = txt($('#ideeX').value); if(!texte) return toast('La note est vide', true);
+    const titre = txt($('#ideeT').value), app = IDSHEET?.app || x.app;
+    const change = texte !== x.texte || app !== x.app || (titre && titre !== x.titre);
+    x.texte = texte; x.app = app; if(titre){ x.titre = titre; x.titreAuto = false; } else if(!x.titreAuto) { x.titre = ''; }
+    x.appareil = L.device; ideePut(x);
+    if(change && ouverte(x)) planifierAvis(x.id);
+    ideeSheet(x.id); if(view === 'idees') render();
+  },
+  idRelire(el){ const x = ideeGet(el.dataset.id); if(!x) return; if(C.avisErr?.[x.id]){ delete C.avisErr[x.id]; saveC(); } if(x.avis) x.avis.h = 'relire'; planifierAvis(x.id, 10); majIdees(); },
+  idAppliquer(el){
+    const x = ideeGet(el.dataset.id); if(!x?.avis?.amelioration) return;
+    const ancien = x.texte; x.texte = x.avis.amelioration; x.appareil = L.device; ideePut(x); planifierAvis(x.id);
+    ideeSheet(x.id); majIdees();
+    toast('Note remplacée', false, {label:'Annuler', run:() => { const y = ideeGet(x.id); if(!y) return; y.texte = ancien; ideePut(y); planifierAvis(y.id); rouvrirSheet(); majIdees(); }});
+  },
+  idAjoutProp(el){
+    const x = ideeGet(el.dataset.id); if(!x?.avis?.amelioration) return;
+    x.texte = `${x.texte}\n\n${x.avis.amelioration}`; x.appareil = L.device; ideePut(x); planifierAvis(x.id); ideeSheet(x.id); majIdees();
+  },
+  idSupprimer(el){
+    const x = ideeGet(el.dataset.id); if(!x) return;
+    put(IP + x.id, null); closeModal(); majIdees(); planifierSynthese(x.app, 3000);
+    toast('Idée supprimée', false, {label:'Annuler', run:() => { put(IP + x.id, x); majIdees(); }});
+  },
+  idDiscuter(el){
+    const x = ideeGet(el.dataset.id); if(!x) return;
+    const d = discPourApp(x.app); discOuvrir(d.id); go('chef');
+    setTimeout(() => { const b = $('#chatIn'); if(b){ b.value = `À propos de mon idée « ${titreIdee(x)} » : `; b.focus(); } }, 60);
+  },
+  idCompose(el){ promptCompose(el.dataset.repo, el.dataset.id); },
+  idRelireTout(el){ syntheseIdees(el.dataset.repo, true).catch(e => toast(e.message, true)); },
+  async prRediger(el){
+    const repo = el.dataset.repo, ids = [...document.querySelectorAll('[data-pp]:checked')].map(i => i.dataset.pp);
+    if(!ids.length) return toast('Coche au moins une idée', true);
+    const prec = $('#ppPrec')?.value || '';
+    try{
+      const p = await genererPrompt(repo, ids, prec);
+      if(IDSHEET?.type === 'ecrit' && IDSHEET.id === p.id && !$('#modal').hidden) promptSheet(p.id);
+      else toast('Prompt prêt', false, {label:'Ouvrir', run:() => promptSheet(p.id)});
+      if(view === 'idees'){ IDV.seg = 'prompts'; LS.set('atelier.idees.seg', 'prompts'); render(); }
+    }catch(e){
+      if(e.name === 'AbortError'){ closeModal(); toast('Rédaction arrêtée'); return; }
+      toast(e.message, true); if(IDSHEET?.type === 'ecrit') promptCompose(repo);
+    }
+  },
+  prStop(){ PCTRL?.abort(); },
+  prOuvrir(el){ promptSheet(el.dataset.id); },
+  prFait(el){
+    const p = promptGet(el.dataset.id); if(!p) return;
+    promptFait(p.id, !p.fait);
+    if(IDSHEET?.type === 'prompt' && !$('#modal').hidden) promptSheet(p.id);
+    if(view === 'idees') render();
+    if(!p.fait) toast('Bravo, c’est fait ✓', false, {label:'Annuler', run:() => { promptFait(p.id, false); majIdees(); }});
+  },
+  prCopier(el){ const p = promptGet(el.dataset.id); if(!p) return; copy(p.texte); p.copie = Date.now(); promptPut(p); if(IDSHEET?.type === 'prompt' && !$('#modal').hidden) promptSheet(p.id); },
+  async prPartager(el){ const p = promptGet(el.dataset.id); if(!p) return; try{ await navigator.share({title:p.titre, text:p.texte}); p.copie = Date.now(); promptPut(p); promptSheet(p.id); }catch{} },
+  prModifier(el){ promptSheet(el.dataset.id, true); },
+  prEnregistrer(el){ const p = promptGet(el.dataset.id); if(!p) return; p.texte = $('#promptX').value.trim(); p.titre = (p.texte.match(/^#\s+(.+)$/m) || [])[1]?.replace(/[*_`]/g, '').trim().slice(0, 100) || p.titre; promptPut(p); promptSheet(p.id); majIdees(); },
+  async prRefaire(el){
+    const p = promptGet(el.dataset.id); if(!p) return;
+    if(!confirm('Refaire ce prompt ? Le texte actuel sera remplacé.')) return;
+    try{ const q = await genererPrompt(p.app, p.idees || [], p.precision || '', p); if(IDSHEET?.type === 'ecrit' && !$('#modal').hidden) promptSheet(q.id); majIdees(); }
+    catch(e){ if(e.name !== 'AbortError') toast(e.message, true); promptSheet(p.id); }
+  },
+  prSupprimer(el){
+    const p = promptGet(el.dataset.id); if(!p) return;
+    if(!confirm(`Supprimer le prompt « ${p.titre} » ? Ses idées repassent en cours.`)) return;
+    promptSupprimer(p.id); closeModal(); majIdees();
+  },
+  plus(){ plusSheet(); },
+  sideRail(){ document.body.classList.toggle('rail'); LS.set('atelier.side.rail', document.body.classList.contains('rail')); renderChrome(); if(view === 'idees' && IDV.seg === 'carte') setTimeout(render, 300); },
+  sideSection(el){ const s = el.dataset.s, p = new Set(LS.get('atelier.side.plie', [])); p.has(s) ? p.delete(s) : p.add(s); LS.set('atelier.side.plie', [...p]); renderChrome(); },
+  regFormation(){ regModal(REGF.regFormation); },
+
   sync: () => syncAll(),
   cloudNow(){ Cloud.tick(true); Cloud.schedule(true); toast('Synchronisation du cloud…'); },
   closeModal,
@@ -2553,11 +3434,11 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
   async delJeton(el){ const j = L.jetons[+el.dataset.i]; if(!j || !confirm(`Retirer « ${j.nom} » de tous tes appareils ?`)) return; L.jetons.splice(+el.dataset.i, 1); saveL(); await partagerCle(); render(); },
   clearInc(){ if(confirm('Vider le journal des incidents (sur tous tes appareils) ?')){ put('incidents', (get('incidents', [])||[]).filter(x => !x.fin)); render(); } },
 
-  capture(el){
+  captureTache(el){
     const apps = tracked(); if(!apps.length) return go('settings');
     const pre = el?.dataset?.repo;
     SHEET = null;
-    modal(`<h2>Nouvelle idée</h2>
+    modal(`<h2>Nouvelle tâche</h2>
       <textarea id="capText" rows="4" placeholder="Ex : dans Révisions, ajouter un chrono au QCM"></textarea>
       <label class="f">App</label>
       <select id="capApp">${L.geminiKey && !pre ? '<option value="auto">✦ Le chef choisit</option>' : ''}${apps.map(a => `<option value="${esc(a.repo)}" ${pre === a.repo ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select>
@@ -2632,6 +3513,9 @@ function palItems(q){
   const items = [
     ...Object.entries(VUES).map(([k, v]) => ({ic:v.i, t:v.t, k:'Aller à', run:() => go(k)})),
     {ic:'plus', t:'Nouvelle idée', k:'N', run:() => ACTIONS.capture()},
+    {ic:'plus', t:'Nouvelle tâche', k:'GitHub', run:() => ACTIONS.captureTache()},
+    ...idees().filter(x => x.statut !== 'archivee').map(x => ({av:appBy(x.app), t:titreIdee(x), k:'Idée · ' + etatIdee(x).l, run:() => ideeSheet(x.id)})),
+    ...prompts().map(p => ({ic:'doc', t:p.titre, k:p.fait ? 'Prompt fait' : 'Prompt', run:() => promptSheet(p.id)})),
     {ic:'spark', t:'Que faire maintenant ?', k:'Analyse', run:() => { go('today'); ACTIONS.advise().catch(e => toast(e.message, true)); }},
     {ic:'chart', t:'Bilan de la semaine', k:'Analyse', run:() => { go('today'); ACTIONS.weekly().catch(e => toast(e.message, true)); }},
     {ic:'sync', t:'Tout actualiser', k:'R', run:() => syncAll()},
@@ -2675,9 +3559,12 @@ document.addEventListener('click', async e => {
   e.preventDefault();
   try{ await fn(el); }catch(err){ toast(err.message || String(err), true); console.error(err); }
 });
-document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); if(e.key === 'Enter' && e.target.id === 'gq'){ e.preventDefault(); GV.chercher?.(e.target.value); e.target.blur(); } });
+document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); if((e.key === 'Enter' || e.key === ' ') && e.target.classList?.contains('mn')){ e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', {bubbles:true})); } if(e.key === 'Enter' && e.target.id === 'gq'){ e.preventDefault(); GV.chercher?.(e.target.value); e.target.blur(); } });
 document.addEventListener('toggle', e => { const d = e.target; if(d.classList?.contains('ndos')) OBS.ouverts[OBS.coffre + d.dataset.dos] = d.open; }, true);
+document.addEventListener('focusin', e => { if(e.target.id === 'idIn'){ IDV.ouvert = true; $('#idComp')?.classList.add('open'); } });
+document.addEventListener('focusout', e => { if(enSaisie && /^(idIn|ideeX|ideeT)$/.test(e.target.id || '')) setTimeout(() => { if(IDV.sale && !enSaisie() && view === 'idees'){ IDV.sale = false; render(); } }, 250); });
 document.addEventListener('input', e => {
+  if(e.target.id === 'idIn' || e.target.id === 'idIn2'){ const t = e.target; t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 320) + 'px'; }
   if(e.target.id === 'tq'){ TF.q = e.target.value; render(); }
   if(e.target.id === 'dq'){ CHEF.q = e.target.value; render(); }
   if(e.target.id === 'oq'){ OBS.q = e.target.value; const l = $('#oliste'); if(l) l.innerHTML = listeNotes(OBS.coffre); }
@@ -2713,6 +3600,8 @@ document.addEventListener('keydown', e => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('#pal').hidden ? openPalette() : closePalette(); return; }
   if(e.key === 'Escape'){ if(!$('#pal').hidden) closePalette(); else if(!$('#modal').hidden) closeModal(); else if(busy.chat) CTRL?.abort(); return; }
+  if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && /^idIn2?$/.test(e.target.id)){ e.preventDefault(); ACTIONS.idAjouter({dataset:{src:e.target.id === 'idIn2' ? 'sheet' : ''}}); return; }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b' && LARGE()){ e.preventDefault(); ACTIONS.sideRail(); return; }
   if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.id === 'capText'){ e.preventDefault(); ACTIONS.sendCapture().catch(err => toast(err.message, true)); return; }
   if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn' && !matchMedia('(pointer:coarse)').matches){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); return; }
   if(e.key === 'Enter' && e.target.id === 'onTok'){ ACTIONS.onbGo(); return; }
@@ -2761,6 +3650,7 @@ if(/Mac|iPhone|iPad/.test(navigator.platform)) $('#kbdK').textContent = '⌘ K';
 })();
 setInterval(() => { if(!document.hidden && L.ghToken && navigator.onLine && Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 30e3);
 setInterval(() => { if(view === 'sync' && !document.hidden && $('#modal').hidden && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName||'')) render(); }, 20e3);
+if(LS.get('atelier.side.rail', false)) document.body.classList.add('rail');
 render();
 if(!L.ghToken) showOnboarding();
 else {
@@ -2768,6 +3658,7 @@ else {
   adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
+  setTimeout(avisEnAttente, 9000); setInterval(() => { if(!document.hidden) avisEnAttente(); }, 60e3);
   if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 6000); setInterval(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 10*60e3); }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
