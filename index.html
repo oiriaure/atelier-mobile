@@ -216,7 +216,13 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .sugg button:hover{border-color:var(--ac)}
 
 /* ===== Markdown ===== */
-.nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.gcard{padding:0;overflow:hidden}.gbox{position:relative;height:min(68vh,640px);background:var(--s1)}#gcv{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.toks{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin:10px 0}.tok{border:1px solid var(--bd);border-radius:14px;padding:12px;background:var(--s2)}.tokh{display:flex;gap:10px;align-items:center}.tokh .stp{flex:none;position:static}.tokh>div{min-width:0}
+.chip{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--s3,var(--s2));border:1px solid var(--bd);margin:2px 3px 0 0}.chip.pub{color:#f59e0b;border-color:#f59e0b55}
+.dep{display:flex;gap:10px;align-items:center;padding:10px 2px;border-top:1px solid var(--bd)}.dep:first-of-type{border-top:0}
+.modeles{display:grid;gap:8px}.modele{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--bd);border-radius:12px;padding:10px;cursor:pointer}.modele span{display:flex;flex-direction:column;gap:2px}.modele input{margin-top:3px}
+.drt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0}.repos{display:flex;flex-wrap:wrap;gap:6px 14px}.chk{display:flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}.chk input{width:17px;height:17px;margin:0}
+.etapes{margin:0;padding-left:20px;display:grid;gap:12px}.etapes li.fait{opacity:.7}.etapes .btns{margin-top:6px}
+.gcard{padding:0;overflow:hidden}.gbox{position:relative;height:min(68vh,640px);background:var(--s1)}#gcv{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 .gtools{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px}.gtools input{flex:1;max-width:320px;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(8px)}
 .gsel{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--s2) 92%,transparent);backdrop-filter:blur(10px);border:1px solid var(--bd);box-shadow:var(--sh2)}
 .gsel[hidden],.gtools [hidden]{display:none}.gcharge{position:absolute;inset:0;display:grid;place-items:center;color:var(--mu)}
@@ -388,6 +394,7 @@ details[open]>summary::before{transform:rotate(90deg)}
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
   <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h0a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h0a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
   <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
@@ -415,7 +422,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.6.1';
+const VERSION = '3.7.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -536,7 +543,7 @@ const busy = {};
    GitHub
 ================================================================ */
 const API = 'https://api.github.com';
-function jetonPour(path){ const m = String(path||'').match(/^\/repos\/([^/]+\/[^/?]+)/), r = m && m[1]; const x = r && (L.jetons||[]).find(j => (j.repos||[]).includes(r)); return x ? x.t : L.ghToken; }
+function jetonPour(path){ const m = String(path||'').match(/^\/repos\/([^/]+\/[^/?]+)/), r = m && m[1]; const x = r && (L.jetons||[]).find(j => !j.coffre && (j.repos||[]).includes(r)); return x ? x.t : L.ghToken; }
 function ghHeaders(extra, path){ const h = {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; const t = jetonPour(path); if(t) h.Authorization = 'Bearer ' + t; return Object.assign(h, extra||{}); }
 async function gh(path, opts={}){
   const headers = ghHeaders(opts.body ? {'Content-Type':'application/json'} : null, path);
@@ -1319,7 +1326,8 @@ async function chargerTextes(slug){
 ================================================================ */
 const SUIVI_DEFAUT = {
   'oiriaure/boussole':[{type:'donnees', repo:'oiriaure/boussole-donnees', nom:'Envoi des données au téléphone', seuil:15}, {type:'site', url:'https://oiriaure.github.io/boussole-mobile/', nom:'Site du téléphone'}],
-  'oiriaure/revisions':[{type:'donnees', repo:'oiriaure/revisions-sync', nom:'Synchro entre appareils', seuil:1440}, {type:'site', url:'https://oiriaure.github.io/revisions-mobile/', nom:'Site du téléphone'}]
+  'oiriaure/revisions':[{type:'donnees', repo:'oiriaure/revisions-sync', nom:'Synchro entre appareils', seuil:1440}, {type:'site', url:'https://oiriaure.github.io/revisions-mobile/', nom:'Site du téléphone'}],
+  'oiriaure/trousseau':[{type:'donnees', repo:'oiriaure/trousseau-donnees', nom:'Synchro chiffrée entre appareils', seuil:10080}, {type:'site', url:'https://oiriaure.github.io/trousseau-mobile/', nom:'Site du téléphone'}]
 };
 const suiviDe = a => a.suivi || SUIVI_DEFAUT[a.repo] || [];
 const ST = {ok:{ic:'check', cls:'ok', l:'OK'}, att:{ic:'alert', cls:'att', l:'À surveiller'}, pb:{ic:'x', cls:'pb', l:'Problème'}, info:{ic:'pulse', cls:'inf', l:'Info'}};
@@ -1529,8 +1537,8 @@ function cloudEtat(){
 /* ================================================================
    Vues
 ================================================================ */
-const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, notes:{t:'Obsidian', c:'Obsidian', i:'vault'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
-const ORDRE = ['today','apps','tasks','chef','notes','sync','settings'];
+const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, notes:{t:'Obsidian', c:'Obsidian', i:'vault'}, github:{t:'GitHub et tokens', c:'GitHub', i:'key'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
+const ORDRE = ['today','apps','tasks','chef','notes','sync','github','settings'];
 const empty = (big, t, s, btn) => `<div class="empty"><div class="big">${big}</div><h3>${esc(t)}</h3><p>${esc(s)}</p>${btn||''}</div>`;
 
 function liveCard(a, folded=true){
@@ -1754,7 +1762,7 @@ function vSettings(){
     <p class="help">Il donne accès à tes apps et au cloud. C'est la seule chose à coller sur un nouvel appareil.</p>
     <label class="f">Tokens supplémentaires</label>
     ${(L.jetons||[]).map((j, i) => `<div class="dev">${ic('link')}<div style="flex:1;min-width:0"><b>${esc(j.nom || 'Token')}</b><div class="xs muted clamp1">${esc(j.t.slice(0, 15))}… · accès : ${esc((j.repos||[]).map(r => r.split('/')[1]).join(', ') || 'aucun dépôt')}</div></div><button class="ibtn" data-action="delJeton" data-i="${i}" aria-label="Retirer">${ic('trash','s')}</button></div>`).join('') || '<p class="help" style="margin-top:0">Aucun. Utile quand un dépôt a son propre token (par exemple revisions-sync).</p>'}
-    <div class="btns"><button class="btn sm" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button></div>
+    <div class="btns"><button class="btn sm primary" data-go="github">${ic('key','s')} GitHub et tokens</button><button class="btn sm" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button></div>
     <div class="btns"><button class="btn sm" data-action="testGh">Tester GitHub</button><button class="btn sm" data-action="pairPhone">${ic('phone','s')} Connecter un autre appareil</button></div>
   </section>
 
@@ -1833,6 +1841,109 @@ function showOnboarding(step=1){
 function onbFin(){ $('#onb').hidden = true; render(); syncAll(true); }
 
 /* ================================================================
+   GitHub et tokens (3.7) : demander un token depuis l'app (lien GitHub pré-rempli), le ranger dans le
+   coffre à tokens (chiffré dans le cloud, sur tous les appareils), voir et gérer les dépôts.
+================================================================ */
+const PROPRIO = () => (tracked()[0]?.repo || 'oiriaure/x').split('/')[0];
+const DROITS = [['contents','Code et fichiers'],['issues','Tâches (Issues)'],['pull_requests','Pull requests'],['pages','Site GitHub Pages'],['actions','Actions'],['workflows','Workflows'],['secrets','Secrets'],['administration','Administration du dépôt']];
+const MODELES_TOKEN = [
+  {id:'donnees', nom:'Synchro d’une app', desc:'Lire et écrire les données d’une app (dépôt « -donnees » ou « -sync »).', droits:{contents:'write'}, suffixe:['-donnees','-sync']},
+  {id:'lecture', nom:'Téléphone (lecture seule)', desc:'Le téléphone lit les données sans pouvoir rien modifier.', droits:{contents:'read'}, suffixe:['-donnees','-sync']},
+  {id:'maj', nom:'Mises à jour d’une app', desc:'L’app installée télécharge elle-même ses nouvelles versions.', droits:{contents:'read'}, suffixe:['']},
+  {id:'publier', nom:'Publier une app', desc:'Écrire le code, les données et le site d’une app.', droits:{contents:'write', pages:'write'}, suffixe:['', '-donnees', '-mobile']},
+  {id:'atelier', nom:'Gestion complète', desc:'Code, tâches et pull requests, comme le token d’Atelier.', droits:{contents:'write', issues:'write', pull_requests:'write'}, suffixe:['']},
+  {id:'perso', nom:'Sur mesure', desc:'Tu choisis toi-même les droits.', droits:{contents:'read'}, suffixe:['']}
+];
+const libDroits = d => Object.entries(d || {}).map(([k, v]) => `${(DROITS.find(x => x[0] === k) || [k, k])[1]} : ${v === 'write' ? 'lecture/écriture' : v === 'admin' ? 'admin' : 'lecture'}`).join(' · ');
+function urlNouveauToken(a){
+  const p = new URLSearchParams({name:a.nom.slice(0, 40), description:(a.desc || '').slice(0, 1000), target_name:PROPRIO(), expires_in:a.expire || 'none'});
+  for(const [k, v] of Object.entries(a.droits || {})) if(v) p.set(k, v);
+  return 'https://github.com/settings/personal-access-tokens/new?' + p.toString();
+}
+// Tous les dépôts connus : apps suivies, leurs dépôts de données et sites, le cloud, ceux des tokens
+function depotsConnus(){
+  const l = [Cloud.repo, ...tracked().flatMap(a => [a.repo, a.donnees, ...suiviDe(a).filter(s => s.repo).map(s => s.repo), a.repo + '-mobile', a.repo + '-donnees', a.repo + '-sync']), ...(L.jetons||[]).flatMap(j => j.repos||[]), ...(C.ghDepots||[]).map(d => d.r)];
+  return [...new Set(l.filter(r => r && validRepo(r)))];
+}
+const enTete = t => ({Accept:'application/vnd.github+json', Authorization:'Bearer ' + t});
+async function infosDepot(r){
+  for(const t of [jetonPour('/repos/' + r), L.ghToken, ...(L.jetons||[]).map(j => j.t)].filter((x, i, a) => x && a.indexOf(x) === i)){
+    try{ const x = await fetch(`${API}/repos/${r}`, {headers:enTete(t), cache:'no-store'}); if(x.ok){ const d = await x.json(); return {r, prive:d.private, maj:d.pushed_at, desc:d.description || '', pages:d.has_pages, issues:d.open_issues_count, url:d.html_url}; } }catch{}
+  }
+  return null;
+}
+const GHV = {charge:false};
+async function chargerDepots(){
+  if(GHV.charge || !L.ghToken) return; GHV.charge = true; if(view === 'github') render();
+  try{ const res = (await Promise.all(depotsConnus().map(infosDepot))).filter(Boolean); C.ghDepots = res; C.ghDepotsAt = Date.now(); saveC(); }
+  finally{ GHV.charge = false; if(view === 'github') render(); }
+}
+async function testerToken(t, repos){
+  const res = await Promise.all((repos||[]).map(async r => { try{ return {r, ok:(await fetch(`${API}/repos/${r}`, {headers:enTete(t), cache:'no-store'})).ok}; }catch{ return {r, ok:false}; } }));
+  let valide = false; try{ const u = await fetch(`${API}/user`, {headers:enTete(t), cache:'no-store'}); valide = u.ok || u.status === 403; }catch{}
+  return {valide:valide || res.some(x => x.ok), res};
+}
+// Assistant « Demander un token » : gardé en mémoire (on va et vient entre GitHub et Atelier)
+const DMD = () => LS.get('atelier.demande', null);
+const setDMD = v => { if(v) LS.set('atelier.demande', v); else LS.del('atelier.demande'); };
+function vGithub(){
+  if(!C.ghDepots && !GHV.charge) setTimeout(chargerDepots, 0);
+  const d = DMD(), tous = [{nom:'Atelier (principal)', t:L.ghToken, principal:true, repos:[], droits:{contents:'write', issues:'write', pull_requests:'write'}}, ...(L.jetons||[])];
+  const carteTok = (j, i) => `<div class="tok"><div class="tokh">${ic('key')}<div style="flex:1;min-width:0"><b class="clamp1">${esc(j.nom || 'Token')}</b><div class="xs muted clamp1">${j.pour ? 'Pour ' + esc(j.pour) + ' · ' : ''}${esc(j.t ? j.t.slice(0, 15) + '…' : '—')}${j.cree ? ' · créé ' + esc(ago(j.cree)) : ''}</div></div>${j.test ? `<span class="stp ${j.test.ok ? 'ok' : 'pb'}">${j.test.ok ? 'Valide' : 'Refusé'}</span>` : ''}</div>
+      ${j.droits ? `<div class="xs muted" style="margin:6px 0 2px">${esc(libDroits(j.droits))}</div>` : ''}
+      ${(j.repos||[]).length ? `<div class="kv">${j.repos.map(r => `<span class="chip">${esc(r.split('/')[1])}</span>`).join('')}</div>` : j.principal ? '<div class="xs muted">Tous les dépôts des apps suivies et le cloud d’Atelier</div>' : ''}
+      <div class="btns" style="margin-top:8px"><button class="btn sm" data-action="tokCopier" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tokTester" data-i="${i}">Tester</button>${j.principal ? '' : `<button class="btn sm ghost" data-action="delJeton" data-i="${i - 1}">${ic('trash','s')} Retirer</button>`}</div></div>`;
+  const dep = (C.ghDepots||[]).slice().sort((a, b) => (b.maj||'').localeCompare(a.maj||''));
+  return `${d ? `<section class="card" style="border:1.5px solid var(--ac)"><div class="hd"><h2>${ic('key')} Demande en cours : ${esc(d.nom)}</h2><button class="btn sm ghost" data-action="dmdAnnuler">Annuler</button></div>${etapesDemande(d)}</section>` : ''}
+    <section class="card"><div class="hd"><h2>${ic('key')} Coffre à tokens</h2><button class="btn sm primary" data-action="dmdNouveau">${ic('plus','s')} Demander un token</button></div>
+      <p class="help" style="margin-top:0">Tes tokens GitHub, rangés ici et partagés chiffrés avec tous tes appareils. Copie-les quand une app en a besoin, plutôt que de les chercher dans une conversation.</p>
+      <div class="toks">${tous.map(carteTok).join('')}</div>
+      <div class="btns"><button class="btn sm ghost" data-action="ajoutJeton">${ic('plus','s')} J’ai déjà un token</button><a class="btn sm ghost" href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">${ic('link','s')} Mes tokens sur GitHub</a></div></section>
+    <section class="card"><div class="hd"><h2>${ic('apps')} Dépôts</h2><div class="btns" style="margin:0"><button class="ibtn" data-action="ghRecharger" aria-label="Actualiser">${GHV.charge ? spin('') : ic('redo','s')}</button><button class="btn sm" data-action="depotNouveau">${ic('plus','s')} Nouveau dépôt</button></div></div>
+      ${!dep.length ? (GHV.charge ? spin(' Lecture des dépôts…') : '<p class="muted sm">Aucun dépôt lisible.</p>') : dep.map(x => `<div class="dep"><div style="flex:1;min-width:0"><b class="clamp1">${esc(x.r.split('/')[1])}</b> <span class="chip ${x.prive ? '' : 'pub'}">${x.prive ? 'privé' : 'public'}</span>${x.pages ? '<span class="chip">site</span>' : ''}<div class="xs muted clamp1">${x.maj ? 'modifié ' + esc(ago(x.maj)) : ''}${x.issues ? ' · ' + plural(x.issues, 'tâche') + ' ouverte' + (x.issues > 1 ? 's' : '') : ''}${x.desc ? ' · ' + esc(x.desc) : ''}</div></div>
+        <div class="btns" style="margin:0;flex-wrap:nowrap"><button class="ibtn" data-action="dmdPour" data-r="${esc(x.r)}" title="Demander un token pour ce dépôt" aria-label="Demander un token pour ce dépôt">${ic('key','s')}</button><a class="ibtn" href="${esc(x.url)}" target="_blank" rel="noopener" aria-label="Ouvrir sur GitHub">${ic('link','s')}</a><a class="ibtn" href="${esc(x.url)}/settings" target="_blank" rel="noopener" aria-label="Paramètres du dépôt">${ic('settings','s')}</a></div></div>`).join('')}
+      ${C.ghDepotsAt ? `<p class="xs muted" style="margin:8px 2px 0">Vérifié ${esc(ago(C.ghDepotsAt))} avec tes tokens.</p>` : ''}</section>`;
+}
+function etapesDemande(d){
+  const ouvert = !!d.ouvert;
+  return `<div class="xs muted" style="margin-bottom:8px">${esc(libDroits(d.droits))}${d.pour ? ' · pour ' + esc(d.pour) : ''}</div>
+    <ol class="etapes">
+      <li class="${ouvert ? 'fait' : ''}"><b>Ouvre GitHub</b> : le formulaire est déjà rempli (nom, droits, sans expiration).<div class="btns"><a class="btn sm ${ouvert ? 'ghost' : 'primary'}" href="${esc(urlNouveauToken(d))}" target="_blank" rel="noopener" data-action="dmdOuvert">${ic('link','s')} Ouvrir GitHub</a></div></li>
+      <li><b>Dans « Repository access »</b>, choisis « Only select repositories » et coche :<div class="kv">${(d.repos||[]).map(r => `<span class="chip">${esc(r)}</span>`).join('') || '<span class="muted">—</span>'}</div></li>
+      <li><b>Clique « Generate token »</b>, puis copie le token affiché (il ne s’affiche qu’une fois).</li>
+      <li><b>Colle-le ici</b> : Atelier vérifie qu’il ouvre bien ces dépôts et le range dans le coffre.
+        <input id="dmdT" type="password" placeholder="github_pat_…" autocomplete="off" style="width:100%;margin-top:6px"><div id="dmdE" class="err" hidden></div>
+        <div class="btns"><button class="btn sm primary" id="dmdB" data-action="dmdFinir">Vérifier et ranger</button></div></li>
+    </ol>`;
+}
+function modaleDemande(pre){
+  const apps = tracked(), conn = [...new Set([...(C.ghDepots?.length ? C.ghDepots.map(d => d.r) : depotsConnus()), ...(pre?.repos || [])])].sort();
+  const m = pre || {};
+  modal(`<h2>Demander un token</h2>
+    <label class="f" style="margin-top:0">À quoi doit-il servir ?</label>
+    <div class="modeles">${MODELES_TOKEN.map(x => `<label class="modele"><input type="radio" name="dmdM" value="${x.id}" ${(m.modele || 'donnees') === x.id ? 'checked' : ''}><span><b>${esc(x.nom)}</b><span class="xs muted">${esc(x.desc)}</span></span></label>`).join('')}</div>
+    <div id="dmdPerso" ${m.modele === 'perso' ? '' : 'hidden'}>${DROITS.map(([k, n]) => `<div class="drt"><span>${esc(n)}</span><select data-drt="${k}"><option value="">—</option><option value="read">Lecture</option><option value="write">Lecture/écriture</option></select></div>`).join('')}</div>
+    <label class="f">Pour quelle app ?</label>
+    <select id="dmdApp"><option value="">Aucune en particulier</option>${apps.map(a => `<option value="${esc(a.repo)}" ${m.app === a.repo ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select>
+    <label class="f">Dépôts à ouvrir</label>
+    <div id="dmdRepos" class="repos">${conn.map(r => `<label class="chk"><input type="checkbox" value="${esc(r)}" ${(m.repos||[]).includes(r) ? 'checked' : ''}> ${esc(r.split('/')[1])}</label>`).join('')}</div>
+    <input id="dmdAutre" placeholder="Autre dépôt (ex. oiriaure/nouvelle-app)" style="width:100%;margin-top:6px">
+    <label class="f">Nom du token</label><input id="dmdN" value="${esc(m.nom || '')}" placeholder="Ex. Boussole téléphone" maxlength="40" style="width:100%">
+    <label class="f">Durée</label><select id="dmdX"><option value="none">Sans expiration</option><option value="365">1 an</option><option value="90">90 jours</option><option value="30">30 jours</option></select>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="dmdUse"> Atelier s’en sert aussi pour lire ces dépôts</label>
+    <div id="dmdE0" class="err" hidden></div>
+    <div class="btns" style="margin-top:12px"><button class="btn primary" data-action="dmdCreer">Préparer la demande</button></div>`);
+  const maj = () => {
+    const mo = MODELES_TOKEN.find(x => x.id === document.querySelector('input[name=dmdM]:checked')?.value) || MODELES_TOKEN[0], app = $('#dmdApp').value;
+    $('#dmdPerso').hidden = mo.id !== 'perso';
+    if(app){ for(const cb of document.querySelectorAll('#dmdRepos input')) cb.checked = mo.suffixe.some(s => cb.value === app + s); }
+    if(!$('#dmdN').dataset.touche){ const a = tracked().find(x => x.repo === app); $('#dmdN').value = (a ? a.name + ' · ' : '') + mo.nom; }
+  };
+  document.querySelectorAll('input[name=dmdM]').forEach(r => r.onchange = maj); $('#dmdApp').onchange = maj; $('#dmdN').oninput = e => e.target.dataset.touche = 1;
+  if(!pre?.repos) maj(); else if(!m.nom) maj();
+}
+
+/* ================================================================
    Rendu général
 ================================================================ */
 function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' && !CHEF.liste ? document.body.scrollHeight : 0); if(v === 'sync' && Date.now() - (C.sante?.at||0) > 60e3) verifierTout(); }
@@ -1843,18 +1954,18 @@ function renderChrome(){
   $('#sideCloud').innerHTML = `<span class="cloud ${ce.cls}">${ic(ce.ic,'s')} ${esc(ce.txt)}</span>`;
   const sn = compterSante();
   const badge = k => k === 'tasks' && n ? `<span class="badge">${n > 99 ? '99+' : n}</span>` : k === 'sync' && (sn.pb || sn.att) ? `<span class="badge ${sn.pb ? '' : 'warn'}">${sn.pb || sn.att}</span>` : '';
-  const nav = side => ORDRE.filter(k => side || k !== 'settings').map(k => { const v = VUES[k]; return `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${badge(k)}</button>`; }).join('');
+  const nav = side => ORDRE.filter(k => side || (k !== 'settings' && k !== 'github')).map(k => { const v = VUES[k]; return `<button data-go="${k}" class="${view === k ? 'on' : ''}" ${view === k ? 'aria-current="page"' : ''}>${ic(v.i)}${esc(side ? v.t : v.c)}${badge(k)}</button>`; }).join('');
   $('#tabs').innerHTML = nav(false);
   $('#snav').innerHTML = nav(true);
   $('#sideApps').innerHTML = tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
   $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
-  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes';
+  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes' || view === 'github';
   document.body.classList.toggle('chef', view === 'chef');
   document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
 function render(){
   const keep = $('#chatIn')?.value, focusId = ['tq', 'dq', 'chatIn'].find(id => document.activeElement?.id === id);
-  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, notes:vNotes, sync:vSync, settings:vSettings}[view] || vToday)();
+  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, notes:vNotes, github:vGithub, sync:vSync, settings:vSettings}[view] || vToday)();
   if(keep && $('#chatIn')) $('#chatIn').value = keep;
   if(focusId && $('#' + focusId)){ const t = $('#' + focusId); t.focus(); try{ t.setSelectionRange(t.value.length, t.value.length); }catch{} }
   renderChrome();
@@ -2229,9 +2340,63 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     const essai = async (r, x) => { try{ return (await fetch(`${API}/repos/${r}`, {headers:H(x), cache:'no-store'})).ok; }catch{ return false; } };
     const res = await Promise.all(cands.map(async r => ({r, nouveau:await essai(r, t), principal:await essai(r, L.ghToken)})));
     const repos = res.filter(x => x.nouveau && !x.principal).map(x => x.r);
-    if(!repos.length){ btn.disabled = false; btn.textContent = 'Ajouter'; err.textContent = res.some(x => x.nouveau) ? 'Ce token n\'ouvre que des dépôts déjà accessibles avec le token Atelier : inutile de l\'ajouter.' : 'Ce token n\'ouvre aucun des dépôts suivis (ou il est invalide).'; err.hidden = false; return; }
-    L.jetons = [...(L.jetons||[]).filter(j => j.t !== t), {t, nom:$('#njN').value.trim() || 'Token ' + repos[0].split('/')[1], repos}]; saveL();
+    if(!repos.length && res.some(x => x.nouveau)){
+      // Il n'apporte rien à Atelier, mais on le garde dans le coffre à tokens (pour une autre app)
+      L.jetons = [...(L.jetons||[]).filter(j => j.t !== t), {t, nom:$('#njN').value.trim() || 'Token ' + res.find(x => x.nouveau).r.split('/')[1], repos:res.filter(x => x.nouveau).map(x => x.r), cree:Date.now(), coffre:true}]; saveL();
+      await partagerCle(); closeModal(); toast('Token rangé dans le coffre à tokens'); render(); return;
+    }
+    if(!repos.length){ btn.disabled = false; btn.textContent = 'Ajouter'; err.textContent = 'Ce token n\'ouvre aucun des dépôts suivis (ou il est invalide).'; err.hidden = false; return; }
+    L.jetons = [...(L.jetons||[]).filter(j => j.t !== t), {t, nom:$('#njN').value.trim() || 'Token ' + repos[0].split('/')[1], repos, cree:Date.now()}]; saveL();
     await partagerCle(); closeModal(); toast(`Token ajouté : accès à ${repos.map(r => r.split('/')[1]).join(', ')}`); render(); verifierTout(true);
+  },
+  dmdNouveau(){ modaleDemande(); },
+  dmdPour(el){ const r = el.dataset.r, a = tracked().find(x => r === x.repo || r.startsWith(x.repo + '-')); modaleDemande({modele:'perso', repos:[r], app:a?.repo || ''}); },
+  dmdCreer(){
+    const mo = MODELES_TOKEN.find(x => x.id === document.querySelector('input[name=dmdM]:checked')?.value) || MODELES_TOKEN[0];
+    let droits = mo.droits;
+    if(mo.id === 'perso'){ droits = {}; document.querySelectorAll('[data-drt]').forEach(s => { if(s.value) droits[s.dataset.drt] = s.value; }); }
+    const repos = [...document.querySelectorAll('#dmdRepos input:checked')].map(c => c.value); const autre = $('#dmdAutre').value.trim(); if(autre) repos.push(autre.includes('/') ? autre : PROPRIO() + '/' + autre);
+    const e = $('#dmdE0');
+    if(!repos.length || !repos.every(validRepo)){ e.textContent = 'Choisis au moins un dépôt.'; e.hidden = false; return; }
+    if(!Object.keys(droits).length){ e.textContent = 'Choisis au moins un droit.'; e.hidden = false; return; }
+    const app = tracked().find(x => x.repo === $('#dmdApp').value);
+    const nom = ($('#dmdN').value.trim() || mo.nom).slice(0, 40);
+    setDMD({nom, desc:`Créé depuis Atelier · ${mo.nom}${app ? ' · ' + app.name : ''}`, droits, repos, pour:app?.name || '', expire:$('#dmdX').value, usage:$('#dmdUse').checked, at:Date.now()});
+    closeModal(); go('github');
+  },
+  dmdOuvert(el){ window.open(el.href, '_blank', 'noopener'); const d = DMD(); if(d){ d.ouvert = true; setDMD(d); setTimeout(render, 300); } },
+  dmdAnnuler(){ if(confirm('Annuler cette demande de token ?')){ setDMD(null); render(); } },
+  async dmdFinir(){
+    const d = DMD(), t = ($('#dmdT')?.value || '').trim(), e = $('#dmdE'), b = $('#dmdB'); if(!d) return;
+    if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(t)){ e.textContent = 'Ce n’est pas un token GitHub (il commence par « github_pat_ »).'; e.hidden = false; return; }
+    b.disabled = true; b.innerHTML = spin(' Vérification…'); e.hidden = true;
+    const r = await testerToken(t, d.repos), ok = r.res.filter(x => x.ok).map(x => x.r), manque = r.res.filter(x => !x.ok).map(x => x.r);
+    if(!ok.length){ b.disabled = false; b.textContent = 'Vérifier et ranger'; e.textContent = r.valide ? `Ce token est valide mais n’ouvre aucun de ces dépôts : sur GitHub, coche-les dans « Repository access ».` : 'GitHub refuse ce token : vérifie que tu l’as copié en entier.'; e.hidden = false; return; }
+    L.jetons = [...(L.jetons||[]).filter(j => j.t !== t), {t, nom:d.nom, repos:ok, droits:d.droits, pour:d.pour, cree:Date.now(), coffre:!d.usage, test:{ok:true, at:Date.now()}}]; saveL();
+    await partagerCle(); setDMD(null); render(); chargerDepots();
+    toast(manque.length ? `Token rangé · il n’ouvre pas encore : ${manque.map(x => x.split('/')[1]).join(', ')}` : 'Token vérifié et rangé dans le coffre', !!manque.length);
+  },
+  async tokCopier(el){ const i = +el.dataset.i, j = i ? L.jetons[i - 1] : {t:L.ghToken}; if(!j?.t) return; await navigator.clipboard.writeText(j.t); toast('Token copié : colle-le dans l’app qui en a besoin'); },
+  async tokTester(el){
+    const i = +el.dataset.i, j = i ? L.jetons[i - 1] : null, t = j ? j.t : L.ghToken; el.disabled = true; el.innerHTML = spin('');
+    const r = await testerToken(t, j ? j.repos : tracked().map(a => a.repo).concat(Cloud.repo)), ok = r.res.filter(x => x.ok).length;
+    if(j){ j.test = {ok:r.valide && ok === r.res.length, at:Date.now()}; saveL(); }
+    toast(r.valide ? `Valide · ouvre ${ok}/${r.res.length} dépôt${r.res.length > 1 ? 's' : ''}${ok < r.res.length ? ' (refusés : ' + r.res.filter(x => !x.ok).map(x => x.r.split('/')[1]).join(', ') + ')' : ''}` : 'GitHub refuse ce token (révoqué ou expiré)', !r.valide || ok < r.res.length); render();
+  },
+  ghRecharger(){ chargerDepots(); },
+  depotNouveau(){
+    modal(`<h2>Nouveau dépôt</h2>
+      <label class="f" style="margin-top:0">Nom</label><input id="ndN" placeholder="ex. nouvelle-app" style="width:100%">
+      <label class="f">Description</label><input id="ndD" placeholder="À quoi il sert" style="width:100%">
+      <label class="f">Visibilité</label><select id="ndV"><option value="private">Privé (comme les autres apps)</option><option value="public">Public (seulement pour un site -mobile, sans données ni clé)</option></select>
+      <p class="help">GitHub s’ouvre avec le formulaire rempli : clique « Create repository ». Ensuite, demande un token pour ce dépôt (bouton 🔑 dans la liste).</p>
+      <div class="btns"><button class="btn primary" data-action="depotCreer">Ouvrir GitHub</button></div>`);
+  },
+  depotCreer(){
+    const n = $('#ndN').value.trim().replace(/\s+/g, '-'); if(!n) return;
+    const p = new URLSearchParams({name:n, description:$('#ndD').value.trim(), visibility:$('#ndV').value});
+    window.open('https://github.com/new?' + p.toString(), '_blank', 'noopener');
+    C.ghDepots = [...(C.ghDepots||[]).filter(d => d.r !== PROPRIO() + '/' + n)]; saveC(); closeModal(); setTimeout(chargerDepots, 20000); toast('Crée le dépôt sur GitHub, il apparaîtra ici');
   },
   async delJeton(el){ const j = L.jetons[+el.dataset.i]; if(!j || !confirm(`Retirer « ${j.nom} » de tous tes appareils ?`)) return; L.jetons.splice(+el.dataset.i, 1); saveL(); await partagerCle(); render(); },
   clearInc(){ if(confirm('Vider le journal des incidents (sur tous tes appareils) ?')){ put('incidents', (get('incidents', [])||[]).filter(x => !x.fin)); render(); } },
