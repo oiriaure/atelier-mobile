@@ -415,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.5.0';
+const VERSION = '3.6.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -490,8 +490,10 @@ const COULEURS = ['#f59e0b','#0ea5e9','#10b981','#8b5cf6','#ef4444','#ec4899','#
 const APPS_DEFAUT = [
   {name:'Révisions', repo:'oiriaure/revisions', emoji:'📚', icone:'icones/revisions.png', couleur:'#a855f7', donnees:'', etat:''},
   {name:'Boussole', repo:'oiriaure/boussole', emoji:'🧭', icone:'icones/boussole.png', couleur:'#14b8a6', donnees:'oiriaure/boussole-donnees', etat:'telephone/etat.json'},
-  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', icone:'icones/trousseau.png', couleur:'#3b5bfd', donnees:'', etat:''}
+  {name:'Trousseau', repo:'oiriaure/trousseau', emoji:'🔑', icone:'icones/trousseau.png', couleur:'#3b5bfd', donnees:'', etat:''},
+  {name:'Atelier', repo:'oiriaure/atelier', emoji:'🛠️', icone:'icones/atelier.png', couleur:'#6366f1', donnees:'', etat:''}
 ];
+const REPO_ATELIER = 'oiriaure/atelier';
 let L = Object.assign({ghToken:'', geminiKey:'', device:'', cloud:'oiriaure/atelier-donnees', nomAppareil:'', jetons:[]}, LS.get('atelier.local', {}));
 if(!L.device) L.device = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 let SH = LS.get('atelier.shared', {});
@@ -518,10 +520,12 @@ const get = (k, d) => SH[k] ? SH[k].v : d;
 function put(k, v){ SH[k] = {t:Date.now(), v}; saveSH(); Cloud.schedule(); }
 const REG = () => Object.assign({apps:APPS_DEFAUT, model:'auto', vitesse:'equilibre', prenom:''}, get('reglages', {}));
 const setReg = patch => put('reglages', Object.assign(REG(), patch));
-const ICONES = {'oiriaure/revisions':'icones/revisions.png', 'oiriaure/boussole':'icones/boussole.png', 'oiriaure/trousseau':'icones/trousseau.png'};
+const ICONES = {'oiriaure/atelier':'icones/atelier.png', 'oiriaure/revisions':'icones/revisions.png', 'oiriaure/boussole':'icones/boussole.png', 'oiriaure/trousseau':'icones/trousseau.png'};
 const COUL_V3 = {'oiriaure/revisions':['#f59e0b','#a855f7'], 'oiriaure/boussole':['#0ea5e9','#14b8a6'], 'oiriaure/trousseau':['#10b981','#3b5bfd']};
 const appsAll = () => (REG().apps || []).map(a => { const x = Object.assign({}, a); if(!x.icone && ICONES[x.repo]) x.icone = ICONES[x.repo]; const c = COUL_V3[x.repo]; if(c && (!x.couleur || x.couleur === c[0])) x.couleur = c[1]; return x; });
 const tracked = () => appsAll().filter(a => validRepo(a.repo));
+// Atelier fait partie des apps suivies (3.6) : ajouté une fois aux réglages partagés, après la première lecture du cloud
+function ajouterAtelier(){ const r = REG(); if(r.atelierAjoute) return; const apps = (r.apps || []).slice(); if(!apps.some(a => a.repo === REPO_ATELIER)) apps.push(APPS_DEFAUT.find(a => a.repo === REPO_ATELIER)); setReg({apps, atelierAjoute:true}); setTimeout(() => syncAll(true), 500); }
 const appBy = repo => appsAll().find(a => a.repo === repo) || {name:repo, emoji:'📦', repo, couleur:'#6366f1'};
 const aiOf = repo => (get('ai', {})[repo] || {});
 function setAi(repo, patch){ const all = Object.assign({}, get('ai', {})); all[repo] = Object.assign({}, all[repo]||{}, patch); put('ai', all); }
@@ -737,6 +741,7 @@ const Cloud = {
         if(force){ this.etag = null; this.head = null; }
         const changed = await this.pull();
         this.st.ok = true; this.st.err = null; this.st.last = Date.now();
+        if(this.joined && !REG().atelierAjoute) ajouterAtelier();
         if(changed){ render(); if(!force) toast('Mis à jour depuis un autre appareil'); }
       }catch(e){ this.st.ok = false; this.st.err = !navigator.onLine ? 'hors ligne' : e.message; }
       finally{ this.st.busy = false; renderChrome(); }
@@ -1708,7 +1713,7 @@ function vSync(){
   return `<section class="banner ${ban.cls}"><div class="bic">${ic(ban.ic)}</div><div style="flex:1;min-width:0"><b>${esc(ban.t)}</b><div class="sm muted">${esc(ban.d)}</div>
       <div class="xs muted" style="margin-top:4px">${busy.verif ? spin(' Vérification en cours…') : s ? `<span class="pulse"></span>Vérifié ${esc(ago(s.at))} · automatiquement toutes les 5 min` : ''}</div></div>
       <button class="btn sm" data-action="verifier" ${busy.verif ? 'disabled' : ''}>${ic('sync','s')} Vérifier</button></section>
-    <div class="sgrid">${tracked().map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av img"><img src="icones/atelier.png" alt="Atelier"></span>', s?.atelier, 'atelier', '#6366f1')}</div>
+    <div class="sgrid">${tracked().filter(a => a.repo !== REPO_ATELIER).map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av img"><img src="icones/atelier.png" alt="Atelier"></span>', s?.atelier ? [...(s.apps?.[REPO_ATELIER] || []), ...s.atelier] : null, 'atelier', '#6366f1')}</div>
     <section class="card"><div class="hd"><h2>${ic('alert')} Journal des incidents</h2>${inc.length ? '<button class="btn sm ghost" data-action="clearInc">Vider</button>' : ''}</div>
       ${inc.length ? `<div class="feed">${inc.slice(0, 20).map(x => `<div class="fi"><span class="sic ${x.fin ? 'ok' : x.statut === 'pb' ? 'pb' : 'att'}">${ic(x.fin ? 'check' : x.statut === 'pb' ? 'x' : 'alert','s')}</span><span class="tx sm"><b>${esc(nomApp(x.app))}</b> · ${esc(x.nom)}<br><span class="muted">${esc(x.msg)}</span></span><span class="when">${x.fin ? 'réglé · a duré ' + esc(dureeTxt(x.fin - x.debut)) : 'en cours · ' + esc(ago(x.debut))}</span></div>`).join('')}</div>` : '<p class="muted sm" style="margin:0">Aucun incident enregistré. Chaque problème détecté apparaîtra ici avec sa durée, sur tous tes appareils.</p>'}
     </section>`;
