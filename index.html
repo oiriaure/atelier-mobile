@@ -895,7 +895,7 @@ html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.2.0';
+const VERSION = '4.3.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1250,6 +1250,7 @@ async function partagerCle(){
   try{
     const v = {};
     if(L.geminiKey) v.g = await chiffrer(L.geminiKey);
+    v.c = L.claudeKey ? await chiffrer(L.claudeKey) : null;
     v.j = await chiffrer(JSON.stringify(L.jetons||[]));
     put('cles', v);
   }catch(e){ console.warn(e); }
@@ -1257,6 +1258,7 @@ async function partagerCle(){
 async function adopterCles(){
   const c = get('cles', null); if(!c || !L.ghToken || !window.crypto?.subtle) return;
   try{ if(c.g){ const k = await dechiffrer(c.g); if(k && k !== L.geminiKey){ L.geminiKey = k; saveL(); } } }catch{}
+  try{ if(c.c){ const k = await dechiffrer(c.c); if(k && k !== L.claudeKey){ L.claudeKey = k; saveL(); } } }catch{}
   try{ if(c.j){ const j = JSON.parse(await dechiffrer(c.j)); if(Array.isArray(j) && JSON.stringify(j) !== JSON.stringify(L.jetons||[])){ L.jetons = j; saveL(); } } }catch{}
 }
 
@@ -1326,6 +1328,7 @@ async function garde(){
 async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null, pense=false}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = (typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input).map(c => ({...c, parts:c.parts.map(p => p.text != null ? {...p, text:masquer(p.text)} : p)}));
+  if(system && system.startsWith('Tu es le chef de projet')) system += leconsTexte();
   system = masquer(system);
   let last = null;
   for(const m of await modelChain(tier)){
@@ -1372,6 +1375,136 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
     }
   }
   throw last || new Error('Aucun modèle Gemini disponible');
+}
+
+/* ================================================================
+   Chef premium (4.3) : Claude seulement pour les gros projets et les prompts complexes.
+   Le chef décide seul (complexite) ; plafond mensuel en euros ; sans clé, hors ligne ou plafond atteint → Gemini.
+   Leçons : ce que Clément dit d'un prompt terminé devient une règle relue à chaque travail du chef.
+================================================================ */
+const CLAUDE_API = 'https://api.anthropic.com/v1';
+const claudeHdr = () => ({'x-api-key':L.claudeKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true', 'content-type':'application/json'});
+const PRIX_CLAUDE = {in:3, cw:3.75, cr:0.3, out:15};   // dollars par million de jetons (gamme Sonnet)
+const EUR_PAR_USD = 0.95;                              // prudent
+const eur2 = n => (+n || 0).toFixed(2).replace('.', ',') + ' €';
+const budgetPremium = () => { const v = parseFloat(String(get('reglages', {}).budgetPremium || '').replace(',', '.')); return v >= 1 && v <= 200 ? v : 5; };
+function premiumMois(){ const m = today().slice(0, 7), d = get('premium', null); return d && d.mois === m ? d : {mois:m, eur:0, n:0, hist:[]}; }
+const premiumDispo = () => !!L.claudeKey && navigator.onLine && premiumMois().eur < budgetPremium();
+function premiumNote(eur, quoi, modele){
+  const d = Object.assign({}, premiumMois());
+  d.eur = +((d.eur || 0) + eur).toFixed(4); d.n = (d.n || 0) + 1;
+  d.hist = [{t:Date.now(), eur:+eur.toFixed(4), quoi, modele}, ...(d.hist || [])].slice(0, 30);
+  put('premium', d);
+}
+let CLAUDE_LAST = {eur:0, modele:''};
+function claudeErr(status, d){
+  const m = d?.error?.message || '';
+  if(status === 401) return 'Clé Claude refusée : vérifie-la dans les Réglages';
+  if(status === 400 && /credit/i.test(m)) return 'Crédit Claude épuisé : recharge le compte sur la console Anthropic';
+  if(status === 403) return 'Accès Claude refusé : ' + m.slice(0, 90);
+  if(status === 429 || status === 529) return 'Claude est saturé en ce moment, réessaie dans une minute';
+  return 'Claude : ' + (m || 'erreur ' + status).slice(0, 120);
+}
+async function claudeModele(){
+  if(C.claudeModel && C.claudeModelAt === today()) return C.claudeModel;
+  let m = 'claude-sonnet-5-5';
+  try{
+    const r = await fetch(CLAUDE_API + '/models?limit=100', {headers:claudeHdr()});
+    if(r.status === 401) throw new Error(claudeErr(401));
+    if(r.ok){ const d = await r.json(); const x = (d.data || []).map(i => i.id).find(i => /sonnet/i.test(i)); if(x) m = x; }
+  }catch(e){ if(/refusée/.test(e.message)) throw e; }
+  C.claudeModel = m; C.claudeModelAt = today(); saveC(); return m;
+}
+// input : texte, ou liste de messages {role, content}. Le système et le premier message sont mis en cache (relecture à 10 % du prix).
+async function claude(input, {system='', max=8000, temperature=0.4, onText=null, signal=null, quoi='prompt'}={}){
+  if(!L.claudeKey) throw new Error('Ajoute ta clé Claude dans les Réglages');
+  const modele = await claudeModele();
+  const msgs = (typeof input === 'string' ? [{role:'user', content:input}] : input).map((x, i) => ({role:x.role, content:[Object.assign({type:'text', text:masquer(x.content)}, i === 0 ? {cache_control:{type:'ephemeral'}} : {})]}));
+  const body = {model:modele, max_tokens:max, temperature, stream:!!onText, messages:msgs,
+    system:[{type:'text', text:masquer(system), cache_control:{type:'ephemeral'}}].concat(leconsTexte() ? [{type:'text', text:masquer(leconsTexte())}] : [])};
+  let r;
+  for(let essai = 0; essai < 2; essai++){
+    try{ r = await fetch(CLAUDE_API + '/messages', {method:'POST', headers:claudeHdr(), body:JSON.stringify(body), signal}); }
+    catch(e){ if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Claude'); }
+    if(r.ok) break;
+    const d = await r.json().catch(() => ({}));
+    if(r.status === 400 && /temperature/i.test(JSON.stringify(d)) && 'temperature' in body){ delete body.temperature; continue; }
+    throw new Error(claudeErr(r.status, d));
+  }
+  const u = {in:0, cw:0, cr:0, out:0}; let text = '';
+  const compte = x => { if(!x) return; if(x.input_tokens != null) u.in = x.input_tokens; if(x.cache_creation_input_tokens != null) u.cw = x.cache_creation_input_tokens; if(x.cache_read_input_tokens != null) u.cr = x.cache_read_input_tokens; if(x.output_tokens != null) u.out = x.output_tokens; };
+  if(body.stream){
+    const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
+    for(;;){
+      const {done, value} = await reader.read(); if(done) break;
+      buf += dec.decode(value, {stream:true});
+      let i;
+      while((i = buf.indexOf('\n')) >= 0){
+        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+        if(!line.startsWith('data:')) continue;
+        try{
+          const d = JSON.parse(line.slice(5));
+          if(d.type === 'message_start') compte(d.message?.usage);
+          else if(d.type === 'message_delta') compte(d.usage);
+          else if(d.type === 'content_block_delta' && d.delta?.type === 'text_delta'){ text += d.delta.text; onText(text); }
+          else if(d.type === 'error') throw new Error(claudeErr(529, d));
+        }catch(e){ if(/Claude/.test(e.message)) throw e; }
+      }
+    }
+  } else {
+    const d = await r.json().catch(() => ({}));
+    compte(d.usage); text = (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+  }
+  const eur = (u.in * PRIX_CLAUDE.in + u.cw * PRIX_CLAUDE.cw + u.cr * PRIX_CLAUDE.cr + u.out * PRIX_CLAUDE.out) / 1e6 * EUR_PAR_USD;
+  CLAUDE_LAST = {eur, modele};
+  premiumNote(eur, quoi, modele);
+  text = text.trim();
+  if(!text) throw new Error('Réponse vide de Claude');
+  return text;
+}
+
+// Le chef décide seul s'il vaut la peine d'utiliser le modèle puissant (et paie) : un gros projet ou un prompt qui touche des points délicats.
+function complexite(choisies, precision=''){
+  let s = 0; const r = [];
+  const n = choisies.length;
+  if(n >= 3){ s += 3; r.push(n + ' idées à relier'); } else if(n === 2){ s += 1; r.push('2 idées liées'); }
+  if(choisies.some(x => /gros/i.test(x.avis?.effort || ''))){ s += 3; r.push('effort estimé important'); }
+  else if(choisies.some(x => /moyen/i.test(x.avis?.effort || '') && /fort/i.test(x.avis?.impact || ''))){ s += 1; }
+  const t = choisies.map(x => `${titreIdee(x)} ${x.texte} ${x.avis?.amelioration || ''}`).join(' ') + ' ' + precision;
+  if(/refonte|migrat|architect|synchro|s[ée]curit|chiffr|base de donn|nouvelle app|reconstru|r[ée][ée]cri|authentif|paiement|temps r[ée]el|multi-?appareil|hors[- ]ligne|mise [àa] jour automatique|backtest|moteur/i.test(t)){ s += 2; r.push('sujet délicat (données, synchro, sécurité ou moteur)'); }
+  if(t.length > 1200){ s += 1; r.push('notes longues'); }
+  if(precision.length > 250){ s += 1; r.push('précision détaillée'); }
+  return {score:s, premium:s >= 3, raisons:r};
+}
+
+// Leçons (4.3)
+const lecons = () => get('lecons', {l:[]}).l || [];
+function leconsTexte(){
+  const l = lecons().slice(0, 12);
+  return l.length ? `\n\nLeçons tirées de ton travail avec Clément (applique-les) :\n${l.map(x => '- ' + x.texte).join('\n')}` : '';
+}
+const RELECTURE = `Relis maintenant ton prompt en relecteur critique et sévère, avec le cerveau de l'app sous les yeux. Corrige : fichiers ou fonctions cités qui n'existent pas dans le cerveau (retire-les ou écris-les comme hypothèse à vérifier) ; critères d'acceptation vagues ou invérifiables ; étapes dans le mauvais ordre ; oublis (augmenter la version, publier, CLAUDE.md, version téléphone si l'app en a une) ; hors périmètre flou. Ne rallonge pas pour rien. Réponds uniquement par le prompt complet corrigé (même format, première ligne « # Titre »), sans commentaire.`;
+const RETOURS = {parfait:'Parfait, rien à corriger', retouches:'Il a fallu retoucher', rate:'Raté ou à refaire'};
+async function apprendre(p, v, note){
+  p.retour = {v, note, at:Date.now()}; promptPut(p);
+  if(!note || !L.geminiKey || !navigator.onLine) return;
+  try{
+    const t = await gemini(`Un prompt rédigé par le chef pour ${appBy(p.app).name} (« ${p.titre} ») a donné ce résultat : ${RETOURS[v]}.\nRetour de Clément : « ${note} »\n\nFormule UNE règle de travail, courte (25 mots maximum), générale et réutilisable, que le chef appliquera à ses prochains prompts et avis. Réponds uniquement par la règle, sans guillemets.`, {tier:'rapide', temperature:0.2});
+    const r = txt(t).replace(/^["«\s-]+|["»\s]+$/g, '').slice(0, 220); if(!r) return;
+    const d = Object.assign({}, get('lecons', {l:[]}));
+    d.l = [{id:nouvelId(), t:Date.now(), app:p.app, texte:`[${appBy(p.app).name}] ${r}`, v}, ...(d.l || [])].slice(0, 30);
+    put('lecons', d);
+  }catch(e){ console.warn('leçon', e.message); }
+}
+function retourSheet(id){
+  const p = promptGet(id); if(!p) return;
+  IDSHEET = {type:'retour', id}; SHEET = null;
+  modal(`<div class="regm">
+    <h2>Fait ✓ Comment ça s'est passé ?</h2>
+    <p class="muted sm" style="margin:-4px 0 12px">Une phrase suffit : le chef en tire une règle et s'en sert pour tes prochains prompts.</p>
+    <textarea id="rtNote" rows="3" placeholder="Ex : trop vague sur la version téléphone / il a oublié de mettre à jour CLAUDE.md"></textarea>
+    <div class="btns" style="flex-wrap:wrap"><button class="btn primary" data-action="retourOk" data-id="${esc(id)}" data-v="parfait">Parfait</button><button class="btn" data-action="retourOk" data-id="${esc(id)}" data-v="retouches">À retoucher</button><button class="btn" data-action="retourOk" data-id="${esc(id)}" data-v="rate">Raté</button></div>
+    <div class="btns"><button class="btn sm ghost" data-action="retourPasser">Passer</button><button class="btn sm ghost" data-action="retourAnnuler" data-id="${esc(id)}">Remettre à faire</button></div></div>`, 'dialog');
 }
 function flux(id){ let raf = 0, txt = ''; return t => { txt = t; if(raf) return; raf = requestAnimationFrame(() => { raf = 0; const el = document.getElementById(id); if(el) el.innerHTML = md(txt); }); }; }
 
@@ -1555,17 +1688,20 @@ Fais la lecture d'ensemble de ces idées, comme un directeur produit exigeant. J
 
 /* ----- Prompt structuré pour Claude Code ----- */
 let PCTRL = null;
-async function genererPrompt(repo, ids, precision='', base=null){
+async function genererPrompt(repo, ids, precision='', base=null, qualite='auto'){
   const a = appBy(repo), choisies = ids.map(ideeGet).filter(Boolean);
   if(!choisies.length) throw new Error('Choisis au moins une idée');
   const autres = idees(repo).filter(x => !ids.includes(x.id) && ouverte(x));
   const carte = carteGet(repo);
   const p = base ? Object.assign({}, base) : {id:nouvelId(), app:repo, cree:Date.now(), fait:false};
-  p.idees = choisies.map(x => x.id); p.precision = txt(precision);
+  p.idees = choisies.map(x => x.id); p.precision = txt(precision); p.qualite = qualite;
+  const cx = complexite(choisies, p.precision);
+  let premium = qualite === 'maximale' || (qualite === 'auto' && cx.premium), note = '';
+  if(premium && !premiumDispo()){ premium = false; note = !L.claudeKey ? 'clé Claude absente' : !navigator.onLine ? 'hors ligne' : 'plafond du mois atteint'; }
   busy.prompt = p.id; PCTRL = new AbortController();
-  promptEcriture(p, choisies);
+  promptEcriture(p, choisies, {premium, raisons:qualite === 'maximale' ? ['demandé'] : cx.raisons});
   try{
-    const texte = await gemini(`${ficheApp(a, true, false)}
+    const consigne = `${ficheApp(a, true, false)}
 
 ## Idées à réaliser dans ce prompt
 ${choisies.map((x, i) => `### ${i + 1}. ${titreIdee(x)}
@@ -1579,9 +1715,29 @@ ${carte?.synthese ? `\n## Lecture d'ensemble du chef\n${carte.synthese}` : ''}
 ${p.precision ? `\n## Précision de Clément pour ce prompt\n${p.precision}` : ''}
 
 Rédige maintenant LE prompt complet que Clément enverra tel quel à Claude Code pour réaliser ces idées dans ${a.name} (dépôt ${repo}). Suis exactement le modèle de ta formation (titres « ## »). Appuie-toi sur le cerveau de l'app : cite les fichiers, fonctions, règles et la procédure de publication qui s'y trouvent ; n'invente pas de fichier. Tranche toi-même les questions ouvertes de façon raisonnable et écris-les dans « Points à trancher » comme hypothèses. Si plusieurs idées, ordonne-les en étapes. Textes de l'interface exacts entre guillemets « ». Aucune clé ni donnée personnelle.
-Réponds uniquement par le prompt, en markdown, première ligne « # Titre ». Pas de bloc de code autour, pas de phrase avant ni après.`,
-      {system:`${ROLE_CHEF}\n\n${F.critique}\n\nModules de ta formation choisis pour ce prompt (sur ${F.total} h) :\n\n${formationPour(a, choisies.map(x => `${titreIdee(x)} ${x.texte} ${x.avis?.amelioration || ''}`).join('\n') + ' ' + p.precision, 32000, ['prompts', 'agents-ia'], 4)}`, temperature:0.35, pense:true, signal:PCTRL.signal,
-       onText:t => { const el = $('#promptLive'); if(el){ el.innerHTML = md(t); const sh = $('#modal .sheet'); if(sh && sh.scrollHeight - sh.scrollTop - sh.clientHeight < 240) sh.scrollTop = sh.scrollHeight; } }});
+Réponds uniquement par le prompt, en markdown, première ligne « # Titre ». Pas de bloc de code autour, pas de phrase avant ni après.`;
+    const sujet = choisies.map(x => `${titreIdee(x)} ${x.texte} ${x.avis?.amelioration || ''}`).join('\n') + ' ' + p.precision;
+    const live = t => { const el = $('#promptLive'); if(el){ el.innerHTML = md(t); const sh = $('#modal .sheet'); if(sh && sh.scrollHeight - sh.scrollTop - sh.clientHeight < 240) sh.scrollTop = sh.scrollHeight; } };
+    const sys = (budget, seuil) => `${ROLE_CHEF}\n\n${F.critique}\n\nModules de ta formation choisis pour ce prompt (sur ${F.total} h) :\n\n${formationPour(a, sujet, budget, ['prompts', 'agents-ia'], seuil)}`;
+    const nettoie = t => t.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
+    let texte = null, cout = 0, relu = false;
+    if(premium){
+      try{
+        const sysC = sys(60000, 3);
+        texte = nettoie(await claude(consigne, {system:sysC, max:8000, signal:PCTRL.signal, onText:live, quoi:'prompt'})); cout += CLAUDE_LAST.eur;
+        ecritEtat('Relecture critique…', 'Il vérifie les fichiers cités, les critères et le périmètre.');
+        try{
+          const rev = nettoie(await claude([{role:'user', content:consigne}, {role:'assistant', content:texte}, {role:'user', content:RELECTURE}], {system:sysC, max:8000, signal:PCTRL.signal, onText:live, quoi:'relecture'})); cout += CLAUDE_LAST.eur;
+          if(/^#\s+\S/.test(rev) && rev.length > texte.length * 0.6){ texte = rev; relu = true; }
+        }catch(e){ if(e.name === 'AbortError') throw e; }
+      }catch(e){ if(e.name === 'AbortError') throw e; premium = false; note = e.message; texte = null; }
+    }
+    if(!texte){
+      if(note) ecritEtat('Le chef rédige avec Gemini…', note + ' : il continue avec le modèle gratuit.');
+      texte = await gemini(consigne, {system:sys(32000, 4), temperature:0.35, pense:true, signal:PCTRL.signal, onText:live});
+    }
+    p.moteur = premium ? 'claude' : 'gemini'; p.relu = relu; p.cout = +cout.toFixed(4);
+    p.raison = premium ? (qualite === 'maximale' ? 'qualité maximale demandée' : cx.raisons.join(', ')) : (note ? note : '');
     p.texte = texte.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
     p.titre = (p.texte.match(/^#\s+(.+)$/m) || [])[1]?.replace(/[*_`]/g, '').trim().slice(0, 100) || titreIdee(choisies[0]);
     p.regen = (p.regen || 0) + (base ? 1 : 0);
@@ -2456,6 +2612,8 @@ function vSettings(){
   ${groupe('Chef de projet', [
     rangee({ic:'spark', c:'#8b5cf6', t:'Clé Gemini', v:L.geminiKey ? (C.gemErr ? '<span class="ko">Erreur</span>' : 'Active') : 'Absente', act:'regGemini'}),
     rangee({ic:'bolt', c:'#ec4899', t:'Vitesse', v:vit[reg.vitesse] || 'Équilibré', act:'regVitesse'}),
+    rangee({ic:'spark', c:'#d97706', t:'Chef premium (Claude)', v:L.claudeKey ? `${eur2(premiumMois().eur)} / ${eur2(budgetPremium())}` : 'Absent', act:'regPremium'}),
+    rangee({ic:'brain', c:'#14b8a6', t:'Ce que le chef a appris', v:String(lecons().length), act:'regLecons'}),
     rangee({ic:'brain', c:'#6366f1', t:'Modèle', v:esc(reg.model === 'auto' || !reg.model ? 'Automatique' : reg.model), act:'regModele'}),
     rangee({ic:'alert', c:'#ef4444', t:'Limite par jour', v:`${appelsJour().n} / ${plafondJour()}`, act:'regLimite'}),
     rangee({ic:'grad', c:'#0ea5e9', t:'Formation', v:`${F.total} h`, act:'regFormation'})
@@ -2507,6 +2665,8 @@ const REGF = {
   regModele: () => { const reg = REG(); let c = null; try{ c = C.models?.length ? classer(C.models) : null; }catch{}
     return `<h2>Modèle</h2>${champ('Modèle', `<input data-reg="model" value="${esc(reg.model||'auto')}" list="models" placeholder="auto"><datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>`, '« auto » choisit le meilleur modèle gratuit et change si le quota est épuisé.')}
       ${c ? `<div class="grp in">${rangee({t:'Rapide', v:esc(c.lite[0] || '—')})}${rangee({t:'Soigné', v:esc(c.flash[0] || '—')})}${C.lastModel ? rangee({t:'Dernier utilisé', v:esc(C.lastModel)}) : ''}</div>` : ''}<div class="btns"><button class="btn block" data-action="listModels">Voir tous les modèles</button></div>`; },
+  regPremium: () => { const d = premiumMois(); return `<h2>Chef premium (Claude)</h2><p class="muted sm" style="margin:-4px 0 10px">Le chef n’appelle Claude que pour un gros projet ou un prompt complexe, et le dit. Tout le reste reste sur Gemini, gratuit.</p>${champ('Clé Claude', `<input type="password" data-local="claudeKey" value="${esc(L.claudeKey || '')}" placeholder="Clé de la console Anthropic" autocomplete="off">`, 'Partagée chiffrée avec tes appareils. Jamais envoyée à Gemini.')}${champ('Budget du mois (€)', `<input data-reg="budgetPremium" inputmode="decimal" value="${esc(String(budgetPremium()))}">`, `Dépensé ce mois-ci : ${eur2(d.eur)} (${plural(d.n || 0, 'appel')}). Au-delà, le chef repasse sur Gemini.`)}<div class="btns"><button class="btn block" data-action="testClaude">${ic('bolt','s')} Tester</button></div>${(d.hist || []).length ? `<h3 class="sec">Derniers appels</h3><div class="grp in">${d.hist.slice(0, 8).map(h => `<div class="rg"><span class="rgt">${esc(h.quoi)}<small>${esc(ago(h.t))}</small></span><span class="muted">${eur2(h.eur)}</span></div>`).join('')}</div>` : ''}`; },
+  regLecons: () => { const l = lecons(); return `<h2>Ce que le chef a appris</h2><p class="muted sm" style="margin:-4px 0 10px">Règles tirées de tes retours après un prompt terminé. Le chef les relit à chaque travail. Retire celles qui ne te conviennent pas.</p>${l.length ? `<div class="grp in">${l.map(x => `<div class="rg"><span class="rgt">${esc(x.texte)}<small>${esc(ago(x.t))}</small></span><button class="ibtn" data-action="lecDel" data-id="${esc(x.id)}" aria-label="Oublier">${ic('trash','s')}</button></div>`).join('')}</div>` : '<p class="muted">Rien pour l’instant. Quand tu marques un prompt « fait », dis en une phrase ce qui a marché ou non.</p>'}`; },
   regLimite: () => `<h2>Limite par jour</h2>${champ('Appels Gemini par jour (cet appareil)', `<input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}">`, `Aujourd’hui : ${appelsJour().n}. Au-delà, le chef se met en pause jusqu’à demain.`)}`,
   regApp: i => { const a = appsAll()[i]; if(!a) return '<p class="muted">App introuvable.</p>';
     return `<div class="regapp">${avatar(a, 'l')}<h2>${esc(a.name)}</h2></div>
@@ -2842,14 +3002,18 @@ function promptCompose(repo, preId){
     <div class="grp in pick">${list.map(x => { const e = etatIdee(x); return `<label class="rg pickrow"><input type="checkbox" data-pp="${esc(x.id)}" ${pre.has(x.id) ? 'checked' : ''}><span class="rgt">${esc(titreIdee(x))}<small><i class="dotv" style="background:${e.c}"></i>${esc(e.l)}</small></span></label>`; }).join('')}</div>
     <label class="f">Précision pour le chef <span class="muted">(facultatif)</span></label>
     <textarea id="ppPrec" rows="2" placeholder="Ex : commence par la version téléphone"></textarea>
+    <label class="f">Qualité de rédaction</label>
+    <select id="ppQ"><option value="auto">Automatique : le chef décide</option><option value="standard">Standard (Gemini, gratuit)</option><option value="maximale" ${premiumDispo() ? '' : 'disabled'}>Maximale (Claude, payant)</option></select>
+    <p class="help">${premiumDispo() ? 'En automatique, Claude n’est utilisé que pour un gros projet ou un prompt complexe. Ce mois-ci : ' + eur2(premiumMois().eur) + ' sur ' + eur2(budgetPremium()) + '.' : L.claudeKey ? 'Plafond du mois atteint : Gemini rédige.' : 'Ajoute la clé Claude (Réglages › Chef de projet) pour les prompts complexes.'}</p>
     <div class="btns"><button class="btn primary block" data-action="prRediger" data-repo="${esc(repo)}" ${L.geminiKey ? '' : 'disabled'}>${ic('spark','s')} Rédiger le prompt</button></div>
     ${L.geminiKey ? '' : '<p class="help">Il faut la clé Gemini (Réglages › Chef de projet).</p>'}</div>`, LARGE() ? 'drawer' : 'dialog');
 }
-function promptEcriture(p, choisies){
+function ecritEtat(t, sous){ const a = $('#ecT'), b = $('#ecS'); if(a) a.textContent = t; if(b) b.textContent = sous || ''; }
+function promptEcriture(p, choisies, info={}){
   const a = appBy(p.app); IDSHEET = {type:'ecrit', id:p.id}; SHEET = null;
   modal(`<div class="idsheet">
     <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${plural(choisies.length, 'idée')}</span></div>
-    <div class="ecrit"><span class="spinner"></span><b>Le chef rédige ton prompt…</b><small>Il relit le cerveau de ${esc(a.name)} et applique sa méthode.</small></div>
+    <div class="ecrit"><span class="spinner"></span><b id="ecT">${info.premium ? 'Le chef rédige avec le modèle puissant…' : 'Le chef rédige ton prompt…'}</b><small id="ecS">${info.premium ? 'Prompt jugé complexe' + (info.raisons?.length ? ' : ' + esc(info.raisons.join(', ')) : '') + '.' : 'Il relit le cerveau de ' + esc(a.name) + ' et applique sa méthode.'}</small></div>
     <article class="pdoc" id="promptLive"><div class="skel"></div><div class="skel w80"></div><div class="skel w50"></div><div class="skel"></div></article>
     <div class="btns"><button class="btn ghost" data-action="prStop">${ic('stop','s')} Arrêter</button></div></div>`, LARGE() ? 'drawer' : 'dialog');
 }
@@ -2864,6 +3028,7 @@ function promptSheet(id, edit=false){
   modal(`<div class="idsheet">
     <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${esc(ago(p.cree))}${p.regen ? ' · refait' : ''}</span></div>
     <h2 class="idtitre">${esc(p.titre)}</h2>
+    ${p.moteur ? `<p class="muted sm" style="margin:-4px 0 10px">${p.moteur === 'claude' ? 'Rédigé avec Claude' + (p.relu ? ' · relu' : '') + (p.cout ? ' · ' + eur2(p.cout) : '') : 'Rédigé avec Gemini'}${p.raison ? ' · ' + esc(p.raison) : ''}</p>` : ''}
     <button class="faitrow ${p.fait ? 'on' : ''}" data-action="prFait" data-id="${esc(p.id)}"><span class="ck">${ic('check')}</span><span class="ft"><b>${p.fait ? 'Fait' : 'Marquer comme fait'}</b><small>${p.fait ? 'Réalisé ' + esc(ago(p.faitAt)) : p.copie ? 'Copié ' + esc(ago(p.copie)) + ' · à cocher quand Claude l’a réalisé' : 'À cocher quand Claude l’a réalisé'}</small></span></button>
     <div class="pacts"><button class="btn primary" data-action="prCopier" data-id="${esc(p.id)}">${ic('copy','s')} Copier</button>${navigator.share ? `<button class="btn" data-action="prPartager" data-id="${esc(p.id)}">${ic('share','s')} Partager</button>` : ''}<button class="ibtn" data-action="prModifier" data-id="${esc(p.id)}" aria-label="Modifier" title="Modifier">${ic('edit','s')}</button><button class="ibtn" data-action="prRefaire" data-id="${esc(p.id)}" aria-label="Refaire" title="Refaire">${ic('redo','s')}</button></div>
     <article class="pdoc">${md(p.texte.replace(/^\s*#\s+.+\n+/, ''), true)}</article>
@@ -3144,7 +3309,7 @@ const ACTIONS = {
     if(!ids.length) return toast('Coche au moins une idée', true);
     const prec = $('#ppPrec')?.value || '';
     try{
-      const p = await genererPrompt(repo, ids, prec);
+      const p = await genererPrompt(repo, ids, prec, null, $('#ppQ')?.value || 'auto');
       if(IDSHEET?.type === 'ecrit' && IDSHEET.id === p.id && !$('#modal').hidden) promptSheet(p.id);
       else toast('Prompt prêt', false, {label:'Ouvrir', run:() => promptSheet(p.id)});
       if(view === 'idees'){ IDV.seg = 'prompts'; LS.set('atelier.idees.seg', 'prompts'); render(); }
@@ -3157,11 +3322,18 @@ const ACTIONS = {
   prOuvrir(el){ promptSheet(el.dataset.id); },
   prFait(el){
     const p = promptGet(el.dataset.id); if(!p) return;
-    promptFait(p.id, !p.fait);
+    const etaitFait = !!p.fait;
+    promptFait(p.id, !etaitFait);
     if(IDSHEET?.type === 'prompt' && !$('#modal').hidden) promptSheet(p.id);
     if(view === 'idees') render();
-    if(!p.fait) toast('Bravo, c’est fait ✓', false, {label:'Annuler', run:() => { promptFait(p.id, false); majIdees(); }});
+    if(!etaitFait) retourSheet(p.id);
   },
+  retourOk(el){ const p = promptGet(el.dataset.id); if(!p) return; const note = ($('#rtNote')?.value || '').trim(); closeModal(); apprendre(p, el.dataset.v, note).then(() => { if(note) toast('Noté : le chef s’en servira'); }); if(!note) toast('Bravo, c’est fait ✓'); },
+  retourPasser(){ closeModal(); toast('Bravo, c’est fait ✓'); },
+  retourAnnuler(el){ promptFait(el.dataset.id, false); closeModal(); majIdees(); },
+  lecDel(el){ const d = Object.assign({}, get('lecons', {l:[]})); d.l = (d.l || []).filter(x => x.id !== el.dataset.id); put('lecons', d); regModal(REGF.regLecons); },
+  async testClaude(){ try{ const t0 = performance.now(); const t = await claude('Réponds uniquement : OK', {system:'Test de connexion.', max:20, quoi:'test'}); toast(`« ${t.slice(0, 12)} » en ${((performance.now() - t0)/1000).toFixed(1)} s avec ${CLAUDE_LAST.modele}`); regModal(REGF.regPremium); }catch(e){ toast(e.message, true); } },
+  regPremium(){ regModal(REGF.regPremium); }, regLecons(){ regModal(REGF.regLecons); },
   prCopier(el){ const p = promptGet(el.dataset.id); if(!p) return; copy(p.texte); p.copie = Date.now(); promptPut(p); if(IDSHEET?.type === 'prompt' && !$('#modal').hidden) promptSheet(p.id); },
   async prPartager(el){ const p = promptGet(el.dataset.id); if(!p) return; try{ await navigator.share({title:p.titre, text:p.texte}); p.copie = Date.now(); promptPut(p); promptSheet(p.id); }catch{} },
   prModifier(el){ promptSheet(el.dataset.id, true); },
@@ -3169,7 +3341,7 @@ const ACTIONS = {
   async prRefaire(el){
     const p = promptGet(el.dataset.id); if(!p) return;
     if(!confirm('Refaire ce prompt ? Le texte actuel sera remplacé.')) return;
-    try{ const q = await genererPrompt(p.app, p.idees || [], p.precision || '', p); if(IDSHEET?.type === 'ecrit' && !$('#modal').hidden) promptSheet(q.id); majIdees(); }
+    try{ const q = await genererPrompt(p.app, p.idees || [], p.precision || '', p, p.qualite || 'auto'); if(IDSHEET?.type === 'ecrit' && !$('#modal').hidden) promptSheet(q.id); majIdees(); }
     catch(e){ if(e.name !== 'AbortError') toast(e.message, true); promptSheet(p.id); }
   },
   prSupprimer(el){
@@ -3680,6 +3852,7 @@ document.addEventListener('change', async e => {
     const k = el.dataset.local, v = el.value.trim(), avant = L[k];
     L[k] = v; saveL();
     if(k === 'geminiKey' && v) partagerCle();
+    if(k === 'claudeKey'){ if(v && !/^sk[-]ant[-]/.test(v)){ L.claudeKey = avant || ''; saveL(); toast('Ce n’est pas une clé Claude', true); return; } C.claudeModel = null; saveC(); partagerCle(); }
     if(k === 'ghToken' && v !== avant){ Cloud.joined = false; Cloud.etag = null; Cloud.head = null; Cloud.start(); syncAll(true); }
     if(k === 'nomAppareil') Cloud.schedule();
     renderChrome();
@@ -3764,7 +3937,7 @@ render();
 if(!L.ghToken) showOnboarding();
 else {
   Cloud.start();
-  adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
+  adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || (L.claudeKey && !c?.c) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
   setTimeout(avisEnAttente, 9000); setInterval(() => { if(!document.hidden) avisEnAttente(); }, 60e3);
