@@ -394,8 +394,7 @@ html.verre .tok{background:var(--g-bg2)}
 html.verre .scard{border-top:1px solid var(--g-bord2);box-shadow:inset 0 3px 0 -1px var(--c),inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
 
 /* Barre du haut et barre latérale */
-html.verre #top{background:transparent;-webkit-backdrop-filter:var(--g-flou2);backdrop-filter:var(--g-flou2)}
-html.verre #top.scrolled{border-bottom-color:transparent;background:color-mix(in srgb,var(--g-bg) 60%,transparent)}
+html.verre #top,html.verre #top.scrolled{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;box-shadow:none}
 @media (min-width:900px){
   html.verre #shell{grid-template-columns:284px minmax(0,1fr)}
   html.verre #side{position:sticky;top:12px;height:calc(100vh - 24px);margin:12px 0 12px 12px;border-radius:30px;padding:18px 14px}
@@ -531,7 +530,7 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.8.0';
+const VERSION = '3.8.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
