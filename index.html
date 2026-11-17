@@ -895,7 +895,7 @@ html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.3.0';
+const VERSION = '4.3.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1305,7 +1305,8 @@ async function modelChain(tier){
   return ok.length ? ok : list;
 }
 function reflexion(m, pense=false){
-  if(C.noThink?.[m]) return null;
+  if(C.noThink?.[m] === true) return null;
+  if(C.noThink?.[m] === 'low') return /^gemini-([3-9]|\d\d)/.test(m) ? {thinkingLevel:'low'} : null;
   const deep = pense || REG().vitesse === 'approfondi';
   if(/^gemini-2\.5-flash-lite/.test(m)) return deep ? {thinkingBudget:512} : null;
   if(/^gemini-2\.5-flash/.test(m)) return {thinkingBudget:deep ? 2048 : 0};
@@ -1325,6 +1326,8 @@ async function garde(){
   if(C.gemMin.length >= 12) await sleep(60e3 - (Date.now() - C.gemMin[0]) + 200);
   C.gemMin.push(Date.now()); a.n++; saveC();
 }
+const DELAI_GEM = () => +window.__delaiGem || 70e3;
+function logGem(m, t0, err){ C.gemLog = [{t:Date.now(), m, ms:Math.round(performance.now() - t0), err:err || ''}, ...(C.gemLog || [])].slice(0, 15); saveC(); }
 async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null, pense=false}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = (typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input).map(c => ({...c, parts:c.parts.map(p => p.text != null ? {...p, text:masquer(p.text)} : p)}));
@@ -1338,36 +1341,56 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
       if(system) body.systemInstruction = {parts:[{text:system}]};
       if(json) body.generationConfig.responseMimeType = 'application/json';
       const enFlux = !!onText && !json;
-      let r;
+      let r, text = '', timeout = false, wd = 0;
+      const ctrl = new AbortController(), t0 = performance.now();
+      const armer = ms => { clearTimeout(wd); wd = setTimeout(() => { timeout = true; ctrl.abort(); }, ms); };
+      const onAbort = () => ctrl.abort();
+      if(signal){ if(signal.aborted) throw new DOMException('Arrêté', 'AbortError'); signal.addEventListener('abort', onAbort); }
       await garde();
       try{
-        r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body), signal});
-      }catch(e){ if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Gemini'); }
-      if(!r.ok){
-        const d = await r.json().catch(() => ({}));
-        last = new Error(gemErr(r.status, d));
-        if(r.status === 400 && th && /think/i.test(d?.error?.message||'')){ C.noThink[m] = true; saveC(); continue; }
-        if(r.status === 429){ if(/day|PerDay|daily/i.test(JSON.stringify(d))){ C.blocked[m] = today(); saveC(); } break; }
-        if([404, 500, 503].includes(r.status)) break;
-        throw last;
-      }
-      let text = '';
-      if(enFlux){
-        const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
-        for(;;){
-          const {done, value} = await reader.read(); if(done) break;
-          buf += dec.decode(value, {stream:true});
-          let i;
-          while((i = buf.indexOf('\n')) >= 0){
-            const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
-            if(!line.startsWith('data:')) continue;
-            try{ const d = JSON.parse(line.slice(5)); const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{}
-          }
+        armer(enFlux ? 45e3 : DELAI_GEM());
+        try{
+          r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body), signal:ctrl.signal});
+        }catch(e){
+          if(timeout){ last = new Error('Gemini met trop de temps à répondre (modèle ' + m + ')'); logGem(m, t0, 'délai dépassé'); break; }
+          if(e.name === 'AbortError') throw e;
+          throw new Error('Pas de réseau pour joindre Gemini');
         }
-      } else {
-        const d = await r.json().catch(() => ({}));
-        text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('');
-      }
+        if(!r.ok){
+          const d = await r.json().catch(() => ({}));
+          last = new Error(gemErr(r.status, d)); logGem(m, t0, 'erreur ' + r.status);
+          if(r.status === 400 && th && /think/i.test(d?.error?.message||'')){
+            // « minimal » refusé : essayer « low » avant de laisser le modèle réfléchir sans limite (très lent)
+            C.noThink[m] = th.thinkingLevel === 'minimal' ? 'low' : true; saveC(); continue;
+          }
+          if(r.status === 429){ if(/day|PerDay|daily/i.test(JSON.stringify(d))){ C.blocked[m] = today(); saveC(); } break; }
+          if([404, 500, 503].includes(r.status)) break;
+          throw last;
+        }
+        try{
+          if(enFlux){
+            const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
+            for(;;){
+              const {done, value} = await reader.read(); if(done) break;
+              armer(30e3);
+              buf += dec.decode(value, {stream:true});
+              let i;
+              while((i = buf.indexOf('\n')) >= 0){
+                const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+                if(!line.startsWith('data:')) continue;
+                try{ const d = JSON.parse(line.slice(5)); const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{}
+              }
+            }
+          } else {
+            const d = await r.json().catch(() => ({}));
+            text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('');
+          }
+        }catch(e){
+          if(timeout){ last = new Error('Gemini met trop de temps à répondre (modèle ' + m + ')'); logGem(m, t0, 'délai dépassé'); break; }
+          throw e;
+        }
+      }finally{ clearTimeout(wd); signal?.removeEventListener('abort', onAbort); }
+      logGem(m, t0, text.trim() ? '' : 'réponse vide');
       text = text.trim();
       if(!text){ last = new Error('Réponse vide de Gemini'); break; }
       C.lastModel = m; C.gemErr = null; saveC();
@@ -1422,10 +1445,15 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
   const msgs = (typeof input === 'string' ? [{role:'user', content:input}] : input).map((x, i) => ({role:x.role, content:[Object.assign({type:'text', text:masquer(x.content)}, i === 0 ? {cache_control:{type:'ephemeral'}} : {})]}));
   const body = {model:modele, max_tokens:max, temperature, stream:!!onText, messages:msgs,
     system:[{type:'text', text:masquer(system), cache_control:{type:'ephemeral'}}].concat(leconsTexte() ? [{type:'text', text:masquer(leconsTexte())}] : [])};
-  let r;
+  let r, timeout = false, wd = 0;
+  const ctrl = new AbortController(), onAbort = () => ctrl.abort();
+  const armer = ms => { clearTimeout(wd); wd = setTimeout(() => { timeout = true; ctrl.abort(); }, ms); };
+  if(signal) signal.addEventListener('abort', onAbort);
+  armer(body.stream ? 60e3 : 150e3);
+  try{
   for(let essai = 0; essai < 2; essai++){
-    try{ r = await fetch(CLAUDE_API + '/messages', {method:'POST', headers:claudeHdr(), body:JSON.stringify(body), signal}); }
-    catch(e){ if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Claude'); }
+    try{ r = await fetch(CLAUDE_API + '/messages', {method:'POST', headers:claudeHdr(), body:JSON.stringify(body), signal:ctrl.signal}); }
+    catch(e){ if(timeout) throw new Error('Claude met trop de temps à répondre'); if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Claude'); }
     if(r.ok) break;
     const d = await r.json().catch(() => ({}));
     if(r.status === 400 && /temperature/i.test(JSON.stringify(d)) && 'temperature' in body){ delete body.temperature; continue; }
@@ -1437,6 +1465,7 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
     const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
     for(;;){
       const {done, value} = await reader.read(); if(done) break;
+      armer(45e3);
       buf += dec.decode(value, {stream:true});
       let i;
       while((i = buf.indexOf('\n')) >= 0){
@@ -1461,6 +1490,8 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
   text = text.trim();
   if(!text) throw new Error('Réponse vide de Claude');
   return text;
+  }catch(e){ if(timeout) throw new Error('Claude met trop de temps à répondre'); throw e; }
+  finally{ clearTimeout(wd); signal?.removeEventListener('abort', onAbort); }
 }
 
 // Le chef décide seul s'il vaut la peine d'utiliser le modèle puissant (et paie) : un gros projet ou un prompt qui touche des points délicats.
@@ -2667,7 +2698,7 @@ const REGF = {
       ${c ? `<div class="grp in">${rangee({t:'Rapide', v:esc(c.lite[0] || '—')})}${rangee({t:'Soigné', v:esc(c.flash[0] || '—')})}${C.lastModel ? rangee({t:'Dernier utilisé', v:esc(C.lastModel)}) : ''}</div>` : ''}<div class="btns"><button class="btn block" data-action="listModels">Voir tous les modèles</button></div>`; },
   regPremium: () => { const d = premiumMois(); return `<h2>Chef premium (Claude)</h2><p class="muted sm" style="margin:-4px 0 10px">Le chef n’appelle Claude que pour un gros projet ou un prompt complexe, et le dit. Tout le reste reste sur Gemini, gratuit.</p>${champ('Clé Claude', `<input type="password" data-local="claudeKey" value="${esc(L.claudeKey || '')}" placeholder="Clé de la console Anthropic" autocomplete="off">`, 'Partagée chiffrée avec tes appareils. Jamais envoyée à Gemini.')}${champ('Budget du mois (€)', `<input data-reg="budgetPremium" inputmode="decimal" value="${esc(String(budgetPremium()))}">`, `Dépensé ce mois-ci : ${eur2(d.eur)} (${plural(d.n || 0, 'appel')}). Au-delà, le chef repasse sur Gemini.`)}<div class="btns"><button class="btn block" data-action="testClaude">${ic('bolt','s')} Tester</button></div>${(d.hist || []).length ? `<h3 class="sec">Derniers appels</h3><div class="grp in">${d.hist.slice(0, 8).map(h => `<div class="rg"><span class="rgt">${esc(h.quoi)}<small>${esc(ago(h.t))}</small></span><span class="muted">${eur2(h.eur)}</span></div>`).join('')}</div>` : ''}`; },
   regLecons: () => { const l = lecons(); return `<h2>Ce que le chef a appris</h2><p class="muted sm" style="margin:-4px 0 10px">Règles tirées de tes retours après un prompt terminé. Le chef les relit à chaque travail. Retire celles qui ne te conviennent pas.</p>${l.length ? `<div class="grp in">${l.map(x => `<div class="rg"><span class="rgt">${esc(x.texte)}<small>${esc(ago(x.t))}</small></span><button class="ibtn" data-action="lecDel" data-id="${esc(x.id)}" aria-label="Oublier">${ic('trash','s')}</button></div>`).join('')}</div>` : '<p class="muted">Rien pour l’instant. Quand tu marques un prompt « fait », dis en une phrase ce qui a marché ou non.</p>'}`; },
-  regLimite: () => `<h2>Limite par jour</h2>${champ('Appels Gemini par jour (cet appareil)', `<input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}">`, `Aujourd’hui : ${appelsJour().n}. Au-delà, le chef se met en pause jusqu’à demain.`)}`,
+  regLimite: () => `<h2>Limite par jour</h2>${champ('Appels Gemini par jour (cet appareil)', `<input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}">`, `Aujourd’hui : ${appelsJour().n}. Au-delà, le chef se met en pause jusqu’à demain.`)}${(C.gemLog || []).length ? `<h3 class="sec">Derniers appels</h3><div class="grp in">${C.gemLog.slice(0, 10).map(g => `<div class="rg"><span class="rgt">${esc(g.m)}<small>${esc(ago(g.t))}${g.err ? ' · ' + esc(g.err) : ''}</small></span><span class="muted">${(g.ms / 1000).toFixed(1)} s</span></div>`).join('')}</div>` : ''}`,
   regApp: i => { const a = appsAll()[i]; if(!a) return '<p class="muted">App introuvable.</p>';
     return `<div class="regapp">${avatar(a, 'l')}<h2>${esc(a.name)}</h2></div>
       <div class="r3">${a.icone || ICONES[a.repo] ? '' : `<div>${champ('Emoji', `<input data-app="${i}" data-field="emoji" value="${esc(a.emoji||'')}" style="text-align:center">`)}</div>`}<div>${champ('Couleur', `<input type="color" data-app="${i}" data-field="couleur" value="${esc(a.couleur||'#6366f1')}">`)}</div><div style="flex:1">${champ('Nom', `<input data-app="${i}" data-field="name" value="${esc(a.name)}">`)}</div></div>
