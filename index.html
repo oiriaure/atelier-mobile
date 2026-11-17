@@ -73,7 +73,7 @@ main{max-width:1180px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bo
 #fab svg.i{width:26px;height:26px;stroke-width:2.4}
 #fab.hide{transform:translateY(120px);opacity:0}
 #fab[hidden]{display:none}
-@media (min-width:900px){
+@media (min-width:700px){
   #shell{display:grid;grid-template-columns:260px minmax(0,1fr)}
   #side{display:flex;flex-direction:column;gap:14px;position:sticky;top:0;height:100vh;padding:18px 14px;background:var(--s1);border-right:1px solid var(--bd);overflow:auto}
   #tabs,#fab,#ptr{display:none!important}
@@ -82,7 +82,7 @@ main{max-width:1180px;margin:0 auto;padding:4px 16px calc(env(safe-area-inset-bo
   main{padding:4px 32px 60px}
   .phone-only{display:none!important}
 }
-@media (max-width:899px){.desk-only{display:none!important}}
+@media (max-width:699px){.desk-only{display:none!important}}
 .brand{display:flex;gap:11px;align-items:center;padding:2px 6px}
 .brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--sh1)}
 .brand b{font-size:17px;letter-spacing:-.01em}
@@ -201,7 +201,7 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 .composer .in{display:flex;gap:8px;max-width:780px;margin:0 auto;align-items:flex-end}
 .composer textarea{border-radius:22px;padding:11px 16px;min-height:46px;max-height:140px;background:var(--s1)}
 .send{flex:none;width:46px;height:46px;border-radius:23px;border:0;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:grid;place-items:center;cursor:pointer}
-@media (min-width:900px){.composer{left:260px;bottom:0;padding:14px 32px 18px}}
+@media (min-width:700px){.composer{left:var(--sidew,256px);bottom:0;padding:14px 32px 18px}}
 body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .sugg{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:10px}
 .sugg button{text-align:left;border:1px solid var(--bd);background:var(--s1);border-radius:14px;padding:12px;cursor:pointer;font-size:14px;color:var(--tx2)}
@@ -240,7 +240,7 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .grab{position:sticky;top:-8px;z-index:3;display:flex;justify-content:flex-end;align-items:center;margin:-8px -18px 2px;padding:10px 12px 4px;background:var(--s1);touch-action:none}
 .grab::before{content:"";position:absolute;left:50%;top:7px;transform:translateX(-50%);width:40px;height:5px;border-radius:3px;background:var(--s3)}
 .sheet h2{margin:2px 0 4px;font-size:22px;letter-spacing:-.02em}
-@media (min-width:900px){
+@media (min-width:700px){
   #modal{align-items:center}
   #modal.drawer{justify-content:flex-end;align-items:stretch}
   .sheet{border-radius:22px;max-height:88vh;width:min(620px,92vw);animation:pop .22s var(--ease)}
@@ -278,7 +278,7 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 #toast[hidden]{display:none}
 #toast.bad{background:var(--ko);color:#fff}
 #toast button{border:0;background:rgba(127,127,127,.25);color:inherit;border-radius:8px;padding:4px 10px;font-weight:650;cursor:pointer}
-@media (min-width:900px){#toast{top:auto;bottom:24px;left:calc(50% + var(--sidew,256px) / 2)}}
+@media (min-width:700px){#toast{top:auto;bottom:24px;left:calc(50% + var(--sidew,256px) / 2)}}
 #ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 60px);z-index:4;transform:translate(-50%,-70px);width:38px;height:38px;border-radius:19px;background:var(--s1);border:1px solid var(--bd);display:grid;place-items:center;color:var(--ac);transition:transform .2s;box-shadow:var(--sh2)}
 .cloud{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mu);font-weight:550}
 .cloud.ok svg{color:var(--ok)} .cloud.err{color:var(--ko)}
@@ -322,13 +322,13 @@ details[open]>summary::before{transform:rotate(90deg)}
 .tlx{display:flex;justify-content:space-between;max-width:330px}
 /* ===== Discussions (3.1) ===== */
 .chefw{display:block}
-@media (min-width:900px){.chefw{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start} body.chef .composer{left:calc(260px + 32px + 322px)}}
+@media (min-width:1100px){.chefw{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}}
 .dlist{position:sticky;top:96px;max-height:calc(100vh - 120px);overflow:auto;padding-bottom:20px}
 .ditem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:none;border-radius:12px;padding:9px 8px;cursor:pointer}
 .ditem:hover{background:var(--s2)} .ditem.on{background:var(--acs)}
 .ditem .dt{display:block;font-weight:600;font-size:14.5px}
 .thd{position:sticky;top:calc(env(safe-area-inset-top) + 64px);z-index:4;display:flex;gap:10px;align-items:center;padding:10px 0;background:var(--bg)}
-@media (min-width:900px){.thd{top:86px}}
+@media (min-width:700px){.thd{top:86px}}
 .thd .ibtn{width:36px;height:36px}
 .msg .mt{display:block;font-size:11px;opacity:.6;margin-top:4px;text-align:right}
 .msg .mact .mt{margin:0 0 0 auto;align-self:center}
@@ -386,11 +386,11 @@ html.verre .scard{border-top:1px solid var(--g-bord2);box-shadow:inset 0 3px 0 -
 
 /* Barre du haut et barre latérale */
 html.verre #top,html.verre #top.scrolled{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;box-shadow:none}
-@media (min-width:900px){
+@media (min-width:700px){
 }
 
 /* Barre d'onglets du téléphone : une capsule de verre qui flotte */
-@media (max-width:899px){
+@media (max-width:699px){
   html.verre #tabs{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 8px);border-radius:32px;padding:6px;border-top:1px solid var(--g-bord2)}
   html.verre #tabs button{border-radius:24px;min-height:54px;transition:background .25s var(--ease),color .2s}
   html.verre #tabs button.on{background:var(--g-fort);box-shadow:inset 0 1px 0 var(--g-reflet),0 4px 14px rgba(31,38,90,.14)}
@@ -428,7 +428,7 @@ html.verre .hero .btn.primary{background:#fff;color:#4338ca}
 /* Fenêtres et messages */
 html.verre #modal{background:rgba(10,12,30,.22);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 html.verre #modal .sheet{background:var(--g-fort);border-radius:30px 30px 0 0}
-@media (min-width:900px){html.verre #modal .sheet{border-radius:30px} html.verre #modal.drawer .sheet{border-radius:30px 0 0 30px}}
+@media (min-width:700px){html.verre #modal .sheet{border-radius:30px} html.verre #modal.drawer .sheet{border-radius:30px 0 0 30px}}
 html.verre .msg.m{border-radius:22px 22px 22px 8px}
 html.verre .msg.u{border-radius:22px 22px 8px 22px}
 html.verre .composer{background:transparent;border-top:0;-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -445,14 +445,14 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
 #sbar{display:none}
 #ptr{opacity:0;transition:transform .2s,opacity .15s}#ptr.on{opacity:1}
 .chips{gap:8px}.chip .cn{opacity:.55;font-weight:600;margin-left:3px;font-variant-numeric:tabular-nums}
-@media (max-width:899px){
+@media (max-width:699px){
   #top,#top.scrolled{position:relative;padding:calc(env(safe-area-inset-top) + 16px) 16px 8px;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border:0;box-shadow:none}
   #top h1{font-size:32px;font-weight:750;letter-spacing:-.03em}
   #top small{font-size:13px;margin-top:3px}
   #sbar{display:block;position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top) + 10px);z-index:9;pointer-events:none;background:linear-gradient(var(--bg) 55%,transparent)}
   html.verre #sbar{background:linear-gradient(#07080d 50%,transparent)}
 }
-@media (max-width:899px) and (prefers-color-scheme:light){html.verre #sbar,#sbar{background:linear-gradient(rgba(14,16,38,.5),transparent)}}
+@media (max-width:699px) and (prefers-color-scheme:light){html.verre #sbar,#sbar{background:linear-gradient(rgba(14,16,38,.5),transparent)}}
 .reglages{max-width:680px;margin:0 auto}
 .gh{font-size:13px;font-weight:600;color:var(--mu);margin:26px 16px 8px}
 .grp{background:var(--s1);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin:0}
@@ -484,15 +484,15 @@ html.verre .grp{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
 html.verre .rg+.rg::before{background:rgba(127,127,160,.18)}
 html.verre .chip{color:var(--tx)}
 /* ===== 4.0 : barre latérale façon app (sections repliables, profil, barre d'icônes) ===== */
-@media (min-width:900px){
+@media (min-width:700px){
   :root{--sidew:256px}
   body.rail{--sidew:68px}
   #shell,html.verre #shell{grid-template-columns:var(--sidew) minmax(0,1fr)}
   #side,html.verre #side{display:flex;flex-direction:column;gap:0;position:sticky;top:0;height:100vh;margin:0;padding:12px 10px 10px;border-radius:0;border:0;border-right:1px solid var(--bd);background:color-mix(in srgb,var(--s1) 70%,var(--bg));box-shadow:none;overflow:hidden}
   html.verre #side{background:var(--g-bg);border-right-color:var(--g-bord2);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou)}
   .composer,html.verre .composer{left:var(--sidew)}
-  body.chef .composer,html.verre body.chef .composer{left:calc(var(--sidew) + 32px + 322px)}
 }
+@media (min-width:1100px){body.chef .composer,html.verre body.chef .composer{left:calc(var(--sidew) + 32px + 322px)}}
 .sbtop{display:flex;align-items:center;gap:10px;padding:4px 4px 14px}
 .sblogo{width:30px;height:30px;border-radius:8px;flex:none;box-shadow:0 2px 6px rgba(16,24,40,.2)}
 .sbname{flex:1;min-width:0;line-height:1.2}
@@ -549,7 +549,7 @@ body.rail .sni{justify-content:center;width:44px;min-height:40px;margin:0 auto;p
 body.rail .sni .badge{position:absolute;top:2px;right:0;min-width:16px;height:16px;line-height:16px;font-size:9.5px;padding:0 4px}
 body.rail .sni .dot{position:absolute;bottom:6px;right:6px;box-shadow:0 0 0 2px var(--s1)}
 body.rail .sme{justify-content:center;padding:6px 0}
-@media (min-width:900px){#top{padding-top:20px}}
+@media (min-width:700px){#top{padding-top:20px}}
 .rg.actif{background:color-mix(in srgb,var(--ac) 10%,transparent)}
 
 /* ===== 4.0 : Idées ===== */
@@ -737,6 +737,67 @@ html.verre .avis{background:linear-gradient(180deg,color-mix(in srgb,var(--v) 18
 html.verre .idnote,html.verre .prop{background:var(--g-bg2)}
 html.verre .faitrow.on{background:color-mix(in srgb,var(--ok) 16%,transparent)}
 html.verre .idcomp.open{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 14%,transparent),inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
+
+/* ===== 4.1 : mise en page adaptative (téléphone, tablette, PC, grand écran) ===== */
+:root{--maxw:1180px}
+@media (min-width:1600px){:root{--maxw:1440px}}
+main{max-width:var(--maxw)}
+#top,#top.scrolled,html.verre #top{position:relative;max-width:var(--maxw);width:100%;margin:0 auto}
+.thd{top:calc(env(safe-area-inset-top) + 8px)}
+@media (min-width:700px){
+  .thd{top:12px}
+  .dlist{top:16px;max-height:calc(100vh - 32px)}
+  :root{--sidew:calc(256px + env(safe-area-inset-left))}
+  body.rail{--sidew:calc(68px + env(safe-area-inset-left))}
+  body.deplie{--sidew:calc(68px + env(safe-area-inset-left))}
+  #side,html.verre #side{padding-left:calc(10px + env(safe-area-inset-left))}
+  main{padding-right:calc(32px + env(safe-area-inset-right))}
+  #top{padding-right:calc(32px + env(safe-area-inset-right))}
+  /* panneau déplié par-dessus la page (tablette) */
+  body.deplie #side,html.verre body.deplie #side{position:fixed;left:0;top:0;bottom:0;height:100%;width:calc(264px + env(safe-area-inset-left));z-index:31;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:glisse .22s var(--ease)}
+  html.verre body.deplie #side{background:var(--g-fort)}
+  body.deplie #sideVoile{display:block;position:fixed;inset:0;z-index:30;background:rgba(10,12,20,.32);animation:fade .2s}
+}
+#sideVoile{display:none}
+@keyframes glisse{from{transform:translateX(-24px);opacity:.6}}
+/* iPhone à l'horizontale et écrans peu hauts : barre d'icônes plus compacte */
+@media (min-width:700px) and (max-height:560px){
+  body.rail .sni{min-height:34px}
+  body.rail .sbtop{gap:6px;padding-bottom:8px}
+  body.rail .sgrp+.sgrp{margin-top:4px;padding-top:4px}
+  #top{padding-top:12px;padding-bottom:6px}
+  #top h1{font-size:24px}
+  #modal.drawer .sheet{padding-top:4px}
+}
+/* survol absent (écran tactile) : rien de caché derrière un survol */
+@media (hover:none){.sgadd{opacity:1}.sgh svg.i{opacity:.8}}
+/* Accueil : deux colonnes dès que la place le permet */
+@media (min-width:1000px){.cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+/* Synchro : trois colonnes sur grand écran */
+@media (min-width:1700px){.sgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Idées et Réglages s'adaptent à la place dont ils disposent (requêtes de conteneur) */
+.idees,.regw{container-type:inline-size}
+@media (min-width:1600px){.idees{max-width:1240px}.idees.large{max-width:1440px}}
+.idgroups{display:block}
+@container (min-width:960px){
+  .idgroups:not(.seul){display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:0 24px;align-items:start}
+  .idgroups.seul .idl,.plist{display:grid;grid-template-columns:1fr 1fr;align-items:start}
+  .idcomp{max-width:none}
+}
+@media (min-width:1100px){.regw{max-width:1080px;margin:0 auto}}
+@container (min-width:900px){
+  .reglages{max-width:none;columns:2;column-gap:28px}
+  .reglages>.grp.prof,.reglages>.gp.c{column-span:all}
+  .reglages>.gbloc{break-inside:avoid;padding-bottom:2px}
+  .reglages>.gbloc .gh{margin-top:20px}
+}
+/* très petits téléphones */
+@media (max-width:370px){
+  #tabs button{font-size:9.5px}
+  #top h1{font-size:28px}
+  .seg button{font-size:12.5px;padding:8px 4px}
+  .idseg button svg.i{display:none}
+}
 @media (prefers-reduced-transparency:reduce){html.verre :is(.card,.kpi,.trow,#side,#tabs,#modal .sheet){background:var(--g-fort)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -770,6 +831,7 @@ html.verre .idcomp.open{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 14%,tra
 <div id="pal" hidden><div class="box"><input id="palIn" placeholder="Rechercher une app, une tâche, une action…" autocomplete="off"><div class="list" id="palList"></div></div></div>
 <div id="toast" hidden></div>
 <div id="sbar" aria-hidden="true"></div>
+<div id="sideVoile" data-action="sideRail" aria-hidden="true"></div>
 <div id="ptr" aria-hidden="true"><svg class="i"><use href="#i-sync"/></svg></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -822,7 +884,7 @@ html.verre .idcomp.open{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 14%,tra
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.0.0';
+const VERSION = '4.1.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -2246,7 +2308,18 @@ function vTasks(){
 
 const SUGG = ['Sur quelle app travailler cette semaine ?', 'Quels risques dans mes apps ?', 'Consigne pour la prochaine amélioration', 'Mes synchros fonctionnent-elles ?'];
 const suggApp = a => [`Où en est ${a.name} ?`, `Prochaine amélioration pour ${a.name} ?`, `Comment ${a.name} est construite ?`, `Consigne pour la tâche la plus urgente`];
-const LARGE = () => matchMedia('(min-width:900px)').matches;
+const LARGE = () => matchMedia('(min-width:700px)').matches;     // barre latérale, panneaux, raccourcis
+const CHEF2 = () => matchMedia('(min-width:1100px)').matches;    // PC : chef en deux colonnes, barre latérale complète
+const TABLETTE = () => LARGE() && !CHEF2();                       // tablette, iPhone à l'horizontale, petite fenêtre : barre d'icônes
+const ECRAN = () => !LARGE() ? 'tel' : !CHEF2() ? 'tab' : 'pc';
+let SIDE_DEPLIE = false;
+function appliquerEcran(){
+  const tab = TABLETTE();
+  if(!tab) SIDE_DEPLIE = false;
+  document.body.classList.toggle('tablette', tab);
+  document.body.classList.toggle('deplie', tab && SIDE_DEPLIE);
+  document.body.classList.toggle('rail', tab ? !SIDE_DEPLIE : !!LS.get('atelier.side.rail', false));
+}
 function itemDisc(x, d){
   const a = x.app ? appBy(x.app) : null, last = x.msgs[x.msgs.length - 1];
   return `<button class="ditem ${d && d.id === x.id ? 'on' : ''}" data-disc="${esc(x.id)}">${a ? avatar(a, 's') : '<span class="av s" style="--c:#6366f1">✦</span>'}<span style="flex:1;min-width:0"><span class="dt clamp1">${x.epingle ? '📌 ' : ''}${esc(x.titre)}</span><span class="xs muted clamp1" style="display:block">${last ? esc(last.t.replace(/[#*`>_]/g, '').slice(0, 90)) : 'Nouvelle discussion'}</span></span><span class="xs muted" style="white-space:nowrap">${esc(agoCourt(x.maj))}</span></button>`;
@@ -2264,7 +2337,7 @@ function bulle(m, i, last){
   return `<div class="msg m">${md(m.t)}<div class="mact"><button class="btn sm ghost" data-action="copyMsg" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tasksFrom" data-src="chat" data-i="${i}">${ic('plus','s')} Tâches</button>${last && !busy.chat ? `<button class="btn sm ghost" data-action="regen" title="Refaire la réponse">${ic('redo','s')}</button>` : ''}<span class="mt">${heure(m.at)}</span></div></div>`;
 }
 function fil(d){
-  const a = d.app ? appBy(d.app) : null, large = LARGE();
+  const a = d.app ? appBy(d.app) : null, large = CHEF2();
   const pire = a ? pireDe(C.sante?.apps?.[a.repo]) : pireDe(C.sante ? [...Object.values(C.sante.apps).flat(), ...(C.sante.atelier||[])] : null);
   const ctx = a ? [C.apps[a.repo]?.obsidian ? 'son cerveau Obsidian' : C.apps[a.repo]?.brain ? 'son cerveau' : 'pas de cerveau', plural((C.apps[a.repo]?.issues||[]).length, 'tâche'), (C.apps[a.repo]?.commits||[]).length ? 'ses commits' : null, pire ? 'synchro ' + ST[pire].l.toLowerCase() : null]
                 : [plural(tracked().length, 'app'), plural(nbTaches(), 'tâche'), pire ? 'synchro ' + ST[pire].l.toLowerCase() : null];
@@ -2282,7 +2355,7 @@ function fil(d){
 }
 function vChef(){
   if(!L.geminiKey) return empty('💬', 'Le chef de projet', 'Ajoute ta clé Gemini dans les Réglages pour discuter avec lui.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
-  const all = discs(), d = discCourante(), large = LARGE();
+  const all = discs(), d = discCourante(), large = CHEF2();
   const vide = {id:null, app:null, titre:'Discussion générale', msgs:[]};
   if(large) return `<div class="chefw">${listeDiscs(all, d)}<div>${fil(d || vide)}</div></div>`;
   if(CHEF.liste && all.length) return listeDiscs(all, d);
@@ -2344,14 +2417,14 @@ function rangee(o){
   const tag = attrs ? 'button' : 'div';
   return `<${tag} class="rg ${o.cls||''}" ${attrs} ${o.data||''}>${o.ic ? `<span class="rgi" style="--t:${o.c||'#6366f1'}">${o.ic.startsWith('<') ? o.ic : ic(o.ic,'s')}</span>` : ''}<span class="rgt">${o.t}${o.sous ? `<small>${o.sous}</small>` : ''}</span>${o.html || (o.v != null ? `<span class="rgv">${o.v}</span>` : '')}${attrs && o.chev !== false ? ic('chev','s rgc') : ''}</${tag}>`;
 }
-const groupe = (titre, rangees, pied) => `${titre ? `<h3 class="gh">${titre}</h3>` : ''}<section class="grp">${rangees.join('')}</section>${pied ? `<p class="gp">${pied}</p>` : ''}`;
+const groupe = (titre, rangees, pied) => `<div class="gbloc">${titre ? `<h3 class="gh">${titre}</h3>` : ''}<section class="grp">${rangees.join('')}</section>${pied ? `<p class="gp">${pied}</p>` : ''}</div>`;
 const masque = t => t ? '••••' + esc(String(t).slice(-4)) : '';
 function vSettings(){
   const reg = REG(), ce = cloudEtat();
   const devs = Object.values(C.remote).filter(r => Date.now() - (r.updated||0) < 30*864e5);
   const vit = {rapide:'Rapide', equilibre:'Équilibré', approfondi:'Approfondi'};
   const p = (reg.prenom || '').trim();
-  return `<div class="reglages">
+  return `<div class="regw"><div class="reglages">
   <section class="grp prof">${rangee({ic:`<span>${esc((p || 'A')[0].toUpperCase())}</span>`, c:'linear-gradient(135deg,#6366f1,#a855f7)', t:esc(p || 'Ajouter ton prénom'), sous:`${esc(L.nomAppareil || PLATEFORME)} · Atelier ${VERSION}`, act:'regProfil', cls:'big'})}</section>
 
   ${groupe('Compte', [
@@ -2383,8 +2456,8 @@ function vSettings(){
     rangee({ic:'redo', c:'#64748b', t:'Importer une configuration', act:'importCfg'}),
     rangee({ic:'trash', c:'#ef4444', t:'<span class="ko">Vider le cache</span>', act:'clearCache', chev:false})
   ])}
-  <p class="gp c">Atelier ${VERSION}${LARGE() ? ' · N nouvelle idée · 1-8 écrans · Ctrl+K recherche' : ''}</p>
-  </div>`;
+  <p class="gp c">Atelier ${VERSION}${LARGE() ? ' · N nouvelle idée · 1-9 écrans · Ctrl+K recherche · Ctrl+B barre latérale' : ''}</p>
+  </div></div>`;
 }
 let REGM = null;   // fenêtre de réglage ouverte (pour la redessiner après une modification)
 function regModal(f){ REGM = f; SHEET = null; modal(`<div class="regm">${f()}</div>`); }
@@ -2545,7 +2618,7 @@ function modaleDemande(pre){
 /* ================================================================
    Rendu général
 ================================================================ */
-function go(v){ view = v; LS.set('atelier.view', v); closeModal(); render(); window.scrollTo(0, v === 'chef' && !CHEF.liste ? document.body.scrollHeight : 0); if(v === 'sync' && Date.now() - (C.sante?.at||0) > 60e3) verifierTout(); }
+function go(v){ view = v; LS.set('atelier.view', v); if(SIDE_DEPLIE){ SIDE_DEPLIE = false; appliquerEcran(); } closeModal(); render(); window.scrollTo(0, v === 'chef' && !CHEF.liste ? document.body.scrollHeight : 0); if(v === 'sync' && Date.now() - (C.sante?.at||0) > 60e3) verifierTout(); }
 const SECTIONS = [{id:'', vues:['today']}, {id:'projets', t:'Projets', vues:['apps', 'tasks']}, {id:'creation', t:'Création', vues:['idees', 'chef', 'notes']}, {id:'suivi', t:'Suivi', vues:['sync', 'github']}];
 function badgeVue(k, rail=false){
   const n = nbTaches(), sn = compterSante();
@@ -2650,8 +2723,8 @@ function vListeIdees(apps, toutes){
   if(!toutes.length) corps = `<div class="idvide">
       <div class="etapes3"><div><span>${ic('edit')}</span><b>Tu notes</b><small>en vrac, à la voix</small></div><i></i><div><span>${ic('spark')}</span><b>Le chef lit</b><small>avis franc, carte</small></div><i></i><div><span>${ic('doc')}</span><b>Un prompt</b><small>prêt pour Claude</small></div></div>
       <p>Note ta première idée ci-dessus.</p></div>`;
-  else if(f) corps = actives.length ? groupeIdees(appBy(f), actives) : `<p class="muted c sm">Aucune idée en cours pour ${esc(appBy(f).name)}.</p>`;
-  else corps = apps.map(a => { const l = actives.filter(x => x.app === a.repo); return l.length ? groupeIdees(a, l) : ''; }).join('') || '<p class="muted c sm">Aucune idée en cours.</p>';
+  else if(f) corps = actives.length ? `<div class="idgroups seul">${groupeIdees(appBy(f), actives)}</div>` : `<p class="muted c sm">Aucune idée en cours pour ${esc(appBy(f).name)}.</p>`;
+  else corps = `<div class="idgroups">${apps.map(a => { const l = actives.filter(x => x.app === a.repo); return l.length ? groupeIdees(a, l) : ''; }).join('')}</div>`.replace('<div class="idgroups"></div>', '<p class="muted c sm">Aucune idée en cours.</p>');
   if(faites.length) corps += `<details class="idfaites"><summary>${ic('check','s')} Réalisées <span class="cn">${faites.length}</span></summary><div class="idl">${faites.map(carteIdee).join('')}</div></details>`;
   return `${toutes.length ? chipsApps(apps, compte) : ''}${compositeur(apps)}${corps}`;
 }
@@ -2864,7 +2937,7 @@ function vCarte(apps){
   const repo = [IDV.carte, IDV.app].find(r => avec.some(a => a.repo === r)) || avec[0].repo;
   const c = carteGet(repo), actives = idees(repo).filter(ouverte), lit = busy['carte' + repo];
   if(actives.length >= 2 && L.geminiKey && !lit && c?.h !== empreinteCarte(repo)) planifierSynthese(repo, 600);
-  const W = Math.round(Math.max(300, Math.min(1120, ($('#main')?.clientWidth || innerWidth) - (LARGE() ? 64 : 32)) - 2));
+  const W = Math.round(Math.max(300, Math.min(innerWidth >= 1600 ? 1440 : 1120, ($('#main')?.clientWidth || innerWidth) - (LARGE() ? 64 : 32)) - 2));
   const ordre = (c?.ordre || []).map(ideeGet).filter(x => x && ouverte(x));
   return `${chipsApps(avec, r => r ? idees(r).filter(ouverte).length : 0, 'idCarte', repo, false)}
     <section class="carte"><div class="carte-svg">${carteSVG(repo, W)}</div>
@@ -3077,7 +3150,7 @@ const ACTIONS = {
     promptSupprimer(p.id); closeModal(); majIdees();
   },
   plus(){ plusSheet(); },
-  sideRail(){ document.body.classList.toggle('rail'); LS.set('atelier.side.rail', document.body.classList.contains('rail')); renderChrome(); if(view === 'idees' && IDV.seg === 'carte') setTimeout(render, 300); },
+  sideRail(){ if(TABLETTE()) SIDE_DEPLIE = !SIDE_DEPLIE; else LS.set('atelier.side.rail', !document.body.classList.contains('rail')); appliquerEcran(); renderChrome(); if(view === 'idees' && IDV.seg === 'carte') setTimeout(render, 300); },
   sideSection(el){ const s = el.dataset.s, p = new Set(LS.get('atelier.side.plie', [])); p.has(s) ? p.delete(s) : p.add(s); LS.set('atelier.side.plie', [...p]); renderChrome(); },
   regFormation(){ regModal(REGF.regFormation); },
 
@@ -3550,10 +3623,11 @@ $('#pal').addEventListener('click', e => { if(e.target.id === 'pal') closePalett
 document.addEventListener('click', async e => {
   if(e.target.id === 'modal') return closeModal();
   const tf = e.target.closest('[data-tf]'); if(tf){ TF.app = tf.dataset.tf; render(); return; }
-  const dc = e.target.closest('[data-disc]'); if(dc){ discOuvrir(dc.dataset.disc); render(); scrollBas(); if(!LARGE()) setTimeout(scrollBas, 50); return; }
+  const dc = e.target.closest('[data-disc]'); if(dc){ discOuvrir(dc.dataset.disc); render(); scrollBas(); if(!CHEF2()) setTimeout(scrollBas, 50); return; }
   const st = e.target.closest('[data-stab]'); if(st && SHEET){ appSheet(SHEET.repo, st.dataset.stab); $('#modal .sheet').scrollTop = 0; return; }
   const vi = e.target.closest('[data-vitesse]'); if(vi && !vi.dataset.action){ setReg({vitesse:vi.dataset.vitesse}); render(); return; }
   const el = e.target.closest('[data-action],[data-go]'); if(!el) return;
+  if(SIDE_DEPLIE && el.closest('#side') && !/^(sideRail|sideSection)$/.test(el.dataset.action || '')){ SIDE_DEPLIE = false; appliquerEcran(); }
   if(el.dataset.go){ go(el.dataset.go); return; }
   const fn = ACTIONS[el.dataset.action]; if(!fn) return;
   e.preventDefault();
@@ -3601,6 +3675,7 @@ document.addEventListener('keydown', e => {
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('#pal').hidden ? openPalette() : closePalette(); return; }
   if(e.key === 'Escape'){ if(!$('#pal').hidden) closePalette(); else if(!$('#modal').hidden) closeModal(); else if(busy.chat) CTRL?.abort(); return; }
   if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && /^idIn2?$/.test(e.target.id)){ e.preventDefault(); ACTIONS.idAjouter({dataset:{src:e.target.id === 'idIn2' ? 'sheet' : ''}}); return; }
+  if(e.key === 'Escape' && SIDE_DEPLIE){ SIDE_DEPLIE = false; appliquerEcran(); return; }
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b' && LARGE()){ e.preventDefault(); ACTIONS.sideRail(); return; }
   if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.id === 'capText'){ e.preventDefault(); ACTIONS.sendCapture().catch(err => toast(err.message, true)); return; }
   if(e.key === 'Enter' && !e.shiftKey && e.target.id === 'chatIn' && !matchMedia('(pointer:coarse)').matches){ e.preventDefault(); ACTIONS.send().catch(err => toast(err.message, true)); return; }
@@ -3612,6 +3687,11 @@ document.addEventListener('keydown', e => {
   if(k === 'r'){ e.preventDefault(); syncAll(); }
   const v = ORDRE[+k - 1]; if(v){ e.preventDefault(); go(v); }
 });
+let ECRAN_PREC = ECRAN(), resizeT = 0;
+addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => {
+  appliquerEcran(); const e = ECRAN();
+  if(e !== ECRAN_PREC || (view === 'idees' && IDV.seg === 'carte') || view === 'notes'){ ECRAN_PREC = e; if(!enSaisie() && !/chatIn/.test(document.activeElement?.id || '')){ render(); renderChrome(); } }
+}, 160); });
 addEventListener('online', () => { Cloud.tick(true); if((C.pending||[]).length) syncAll(true); });
 document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && L.ghToken && Date.now() - (C.lastSync||0) > 10*60e3) syncAll(true); });
 (function gestes(){
@@ -3621,7 +3701,7 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden && nav
   addEventListener('touchmove', e => { if(y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); ptr.classList.toggle('on', dy > 12); ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 70}px) rotate(${dy * 3}deg)`; }, {passive:true});
   addEventListener('touchend', () => { if(y0 == null) return; ptr.style.transform = ''; ptr.classList.remove('on'); if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); } y0 = null; });
   let s0 = null, sd = 0; const sh = $('#modal .sheet');
-  sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') && matchMedia('(max-width:899px)').matches){ s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
+  sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') && matchMedia('(max-width:699px)').matches){ s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
   sh.addEventListener('touchmove', e => { if(s0 == null) return; sd = Math.max(0, e.touches[0].clientY - s0); sh.style.transform = `translateY(${sd}px)`; }, {passive:true});
   sh.addEventListener('touchend', () => { if(s0 == null) return; sh.style.transition = 'transform .2s'; if(sd > 110) closeModal(); else sh.style.transform = ''; s0 = null; });
   addEventListener('scroll', () => {
@@ -3650,7 +3730,7 @@ if(/Mac|iPhone|iPad/.test(navigator.platform)) $('#kbdK').textContent = '⌘ K';
 })();
 setInterval(() => { if(!document.hidden && L.ghToken && navigator.onLine && Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 30e3);
 setInterval(() => { if(view === 'sync' && !document.hidden && $('#modal').hidden && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName||'')) render(); }, 20e3);
-if(LS.get('atelier.side.rail', false)) document.body.classList.add('rail');
+appliquerEcran();
 render();
 if(!L.ghToken) showOnboarding();
 else {
