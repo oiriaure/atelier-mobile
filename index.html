@@ -415,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.6.0';
+const VERSION = '3.6.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -525,7 +525,7 @@ const COUL_V3 = {'oiriaure/revisions':['#f59e0b','#a855f7'], 'oiriaure/boussole'
 const appsAll = () => (REG().apps || []).map(a => { const x = Object.assign({}, a); if(!x.icone && ICONES[x.repo]) x.icone = ICONES[x.repo]; const c = COUL_V3[x.repo]; if(c && (!x.couleur || x.couleur === c[0])) x.couleur = c[1]; return x; });
 const tracked = () => appsAll().filter(a => validRepo(a.repo));
 // Atelier fait partie des apps suivies (3.6) : ajouté une fois aux réglages partagés, après la première lecture du cloud
-function ajouterAtelier(){ const r = REG(); if(r.atelierAjoute) return; const apps = (r.apps || []).slice(); if(!apps.some(a => a.repo === REPO_ATELIER)) apps.push(APPS_DEFAUT.find(a => a.repo === REPO_ATELIER)); setReg({apps, atelierAjoute:true}); setTimeout(() => syncAll(true), 500); }
+function ajouterAtelier(){ const r = REG(); if(r.atelierAjoute) return; const apps = (r.apps || []).slice(); if(!apps.some(a => a.repo === REPO_ATELIER)) apps.push(APPS_DEFAUT.find(a => a.repo === REPO_ATELIER)); setReg({apps, atelierAjoute:true}); setTimeout(() => { syncAll(true); if(PC) rangerCoffres(); }, 500); }
 const appBy = repo => appsAll().find(a => a.repo === repo) || {name:repo, emoji:'📦', repo, couleur:'#6366f1'};
 const aiOf = repo => (get('ai', {})[repo] || {});
 function setAi(repo, patch){ const all = Object.assign({}, get('ai', {})); all[repo] = Object.assign({}, all[repo]||{}, patch); put('ai', all); }
@@ -2446,7 +2446,7 @@ else {
   adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
-  if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 6000); setInterval(async () => { await envoyerCerveaux(); await envoyerCoffres(); }, 10*60e3); }
+  if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 6000); setInterval(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 10*60e3); }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
 /* Nouvelle version publiée : on le signale et on recharge en un geste */
