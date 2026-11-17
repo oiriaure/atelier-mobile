@@ -191,7 +191,7 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}
 .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 .chips::-webkit-scrollbar{display:none}
-.chip{border:1px solid var(--bd);background:var(--s1);border-radius:99px;padding:6px 12px;font-size:13.5px;font-weight:550;cursor:pointer;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+.chip{flex:none;border:1px solid var(--bd);background:var(--s1);color:var(--tx);border-radius:99px;padding:6px 12px;font-size:13.5px;font-weight:550;cursor:pointer;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
 .chip.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
 .trow{display:flex;gap:10px;align-items:flex-start;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:11px 10px 11px 0;margin-bottom:8px;box-shadow:var(--sh1)}
 .trow .bar{width:4px;align-self:stretch;border-radius:0 4px 4px 0;background:var(--c);flex:none}
@@ -218,7 +218,7 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 
 /* ===== Markdown ===== */
 .nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.toks{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin:10px 0}.tok{border:1px solid var(--bd);border-radius:14px;padding:12px;background:var(--s2)}.tokh{display:flex;gap:10px;align-items:center}.tokh .stp{flex:none;position:static}.tokh>div{min-width:0}
-.chip{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--s3,var(--s2));border:1px solid var(--bd);margin:2px 3px 0 0}.chip.pub{color:#f59e0b;border-color:#f59e0b55}
+.etq{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--s3,var(--s2));border:1px solid var(--bd);margin:2px 3px 0 0;white-space:nowrap}.etq.pub{color:#f59e0b;border-color:#f59e0b55}
 .dep{display:flex;gap:10px;align-items:center;padding:10px 2px;border-top:1px solid var(--bd)}.dep:first-of-type{border-top:0}
 .modeles{display:grid;gap:8px}.modele{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--bd);border-radius:12px;padding:10px;cursor:pointer}.modele span{display:flex;flex-direction:column;gap:2px}.modele input{margin-top:3px}
 .drt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0}.repos{display:flex;flex-wrap:wrap;gap:6px 14px}.chk{display:flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}.chk input{width:17px;height:17px;margin:0}
@@ -454,6 +454,49 @@ html.verre .gbox{background:transparent}
 html.verre .thd{background:color-mix(in srgb,var(--g-bg) 70%,transparent);-webkit-backdrop-filter:var(--g-flou2);backdrop-filter:var(--g-flou2);border-radius:20px;padding:10px 12px}
 html.verre .gtools input{background:var(--g-bg)}
 html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18)}
+
+/* ===== 3.9 : en-tête net, réglages en listes groupées ===== */
+#sbar{display:none}
+#ptr{opacity:0;transition:transform .2s,opacity .15s}#ptr.on{opacity:1}
+.chips{gap:8px}.chip .cn{opacity:.55;font-weight:600;margin-left:3px;font-variant-numeric:tabular-nums}
+@media (max-width:899px){
+  #top,#top.scrolled{position:relative;padding:calc(env(safe-area-inset-top) + 16px) 16px 8px;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border:0;box-shadow:none}
+  #top h1{font-size:32px;font-weight:750;letter-spacing:-.03em}
+  #top small{font-size:13px;margin-top:3px}
+  #sbar{display:block;position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top) + 10px);z-index:9;pointer-events:none;background:linear-gradient(var(--bg) 55%,transparent)}
+  html.verre #sbar{background:linear-gradient(#07080d 50%,transparent)}
+}
+@media (max-width:899px) and (prefers-color-scheme:light){html.verre #sbar,#sbar{background:linear-gradient(rgba(14,16,38,.5),transparent)}}
+.reglages{max-width:680px;margin:0 auto}
+.gh{font-size:13px;font-weight:600;color:var(--mu);margin:26px 16px 8px}
+.grp{background:var(--s1);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin:0}
+.grp.prof{margin-top:8px}
+.grp.in{margin:12px 0}
+.gp{font-size:12.5px;color:var(--mu);margin:8px 16px 0}
+.gp.c{text-align:center;margin:28px 0 8px}
+.rg{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:9px 14px;border:0;background:none;color:var(--tx);font:inherit;font-size:16px;text-align:left;position:relative;border-radius:0}
+button.rg{cursor:pointer}button.rg:active{background:var(--s2)}
+@media (hover:hover){button.rg:hover{background:var(--s2)}}
+.rg+.rg::before{content:"";position:absolute;top:0;right:0;left:56px;height:1px;background:var(--bd)}
+.grp.in .rg+.rg::before{left:14px}
+.rgi{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--t);color:#fff;font-weight:700}
+.rgi svg.i{width:17px;height:17px;stroke-width:2}
+.rg.app .rgi .av.s{width:30px;height:30px;border-radius:8px;font-size:17px}
+.rgt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rgt small{display:block;font-size:12.5px;color:var(--mu);overflow:hidden;text-overflow:ellipsis}
+.rgv{flex:none;color:var(--mu);font-size:15px;white-space:nowrap;max-width:48%;overflow:hidden;text-overflow:ellipsis}
+.rgc{color:var(--mu);opacity:.55;width:15px!important;height:15px!important}
+.rg.big{min-height:74px}.rg.big .rgi{width:50px;height:50px;border-radius:50%;font-size:22px}.rg.big .rgt{font-size:18px;font-weight:650}
+.ac{color:var(--ac)}.ko{color:var(--ko)}
+.rg svg.ac{width:18px;height:18px;stroke-width:2.4}
+.seg.mini{flex:none;padding:2px;border-radius:10px}.seg.mini button{padding:6px 12px;font-size:13px;border-radius:8px}
+.regm h2{margin:2px 0 8px;font-size:21px;letter-spacing:-.01em}
+.regapp{display:flex;align-items:center;gap:12px;margin:2px 0 4px}.regapp h2{margin:0}
+.r3{display:flex;gap:10px}.r3>div:has([data-field=emoji]){width:66px}.r3>div:has([type=color]){width:58px}.r3 input[type=color]{padding:4px;height:46px}
+.btn.danger{color:var(--ko)}
+html.verre .grp{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border:1px solid var(--g-bord);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre);border-radius:22px}
+html.verre .rg+.rg::before{background:rgba(127,127,160,.18)}
+html.verre .chip{color:var(--tx)}
 @media (prefers-reduced-transparency:reduce){html.verre :is(.card,.kpi,.trow,#side,#tabs,#modal .sheet){background:var(--g-fort)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -476,8 +519,8 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
       <div><h1 id="vtitle">Atelier</h1><small id="vsub"></small></div>
       <div class="hacts">
         <button class="ibtn phone-only" data-action="palette" aria-label="Rechercher"><svg class="i"><use href="#i-search"/></svg></button>
-        <button class="ibtn phone-only" data-go="settings" aria-label="Réglages"><svg class="i"><use href="#i-settings"/></svg></button>
-        <button class="ibtn" id="syncBtn" data-action="sync" aria-label="Actualiser"><svg class="i"><use href="#i-sync"/></svg></button>
+        <button class="ibtn phone-only" id="gearBtn" data-go="settings" aria-label="Réglages"><svg class="i"><use href="#i-gear"/></svg></button>
+        <button class="ibtn desk-only" id="syncBtn" data-action="sync" aria-label="Actualiser"><svg class="i"><use href="#i-sync"/></svg></button>
       </div>
     </header>
     <main id="main"></main>
@@ -488,6 +531,7 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
 <div id="modal" hidden><div class="sheet" role="dialog" aria-modal="true"></div></div>
 <div id="pal" hidden><div class="box"><input id="palIn" placeholder="Rechercher une app, une tâche, une action…" autocomplete="off"><div class="list" id="palList"></div></div></div>
 <div id="toast" hidden></div>
+<div id="sbar" aria-hidden="true"></div>
 <div id="ptr" aria-hidden="true"><svg class="i"><use href="#i-sync"/></svg></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -496,6 +540,7 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
   <symbol id="i-tasks" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.3 1.3L7 5M3.5 12l1.3 1.3L7 11M3.5 18l1.3 1.3L7 17"/></symbol>
   <symbol id="i-chef" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.6L3.5 21l1.4-4.7A8.5 8.5 0 1 1 21 12z"/><path d="M12 8.2l.9 2 2 .8-2 .9-.9 2-.9-2-2-.9 2-.8z"/></symbol>
   <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
   <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
@@ -530,7 +575,7 @@ html.verre .fi,html.verre .dev,html.verre .dep{border-color:rgba(255,255,255,.18
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.8.1';
+const VERSION = '3.9.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1405,7 +1450,7 @@ function vNotes(){
         <label class="xs muted" style="display:flex;gap:8px;align-items:center;margin-top:10px;cursor:pointer"><input type="checkbox" id="obsPlein" style="width:18px;height:18px;flex:none;margin:0" ${OBS.plein[c.slug] ? 'checked' : ''}> Chercher aussi dans le texte des notes</label>
         <div id="oliste" style="margin-top:10px">${listeNotes(c.slug)}</div></section>`;
   }
-  return `${!cof.length ? (OBS.charge || !OBS.index ? `<section class="card">${spin(' Lecture du cloud…')}</section>` : empty('🗂️', 'Aucun coffre dans le cloud', PC ? 'Touche « Envoyer maintenant » : Atelier envoie tous les coffres Obsidian de ce PC.' : 'Ouvre l\'app Atelier sur ton PC : elle envoie tous tes coffres Obsidian au cloud, puis ils apparaissent ici sur tous tes appareils.')) : ''}
+  return `${!cof.length ? (OBS.charge || !OBS.index ? `<section class="card">${spin(' Lecture du cloud…')}</section>` : empty('🗂️', 'Aucun coffre dans le cloud', PC ? 'Touche « Envoyer maintenant ».' : 'Ils arrivent dès qu\'Atelier est ouvert sur le PC.')) : ''}
     ${cof.length ? `<div class="sgrid">${cof.map(c => `<section class="card acard" tabindex="0" data-action="obsCoffre" data-s="${esc(c.slug)}" style="--c:#7c3aed"><div class="top"><span class="av" style="background:#7c3aed22;color:#a78bfa">${ic('vault')}</span><div style="min-width:0"><div class="nm clamp1">${esc(c.nom)}</div><div class="xs muted">${c.notes} notes${c.maj ? ' · modifié ' + esc(ago(c.maj)) : ''}</div></div></div></section>`).join('')}</div>
       <p class="xs muted" style="margin:10px 2px">${OBS.index?.maj ? `Envoyés depuis ${esc(OBS.index.appareil || 'le PC')} ${esc(ago(OBS.index.maj))}. ` : ''}Stockés dans ton cloud privé (atelier-donnees), lisibles sur tous tes appareils.${OBS.err ? ' ⚠︎ ' + esc(OBS.err) : ''}</p>` : ''}
     ${pcBloc}`;
@@ -1453,12 +1498,12 @@ async function chkDonnees(s){
     for(const c of recents){ const ap = appareilDe(c.commit.message.split('\n')[0]), t = dateCommit(c); if(ap && (!appareils[ap] || appareils[ap] < t)) appareils[ap] = t; }
     const seuil = (s.seuil||60) * 60e3;
     let statut = 'ok', detail;
-    if(!last){ statut = 'att'; detail = 'Aucun envoi pour l\'instant'; }
-    else if(age <= seuil) detail = `Dernier envoi il y a ${dureeTxt(age)} · ${plural(recents.length, 'envoi')} en 24 h`;
-    else { statut = 'att'; detail = `Pas d'envoi depuis ${dureeTxt(age)} (normalement au moins toutes les ${dureeTxt(seuil)}) : l'appareil qui envoie est peut-être éteint`; }
+    if(!last){ statut = 'att'; detail = 'Aucun envoi'; }
+    else if(age <= seuil) detail = `Il y a ${dureeTxt(age)} · ${plural(recents.length, 'envoi')} en 24 h`;
+    else { statut = 'att'; detail = `Rien depuis ${dureeTxt(age)} · appareil éteint ?`; }
     return {id, nom:s.nom, statut, detail, quand:last, serie:serie24(recents.map(dateCommit)), appareils};
   }catch(e){
-    return {id, nom:s.nom, statut:'pb', detail:(e.status === 404 || e.status === 403) ? `Le token Atelier n'a pas accès à ${s.repo} (à ajouter au token)` : e.message};
+    return {id, nom:s.nom, statut:'pb', detail:(e.status === 404 || e.status === 403) ? `Accès refusé à ${s.repo.split('/')[1]}` : e.message};
   }
 }
 async function chkSite(s){
@@ -1466,37 +1511,37 @@ async function chkSite(s){
   try{
     const r = await fetch(s.url + '?v=' + Date.now(), {cache:'no-store'}).catch(() => fetch(s.url, {mode:'no-cors', cache:'no-store'}));
     const ms = Math.round(performance.now() - t0);
-    if(r.type === 'opaque' || r.ok) return {id, nom, statut:'ok', detail:`En ligne · répond en ${ms} ms`, lien:s.url};
-    return {id, nom, statut:'pb', detail:`Le site répond avec une erreur ${r.status}`, lien:s.url};
-  }catch{ return {id, nom, statut:navigator.onLine ? 'pb' : 'att', detail:navigator.onLine ? 'Le site ne répond pas' : 'Hors ligne', lien:s.url}; }
+    if(r.type === 'opaque' || r.ok) return {id, nom, statut:'ok', detail:`En ligne · ${ms} ms`, lien:s.url};
+    return {id, nom, statut:'pb', detail:`Erreur ${r.status}`, lien:s.url};
+  }catch{ return {id, nom, statut:navigator.onLine ? 'pb' : 'att', detail:navigator.onLine ? 'Ne répond pas' : 'Hors ligne', lien:s.url}; }
 }
 async function chkPublication(a){
-  const repo = a.repo, id = 'pub', nom = 'Publication des mises à jour';
+  const repo = a.repo, id = 'pub', nom = 'Publication';
   try{
     const [vtxt, vc] = await Promise.all([ghRaw(repo, 'publication/version.json'), gh(`/repos/${repo}/commits?path=publication/version.json&per_page=1`)]);
-    if(!vtxt) return {id, nom, statut:'info', detail:'Pas de publication automatique (publication/version.json absent)'};
-    let v; try{ v = JSON.parse(vtxt); }catch{ return {id, nom, statut:'pb', detail:'publication/version.json est illisible : les mises à jour automatiques sont bloquées'}; }
-    if(!Array.isArray(v.fichiers || v.files) && !v.version) return {id, nom, statut:'att', detail:'publication/version.json ne contient pas de version'};
+    if(!vtxt) return {id, nom, statut:'info', detail:'Non configurée'};
+    let v; try{ v = JSON.parse(vtxt); }catch{ return {id, nom, statut:'pb', detail:'version.json illisible : mises à jour bloquées'}; }
+    if(!Array.isArray(v.fichiers || v.files) && !v.version) return {id, nom, statut:'att', detail:'version.json sans version'};
     const D = vc[0] ? dateCommit(vc[0]) : null;
     const apres = D ? (await gh(`/repos/${repo}/commits?since=${encodeURIComponent(D)}&per_page=50`)).filter(c => c.sha !== vc[0].sha) : [];
-    if(!apres.length) return {id, nom, statut:'ok', detail:`Version ${v.version || '?'} publiée il y a ${D ? dureeTxt(Date.now() - new Date(D)) : '?'} · tout est publié`, quand:D};
+    if(!apres.length) return {id, nom, statut:'ok', detail:`v${v.version || '?'} · il y a ${D ? dureeTxt(Date.now() - new Date(D)) : '?'}`, quand:D};
     const vieux = Date.now() - new Date(dateCommit(apres[apres.length - 1])) > 2*864e5;
-    return {id, nom, statut:vieux ? 'att' : 'info', detail:`Version ${v.version || '?'} · ${plural(apres.length, 'modification')} pas encore publiée${apres.length > 1 ? 's' : ''} (dernière : « ${apres[0].commit.message.split('\n')[0].slice(0, 80)} »)`, quand:D};
+    return {id, nom, statut:vieux ? 'att' : 'info', detail:`v${v.version || '?'} · ${plural(apres.length, 'modification')} à publier`, quand:D};
   }catch(e){ return {id, nom, statut:'att', detail:e.message}; }
 }
 async function verifierApp(a){
   const items = [], repo = a.repo;
   let info;
-  try{ info = await gh(`/repos/${repo}`); items.push({id:'code', nom:'Code sur GitHub', statut:'ok', detail:`Accessible · dernière modification il y a ${dureeTxt(Date.now() - new Date(info.pushed_at))}`, quand:info.pushed_at}); }
-  catch(e){ items.push({id:'code', nom:'Code sur GitHub', statut:'pb', detail:e.message}); return items; }
+  try{ info = await gh(`/repos/${repo}`); items.push({id:'code', nom:'Code', statut:'ok', detail:`Modifié il y a ${dureeTxt(Date.now() - new Date(info.pushed_at))}`, quand:info.pushed_at}); }
+  catch(e){ items.push({id:'code', nom:'Code', statut:'pb', detail:e.message}); return items; }
   const [pub, prs, suivis] = await Promise.all([chkPublication(a), gh(`/repos/${repo}/pulls?state=open&per_page=20`).catch(() => []), Promise.all(suiviDe(a).map(s => s.type === 'site' ? chkSite(s) : chkDonnees(s)))]);
   items.push(pub, ...suivis);
   const props = (prs||[]).filter(x => (x.head?.ref||'').startsWith('atelier/'));
-  if(props.length) items.push({id:'pr', nom:'Propositions de cerveau', statut:'att', detail:`${plural(props.length, 'proposition')} à relire et fusionner`, lien:props[0].html_url});
+  if(props.length) items.push({id:'pr', nom:'Propositions de cerveau', statut:'att', detail:`${plural(props.length, 'proposition')} à relire`, lien:props[0].html_url});
   const d = C.apps[repo];
   const ob = await lireObsidian(repo).catch(() => null);
-  if(ob){ const age = Date.now() - new Date(ob.at); items.push({id:'obs', nom:'Cerveau Obsidian (PC)', statut:age < 7*864e5 ? 'ok' : 'att', detail:`${ob.notes ?? '?'} notes${ob.coffre ? ' de « ' + ob.coffre + ' »' : ''} · envoyé il y a ${dureeTxt(age)}${age >= 7*864e5 ? ' : ouvre Atelier sur le PC pour le mettre à jour' : ''}`, quand:ob.at}); }
-  else if(a.obsidian) items.push({id:'obs', nom:'Cerveau Obsidian (PC)', statut:'att', detail:'Branché mais pas encore envoyé : ouvre Atelier sur le PC'});
+  if(ob){ const age = Date.now() - new Date(ob.at); items.push({id:'obs', nom:'Cerveau Obsidian', statut:age < 7*864e5 ? 'ok' : 'att', detail:`${ob.notes ?? '?'} notes · il y a ${dureeTxt(age)}${age >= 7*864e5 ? ' · ouvre Atelier sur le PC' : ''}`, quand:ob.at}); }
+  else if(a.obsidian) items.push({id:'obs', nom:'Cerveau Obsidian', statut:'att', detail:'En attente du PC'});
   if(d?.issuesErr) items.push({id:'issues', nom:'Tâches (Issues)', statut:'att', detail:d.issuesErr});
   return items;
 }
@@ -1505,16 +1550,16 @@ async function verifierAtelier(){
   const ce = cloudEtat();
   const apps = {[(L.nomAppareil || PLATEFORME) + ' (cet appareil)']:new Date(Cloud.st.pushed || Date.now()).toISOString()};
   for(const r of Object.values(C.remote)) if(r.updated) apps[r.nom || r.platform] = new Date(r.updated).toISOString();
-  const [envois, site] = await Promise.all([chkDonnees({repo:Cloud.repo, nom:'Envois des appareils au cloud', seuil:1440}), chkSite({url:'https://oiriaure.github.io/atelier-mobile/', nom:'Site d\'Atelier'})]);
+  const [envois, site] = await Promise.all([chkDonnees({repo:Cloud.repo, nom:'Envois au cloud', seuil:1440}), chkSite({url:'https://oiriaure.github.io/atelier-mobile/', nom:'Site'})]);
   delete envois.appareils;
   return [
-    {id:'cloud', nom:'Cloud Atelier', statut:Cloud.st.err ? (Cloud.st.err === 'hors ligne' ? 'att' : 'pb') : 'ok', detail:Cloud.st.err || ce.txt + (Cloud.st.last ? ' · vérifié il y a ' + dureeTxt(Date.now() - Cloud.st.last) : ''), appareils:apps},
+    {id:'cloud', nom:'Cloud', statut:Cloud.st.err ? (Cloud.st.err === 'hors ligne' ? 'att' : 'pb') : 'ok', detail:Cloud.st.err || ce.txt, appareils:apps},
     envois, site,
     (() => { const ix = OBS.index || C.obsIndex, at = ix?.maj ? Date.parse(ix.maj) : 0, vieux = at && Date.now() - at > 7*864e5;
-      return {id:'coffres', nom:'Coffres Obsidian', statut:!ix?.coffres?.length ? 'info' : vieux ? 'att' : 'ok', detail:ix?.coffres?.length ? `${plural(ix.coffres.length, 'coffre')}, ${ix.coffres.reduce((n, c) => n + c.notes, 0)} notes · envoyés ${ago(ix.maj)} depuis ${ix.appareil || 'le PC'}` : 'Pas encore envoyés : ouvre Atelier sur le PC', quand:ix?.maj}; })(),
+      return {id:'coffres', nom:'Coffres Obsidian', statut:!ix?.coffres?.length ? 'info' : vieux ? 'att' : 'ok', detail:ix?.coffres?.length ? `${plural(ix.coffres.length, 'coffre')} · ${ix.coffres.reduce((n, c) => n + c.notes, 0)} notes · ${ago(ix.maj)}` : 'En attente du PC', quand:ix?.maj}; })(),
     (() => { const ge = C.gemErr && C.gemErr.cle === (L.geminiKey||'').slice(-6) && Date.now() - C.gemErr.at < 864e5 ? C.gemErr : null;
-      return ge ? {id:'ia', nom:'Chef de projet (Gemini)', statut:'pb', detail:ge.msg + '. Sur le compte Google de la clé : aistudio.google.com › Clés API › Créer une clé (dans un NOUVEAU projet), puis colle-la dans Réglages › Intelligence.', quand:new Date(ge.at).toISOString()}
-        : {id:'ia', nom:'Chef de projet (Gemini)', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? `Clé présente${C.lastModel ? ' · dernier modèle : ' + C.lastModel : ''}` : 'Ajoute la clé Gemini dans les Réglages'}; })(),
+      return ge ? {id:'ia', nom:'Gemini', statut:'pb', detail:ge.msg + ' · nouvelle clé sur aistudio.google.com, à coller dans Réglages', quand:new Date(ge.at).toISOString()}
+        : {id:'ia', nom:'Gemini', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? (C.lastModel || 'Clé active') : 'Clé absente'}; })(),
   ];
 }
 function compterSante(repo){
@@ -1680,14 +1725,14 @@ function vToday(){
   <section class="kpis">
     <div class="kpi"><b>${apps.length}</b><span>apps suivies</span></div>
     <div class="kpi"><b>${nbTaches()}</b><span>tâches ouvertes</span></div>
-    <div class="kpi"><b>${week}</b><span>commits cette semaine</span></div>
+    <div class="kpi"><b>${week}</b><span>commits sur 7 jours</span></div>
     <div class="kpi"><b>${s ? '🔥 ' + s : '0'}</b><span>${s > 1 ? 'jours d\'affilée' : 'jour d\'affilée'}</span></div>
   </section>
   <div class="cols">
     <div>
       <section class="card hero">
         <div class="hd" style="position:relative;z-index:1"><h2>${ic('spark')} Que faire maintenant ?</h2>${t ? `<span class="xs" style="opacity:.8">${esc(ago(t.at))}</span>` : ''}</div>
-        ${t?.data?.resume ? `<p style="position:relative;z-index:1;margin:0 0 4px">${esc(t.data.resume)}</p>` : `<p style="position:relative;z-index:1;margin:0">Le chef lit l'état de toutes tes apps et choisit les 3 actions les plus utiles, avec la consigne prête pour Claude.</p>`}
+        ${t?.data?.resume ? `<p style="position:relative;z-index:1;margin:0 0 4px">${esc(t.data.resume)}</p>` : `<p style="position:relative;z-index:1;margin:0">Les 3 actions les plus utiles, avec leur consigne pour Claude.</p>`}
         ${actions.map((a, i) => `<div class="act"><span class="n">${i+1}</span><div style="flex:1">
           <h4>${esc(a.titre)}</h4><div class="meta">${esc(a.app)} · ${esc(a.pourquoi)}${a.duree_min ? ` · ~${esc(a.duree_min)} min` : ''}</div>
           <div class="btns"><button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">${ic('copy','s')} Consigne</button><button class="btn sm" data-action="adviceIssue" data-i="${i}">${ic('plus','s')} Tâche</button></div></div></div>`).join('')}
@@ -1695,16 +1740,16 @@ function vToday(){
       </section>
       <section class="card">
         <div class="hd"><h2>${ic('chart')} Bilan de la semaine</h2>${w ? `<span class="xs muted">${esc(ago(w.at))}</span>` : ''}</div>
-        ${busy.weekly ? `<div id="weeklyLive">${spin('Rédaction…')}</div>` : w ? `<details ${Date.now() - w.at < 36e5 ? 'open' : ''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Ce qui a avancé, ce qui stagne et le cap de la semaine prochaine.</p>`}
-        ${lundi && !busy.weekly ? '<p class="sm ok">C\'est lundi : le bon moment pour faire le bilan.</p>' : ''}
+        ${busy.weekly ? `<div id="weeklyLive">${spin('Rédaction…')}</div>` : w ? `<details ${Date.now() - w.at < 36e5 ? 'open' : ''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Avancées, blocages et cap de la semaine.</p>`}
+        ${lundi && !busy.weekly ? '<p class="sm ok">C\'est lundi : moment idéal pour le bilan.</p>' : ''}
         <div class="btns"><button class="btn sm ${w ? '' : 'primary'}" data-action="weekly" ${busy.weekly ? 'disabled' : ''}>${w ? 'Refaire le bilan' : 'Faire le bilan'}</button>${w && !busy.weekly ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="weekly">${ic('plus','s')} En tirer des tâches</button>` : ''}</div>
       </section>
     </div>
     <div>
       ${(() => { const sn = compterSante(), s = C.sante; if(!s) return ''; const cls = sn.pb ? 'pb' : sn.att ? 'att' : 'ok';
-        return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros : tout fonctionne' : cls === 'pb' ? `Synchros : ${plural(sn.pb, 'problème')}` : `Synchros : ${plural(sn.att, 'point')} à surveiller`}</b><div class="xs muted">Vérifié ${esc(ago(s.at))} · voir le détail</div></div>${ic('chev','s')}</section>`; })()}
+        return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros : tout fonctionne' : cls === 'pb' ? `Synchros : ${plural(sn.pb, 'problème')}` : `Synchros : ${plural(sn.att, 'point')} à surveiller`}</b><div class="xs muted">Vérifié ${esc(ago(s.at))}</div></div>${ic('chev','s')}</section>`; })()}
       ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
-      ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi automatique dès le retour du réseau.</div></section>` : ''}
+      ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi au retour du réseau.</div></section>` : ''}
       <section class="card">
         <div class="hd"><h2>${ic('git')} Activité récente</h2></div>
         ${first ? '<div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel"></div>' : `<div class="feed">${allCommits().slice(0,6).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener">${avatar({emoji:c.emoji, couleur:c.c, repo:c.repo, name:c.app}, 's')}<span class="tx"><b>${esc(c.app)}</b> <span class="sm">${esc(c.msg)}</span></span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">Aucune activité pour l\'instant.</p>'}</div>`}
@@ -1723,13 +1768,13 @@ function vApps(){
     return `<div class="card acard" style="--c:${esc(a.couleur)}" data-action="openApp" data-repo="${esc(a.repo)}" tabindex="0">
       <div class="top">${avatar(a)}<div style="flex:1"><div class="nm">${esc(a.name)}</div>
         <div class="xs muted" style="display:flex;gap:6px;align-items:center"><span class="dot ${h.cls}"></span>${esc(h.label)}${v.version ? ' · v' + esc(v.version) : ''}${d?.info ? ' · ' + esc(ago(d.info.pushed_at)) : ''}</div></div>${ic('chev','s muted')}</div>
-      <p class="note clamp2">${esc(d?.live?.climat?.titre || (v.notes||[])[0] || d?.info?.description || (d?.error ? '' : 'Pas encore de notes de version.'))}</p>
+      ${(() => { const n = d?.live?.climat?.titre || (v.notes||[])[0] || d?.info?.description; return n ? `<p class="note clamp2">${esc(n)}</p>` : ''; })()}
       ${d?.error ? `<p class="err clamp2" style="margin:6px 0 0">${esc(d.error)}</p>` : ''}
       <div class="foot"><div>${n ? `<span class="pill">${ic('tasks','s')} ${plural(n, 'tâche')}</span>` : ''}${d && d.info && !d.brain && !d.obsidian ? '<span class="pill" style="color:var(--wa)">sans cerveau</span>' : d?.obsidian ? '<span class="pill">🧠 Obsidian</span>' : ''}</div>${spark(a.repo)}</div>
     </div>`; }).join('')}</div>
   <section class="card">
     <div class="hd"><h2>${ic('link')} Code en commun</h2>${dups ? `<span class="xs muted">${esc(ago(dups.at))}</span>` : ''}</div>
-    ${busy.dups ? `<div id="dupsLive">${spin('Comparaison…')}</div>` : dups ? `<details><summary>Lire l'analyse</summary>${md(dups.text)}</details>` : '<p class="muted" style="margin:0">Repère ce qui est codé plusieurs fois entre tes apps (mises à jour GitHub, démarrage, stockage…) et ce qui pourrait être partagé.</p>'}
+    ${busy.dups ? `<div id="dupsLive">${spin('Comparaison…')}</div>` : dups ? `<details><summary>Lire l'analyse</summary>${md(dups.text)}</details>` : '<p class="muted" style="margin:0">Ce qui est codé en double entre tes apps.</p>'}
     <div class="btns"><button class="btn sm ${dups ? '' : 'primary'}" data-action="dups" ${busy.dups ? 'disabled' : ''}>${dups ? 'Refaire' : 'Comparer mes apps'}</button>${dups && !busy.dups ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="dups">${ic('plus','s')} En tirer des tâches</button>` : ''}</div>
   </section>`;
 }
@@ -1744,10 +1789,10 @@ function vTasks(){
   const errs = apps.filter(a => C.apps[a.repo]?.issuesErr || C.apps[a.repo]?.info?.has_issues === false);
   const filtre = TF.q || TF.app !== 'all';
   return `<div class="toolbar">
-      <input id="tq" placeholder="Filtrer les tâches…" value="${esc(TF.q)}" style="flex:1;min-width:180px" type="search">
+      <input id="tq" placeholder="Rechercher" value="${esc(TF.q)}" style="flex:1;min-width:180px" type="search">
       <button class="btn primary desk-only" data-action="capture">${ic('plus','s')} Nouvelle tâche</button>
     </div>
-    <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes · ${all.length}</button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${avatar(a,'xs')} ${esc(a.name)} · ${(C.apps[a.repo]?.issues||[]).length}</button>`).join('')}</div>
+    <div class="chips" style="margin-bottom:12px"><button class="chip ${TF.app === 'all' ? 'on' : ''}" data-tf="all">Toutes<span class="cn">${all.length}</span></button>${apps.map(a => `<button class="chip ${TF.app === a.repo ? 'on' : ''}" data-tf="${esc(a.repo)}">${avatar(a,'xs')}${esc(a.name)}<span class="cn">${(C.apps[a.repo]?.issues||[]).length}</span></button>`).join('')}</div>
     ${errs.map(a => `<p class="err">${esc(a.name)} : ${esc(C.apps[a.repo]?.issuesErr || 'les Issues sont désactivées sur ce dépôt')}</p>`).join('')}
     ${list.map(i => `<div class="trow" style="--c:${esc(i.a.couleur)}"><span class="bar"></span>
       <div class="tt">${esc(i.title)}<span class="meta">${avatar(i.a,'xs')} ${esc(i.a.name)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">#${i.number}</a> · ${esc(ago(i.created))}${i.labels.map(l => ` · ${esc(l)}`).join('')}</span></div>
@@ -1756,8 +1801,8 @@ function vTasks(){
       || empty('🎉', filtre ? 'Rien ne correspond' : 'Rien à faire', filtre ? 'Change le filtre.' : 'Ajoute une idée avec le bouton +.')}`;
 }
 
-const SUGG = ['Sur quelle app je devrais passer du temps cette semaine ?', 'Quels risques vois-tu dans mes apps en ce moment ?', 'Rédige une consigne pour Claude : la prochaine amélioration la plus utile', 'Est-ce que toutes mes synchros fonctionnent ?'];
-const suggApp = a => [`Où en est ${a.name} ?`, `Quelle est la prochaine amélioration la plus utile pour ${a.name} ?`, `Explique-moi simplement comment ${a.name} est construite`, `Rédige la consigne pour la tâche la plus urgente de ${a.name}`];
+const SUGG = ['Sur quelle app travailler cette semaine ?', 'Quels risques dans mes apps ?', 'Consigne pour la prochaine amélioration', 'Mes synchros fonctionnent-elles ?'];
+const suggApp = a => [`Où en est ${a.name} ?`, `Prochaine amélioration pour ${a.name} ?`, `Comment ${a.name} est construite ?`, `Consigne pour la tâche la plus urgente`];
 const LARGE = () => matchMedia('(min-width:900px)').matches;
 function itemDisc(x, d){
   const a = x.app ? appBy(x.app) : null, last = x.msgs[x.msgs.length - 1];
@@ -1769,7 +1814,7 @@ function listeDiscs(all, d){
   const grp = (t, arr) => arr.length ? `<div class="slabel" style="margin:14px 4px 6px">${t}</div>${arr.map(x => itemDisc(x, d)).join('')}` : '';
   return `<aside class="dlist"><div style="display:flex;gap:8px;margin-top:4px"><input id="dq" type="search" placeholder="Rechercher…" value="${esc(CHEF.q)}"><button class="btn primary" data-action="newDisc" title="Nouvelle discussion" aria-label="Nouvelle discussion">${ic('plus','s')}</button></div>
     ${grp('Épinglées', f.filter(x => x.epingle))}${grp('Par app', f.filter(x => !x.epingle && x.app))}${grp('Générales', f.filter(x => !x.epingle && !x.app))}
-    ${!all.length ? '<p class="muted sm" style="padding:10px 4px">Aucune discussion pour l\'instant. Crée-en une pour une app précise ou pour l\'ensemble de tes projets.</p>' : q && !f.length ? '<p class="muted sm" style="padding:10px 4px">Rien ne correspond.</p>' : ''}</aside>`;
+    ${!all.length ? '<p class="muted sm" style="padding:10px 4px">Aucune discussion.</p>' : q && !f.length ? '<p class="muted sm" style="padding:10px 4px">Rien ne correspond.</p>' : ''}</aside>`;
 }
 function bulle(m, i, last){
   if(m.r === 'u') return `<div class="msg u">${esc(m.t)}<span class="mt">${heure(m.at)}</span></div>`;
@@ -1782,11 +1827,11 @@ function fil(d){
                 : [plural(tracked().length, 'app'), plural(nbTaches(), 'tâche'), pire ? 'synchro ' + ST[pire].l.toLowerCase() : null];
   return `<section class="thread">
     <div class="thd">${large ? '' : `<button class="ibtn" data-action="discListe" aria-label="Toutes les discussions">${ic('back')}</button>`}${a ? avatar(a) : '<span class="av" style="--c:#6366f1">✦</span>'}
-      <div style="flex:1;min-width:0"><b class="clamp1" style="display:block">${esc(d.titre)}</b><div class="xs muted clamp1">Le chef connaît : ${esc(ctx.filter(Boolean).join(' · '))}</div></div>
+      <div style="flex:1;min-width:0"><b class="clamp1" style="display:block">${esc(d.titre)}</b><div class="xs muted clamp1">${esc(ctx.filter(Boolean).join(' · '))}</div></div>
       ${d.id ? `<button class="ibtn phone-only" data-action="discMenu" aria-label="Options de la discussion">⋯</button>` : ''}
       ${d.id ? `<button class="ibtn desk-only" data-action="discPin" title="${d.epingle ? 'Désépingler' : 'Épingler'}" aria-label="Épingler">${ic('pin','s')}</button><button class="ibtn desk-only" data-action="discRename" title="Renommer" aria-label="Renommer">${ic('edit','s')}</button><button class="ibtn desk-only" data-action="discDel" title="Supprimer" aria-label="Supprimer">${ic('trash','s')}</button>` : ''}
     </div>
-    ${d.msgs.length ? '' : `<div class="empty" style="padding:18px 8px 6px"><div class="big">${a ? avatar(a,'l') : '✦'}</div><h3>${a ? 'Parlons de ' + esc(a.name) : 'Que veux-tu savoir ?'}</h3><p>${a ? 'Le chef connaît son cerveau, ses tâches, ses commits et l\'état de sa synchro.' : 'Le chef connaît toutes tes apps et l\'état de leurs synchros.'}</p></div>
+    ${d.msgs.length ? '' : `<div class="empty" style="padding:18px 8px 6px"><div class="big">${a ? avatar(a,'l') : '✦'}</div><h3>${a ? 'Parlons de ' + esc(a.name) : 'Que veux-tu savoir ?'}</h3><p>${a ? 'Cerveau, tâches, commits et synchro.' : 'Toutes tes apps et leurs synchros.'}</p></div>
       <div class="sugg">${(a ? suggApp(a) : SUGG).map(q => `<button data-action="ask" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`}
     <div class="chat">${d.msgs.map((m, i) => bulle(m, i, i === d.msgs.length - 1)).join('')}${busy.chat === d.id ? `<div class="msg m" id="chatLive">${spin('')}</div>` : ''}</div>
   </section>
@@ -1806,10 +1851,9 @@ function ligneSante(it, repo, couleur){
   return `<div class="srow" style="--c:${esc(couleur||'var(--ac)')}"><span class="sic ${st.cls}">${ic(st.ic,'s')}</span><div style="flex:1;min-width:0">
     <div class="snm">${esc(it.nom)}${it.lien ? ` <a href="${esc(it.lien)}" target="_blank" rel="noopener" aria-label="Ouvrir">${ic('ext','s')}</a>` : ''}</div>
     <div class="sm muted">${esc(it.detail || '')}</div>
-    ${it.serie ? `<div class="tl" title="Envois des dernières 24 h (une barre par heure)">${it.serie.map(v => `<i class="${v ? '' : 'z'}" style="height:${v ? 5 + Math.min(v, 12)/12*19 : 3}px"></i>`).join('')}</div><div class="tlx xs muted"><span>il y a 24 h</span><span>maintenant</span></div>` : ''}
+    ${it.serie ? `<div class="tl" title="Envois sur 24 h">${it.serie.map(v => `<i class="${v ? '' : 'z'}" style="height:${v ? 5 + Math.min(v, 12)/12*19 : 3}px"></i>`).join('')}</div><div class="tlx xs muted"><span>il y a 24 h</span><span>maintenant</span></div>` : ''}
     ${it.appareils && Object.keys(it.appareils).length ? `<div class="kv">${Object.entries(it.appareils).sort((x, y) => new Date(y[1]) - new Date(x[1])).map(([k, t]) => `<span class="pill">${ic(/iPhone|iPad|Android|Mobile|téléphone/i.test(k) ? 'phone' : 'desk','s')} ${esc(k)} · ${esc(ago(t))}</span>`).join('')}</div>` : ''}
-    ${/n'a pas accès/.test(it.detail||'') ? `<button class="btn sm primary" style="margin-top:8px;margin-right:6px" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button>` : ''}
-    ${(it.statut === 'pb' || it.statut === 'att') && L.geminiKey ? `<button class="btn sm ghost" style="margin-top:8px" data-action="askFix" data-repo="${esc(repo)}" data-msg="${esc(it.nom + ' : ' + it.detail)}">${ic('chef','s')} Demander au chef</button>` : ''}
+    ${/^Accès refusé/.test(it.detail||'') || ((it.statut === 'pb' || it.statut === 'att') && L.geminiKey) ? `<div class="btns" style="margin-top:8px">${/^Accès refusé/.test(it.detail||'') ? `<button class="btn sm primary" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button>` : ''}${(it.statut === 'pb' || it.statut === 'att') && L.geminiKey ? `<button class="btn sm ghost" data-action="askFix" data-repo="${esc(repo)}" data-msg="${esc(it.nom + ' : ' + it.detail)}">${ic('chef','s')} Demander au chef</button>` : ''}</div>` : ''}
   </div></div>`;
 }
 function carteSante(nom, av, items, repo, couleur){
@@ -1821,17 +1865,17 @@ function carteSante(nom, av, items, repo, couleur){
 const nomApp = k => k === 'atelier' ? 'Atelier' : appBy(k).name;
 function vSync(){
   const s = C.sante, n = compterSante();
-  const ban = !s ? {cls:'inf', ic:'pulse', t:'Première vérification…', d:'Atelier contrôle chaque app : son code, sa publication, ses envois de données et ses sites.'}
-    : n.pb ? {cls:'pb', ic:'x', t:`${plural(n.pb, 'problème')} à régler`, d:'Touche « Demander au chef » sur la ligne concernée pour un diagnostic et la marche à suivre.'}
-    : n.att ? {cls:'att', ic:'alert', t:`Tout marche · ${plural(n.att, 'point')} à surveiller`, d:'Rien de bloquant : détails ci-dessous.'}
-    : {cls:'ok', ic:'check', t:'Tout fonctionne', d:'Toutes tes apps, leurs envois et leurs sites répondent normalement.'};
+  const ban = !s ? {cls:'inf', ic:'pulse', t:'Première vérification…', d:'Code, publications, envois et sites.'}
+    : n.pb ? {cls:'pb', ic:'x', t:`${plural(n.pb, 'problème')} à régler`, d:''}
+    : n.att ? {cls:'att', ic:'alert', t:`Tout marche · ${plural(n.att, 'point')} à surveiller`, d:'Rien de bloquant.'}
+    : {cls:'ok', ic:'check', t:'Tout fonctionne', d:''};
   const inc = get('incidents', []) || [];
-  return `<section class="banner ${ban.cls}"><div class="bic">${ic(ban.ic)}</div><div style="flex:1;min-width:0"><b>${esc(ban.t)}</b><div class="sm muted">${esc(ban.d)}</div>
-      <div class="xs muted" style="margin-top:4px">${busy.verif ? spin(' Vérification en cours…') : s ? `<span class="pulse"></span>Vérifié ${esc(ago(s.at))} · automatiquement toutes les 5 min` : ''}</div></div>
+  return `<section class="banner ${ban.cls}"><div class="bic">${ic(ban.ic)}</div><div style="flex:1;min-width:0"><b>${esc(ban.t)}</b>${ban.d ? `<div class="sm muted">${esc(ban.d)}</div>` : ''}
+      <div class="xs muted" style="margin-top:4px">${busy.verif ? spin(' Vérification en cours…') : s ? `<span class="pulse"></span>Vérifié ${esc(ago(s.at))}` : ''}</div></div>
       <button class="btn sm" data-action="verifier" ${busy.verif ? 'disabled' : ''}>${ic('sync','s')} Vérifier</button></section>
     <div class="sgrid">${tracked().filter(a => a.repo !== REPO_ATELIER).map(a => carteSante(a.name, avatar(a), s?.apps?.[a.repo], a.repo, a.couleur)).join('')}${carteSante('Atelier', '<span class="av img"><img src="icones/atelier.png" alt="Atelier"></span>', s?.atelier ? [...(s.apps?.[REPO_ATELIER] || []), ...s.atelier] : null, 'atelier', '#6366f1')}</div>
     <section class="card"><div class="hd"><h2>${ic('alert')} Journal des incidents</h2>${inc.length ? '<button class="btn sm ghost" data-action="clearInc">Vider</button>' : ''}</div>
-      ${inc.length ? `<div class="feed">${inc.slice(0, 20).map(x => `<div class="fi"><span class="sic ${x.fin ? 'ok' : x.statut === 'pb' ? 'pb' : 'att'}">${ic(x.fin ? 'check' : x.statut === 'pb' ? 'x' : 'alert','s')}</span><span class="tx sm"><b>${esc(nomApp(x.app))}</b> · ${esc(x.nom)}<br><span class="muted">${esc(x.msg)}</span></span><span class="when">${x.fin ? 'réglé · a duré ' + esc(dureeTxt(x.fin - x.debut)) : 'en cours · ' + esc(ago(x.debut))}</span></div>`).join('')}</div>` : '<p class="muted sm" style="margin:0">Aucun incident enregistré. Chaque problème détecté apparaîtra ici avec sa durée, sur tous tes appareils.</p>'}
+      ${inc.length ? `<div class="feed">${inc.slice(0, 20).map(x => `<div class="fi"><span class="sic ${x.fin ? 'ok' : x.statut === 'pb' ? 'pb' : 'att'}">${ic(x.fin ? 'check' : x.statut === 'pb' ? 'x' : 'alert','s')}</span><span class="tx sm"><b>${esc(nomApp(x.app))}</b> · ${esc(x.nom)}<br><span class="muted">${esc(x.msg)}</span></span><span class="when">${x.fin ? 'réglé · a duré ' + esc(dureeTxt(x.fin - x.debut)) : 'en cours · ' + esc(ago(x.debut))}</span></div>`).join('')}</div>` : '<p class="muted sm" style="margin:0">Aucun incident.</p>'}
     </section>`;
 }
 
@@ -1851,84 +1895,79 @@ const TPL_CERVEAU = `# Nom de l'app : notes de maintenance
 
 ## Ce qui reste à faire
 - `;
+function rangee(o){
+  // o : {ic, c (couleur de la tuile), t (libellé), v (valeur à droite), act / go / data, chev, cls, html (à la place de v)}
+  const attrs = o.act ? `data-action="${o.act}"` : o.go ? `data-go="${o.go}"` : '';
+  const tag = attrs ? 'button' : 'div';
+  return `<${tag} class="rg ${o.cls||''}" ${attrs} ${o.data||''}>${o.ic ? `<span class="rgi" style="--t:${o.c||'#6366f1'}">${o.ic.startsWith('<') ? o.ic : ic(o.ic,'s')}</span>` : ''}<span class="rgt">${o.t}${o.sous ? `<small>${o.sous}</small>` : ''}</span>${o.html || (o.v != null ? `<span class="rgv">${o.v}</span>` : '')}${attrs && o.chev !== false ? ic('chev','s rgc') : ''}</${tag}>`;
+}
+const groupe = (titre, rangees, pied) => `${titre ? `<h3 class="gh">${titre}</h3>` : ''}<section class="grp">${rangees.join('')}</section>${pied ? `<p class="gp">${pied}</p>` : ''}`;
+const masque = t => t ? '••••' + esc(String(t).slice(-4)) : '';
 function vSettings(){
   const reg = REG(), ce = cloudEtat();
-  const c = C.models?.length ? classer(C.models) : null;
-  const devs = Object.entries(C.remote).sort((x, y) => (y[1].updated||0) - (x[1].updated||0));
-  return `<div style="max-width:780px">
-  <h3 class="sec">Compte et cloud</h3>
-  <section class="card">
-    <div style="display:flex;gap:12px;align-items:center"><span class="cloud ${ce.cls}">${ic(ce.ic)}</span><div style="flex:1"><b>${esc(ce.txt)}</b><div class="xs muted">Dépôt privé ${esc(Cloud.repo)}${Cloud.st.last ? ' · vérifié ' + esc(ago(Cloud.st.last)) : ''}</div></div><button class="btn sm" data-action="cloudNow">Synchroniser</button></div>
-    ${Cloud.st.err && Cloud.st.err !== 'hors ligne' ? `<p class="err">${esc(Cloud.st.err)}</p>` : ''}
-    <label class="f">Appareils connectés</label>
-    <div class="dev">${ic(/PC|Mac/.test(PLATEFORME) ? 'desk' : 'phone')}<div style="flex:1"><b>${esc(L.nomAppareil || PLATEFORME)}</b> <span class="pill">cet appareil</span></div></div>
-    ${devs.map(([id, r]) => `<div class="dev">${ic(/PC|Mac/.test(r.platform||'') ? 'desk' : 'phone')}<div style="flex:1"><b>${esc(r.nom || r.platform)}</b><div class="xs muted">vu ${esc(ago(r.updated))}${r.version ? ' · version ' + esc(r.version) : ''}</div></div></div>`).join('')}
-    <label class="f">Nom de cet appareil</label>
-    <input data-local="nomAppareil" value="${esc(L.nomAppareil)}" placeholder="${esc(PLATEFORME)}">
-    <label class="f">Token GitHub</label>
-    <input type="password" data-local="ghToken" value="${esc(L.ghToken)}" placeholder="github_pat_…" autocomplete="off">
-    <p class="help">Il donne accès à tes apps et au cloud. C'est la seule chose à coller sur un nouvel appareil.</p>
-    <label class="f">Tokens supplémentaires</label>
-    ${(L.jetons||[]).map((j, i) => `<div class="dev">${ic('link')}<div style="flex:1;min-width:0"><b>${esc(j.nom || 'Token')}</b><div class="xs muted clamp1">${esc(j.t.slice(0, 15))}… · accès : ${esc((j.repos||[]).map(r => r.split('/')[1]).join(', ') || 'aucun dépôt')}</div></div><button class="ibtn" data-action="delJeton" data-i="${i}" aria-label="Retirer">${ic('trash','s')}</button></div>`).join('') || '<p class="help" style="margin-top:0">Aucun. Utile quand un dépôt a son propre token (par exemple revisions-sync).</p>'}
-    <div class="btns"><button class="btn sm primary" data-go="github">${ic('key','s')} GitHub et tokens</button><button class="btn sm" data-action="ajoutJeton">${ic('plus','s')} Ajouter un token</button></div>
-    <div class="btns"><button class="btn sm" data-action="testGh">Tester GitHub</button><button class="btn sm" data-action="pairPhone">${ic('phone','s')} Connecter un autre appareil</button></div>
-  </section>
+  const devs = Object.values(C.remote).filter(r => Date.now() - (r.updated||0) < 30*864e5);
+  const vit = {rapide:'Rapide', equilibre:'Équilibré', approfondi:'Approfondi'};
+  const p = (reg.prenom || '').trim();
+  return `<div class="reglages">
+  <section class="grp prof">${rangee({ic:`<span>${esc((p || 'A')[0].toUpperCase())}</span>`, c:'linear-gradient(135deg,#6366f1,#a855f7)', t:esc(p || 'Ajouter ton prénom'), sous:`${esc(L.nomAppareil || PLATEFORME)} · Atelier ${VERSION}`, act:'regProfil', cls:'big'})}</section>
 
-  <h3 class="sec">Intelligence</h3>
-  <section class="card">
-    <label class="f" style="margin-top:0">Vitesse des réponses</label>
-    <div class="seg">${[['rapide','⚡ Rapide'],['equilibre','Équilibré'],['approfondi','Approfondi']].map(([k, t]) => `<button class="${reg.vitesse === k ? 'on' : ''}" data-vitesse="${k}">${t}</button>`).join('')}</div>
-    <p class="help">${reg.vitesse === 'rapide' ? 'Réponses quasi instantanées, un peu moins fines.' : reg.vitesse === 'approfondi' ? 'Le chef réfléchit plus longtemps : plus fin, mais plus lent.' : 'Rapide pour les petites demandes, soigné pour les analyses.'}</p>
-    <label class="f">Clé Gemini</label>
-    <input type="password" data-local="geminiKey" value="${esc(L.geminiKey)}" placeholder="AQ.… ou AIza…" autocomplete="off">
-    <p class="help">Partagée chiffrée avec tes autres appareils par le cloud : à coller une seule fois.</p>
-    <label class="f">Modèle</label>
-    <input data-reg="model" value="${esc(reg.model)}" list="models" placeholder="auto">
-    <datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>
-    <p class="help">« auto » choisit le plus récent modèle gratuit et passe au suivant si le quota du jour est épuisé.${c ? ' Rapide : ' + esc(c.lite[0] || '—') + ' · Soigné : ' + esc(c.flash[0] || '—') + '.' : ''}${C.lastModel ? ' Dernier utilisé : ' + esc(C.lastModel) + '.' : ''}</p>
-    <label class="f">Limite de sécurité (appels par jour, par appareil)</label>
-    <input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}" style="max-width:140px">
-    <p class="help">Aujourd'hui : ${appelsJour().n} appel(s) sur cet appareil. Protège une clé payante : au-delà, Atelier n'appelle plus Gemini jusqu'à demain. Les clés et tokens ne sont jamais envoyés à Gemini.</p>
-    <div class="btns"><button class="btn sm" data-action="testGemini">${ic('bolt','s')} Tester la vitesse</button><button class="btn sm" data-action="listModels">Voir les modèles</button></div>
-  </section>
+  ${groupe('Compte', [
+    rangee({ic:ce.ic, c:ce.cls === 'err' ? '#ef4444' : '#0ea5e9', t:'Synchronisation', v:esc(ce.cls === 'ok' ? 'Active' : ce.txt), act:'regCloud'}),
+    rangee({ic:'phone', c:'#10b981', t:'Appareils', v:String(devs.length + 1), act:'regAppareils'}),
+    rangee({ic:'git', c:'#334155', t:'Token GitHub', v:L.ghToken ? masque(L.ghToken) : 'Absent', act:'regGithub'}),
+    rangee({ic:'key', c:'#f59e0b', t:'GitHub et tokens', v:(L.jetons||[]).length ? String((L.jetons||[]).length + 1) : '', go:'github'})
+  ])}
 
-  <h3 class="sec">Profil</h3>
-  <section class="card">
-    <label class="f" style="margin-top:0">Apparence</label>
-    <div class="seg"><button class="${L.verre !== false ? 'on' : ''}" data-action="apparence" data-v="1">Liquid Glass</button><button class="${L.verre === false ? 'on' : ''}" data-action="apparence" data-v="0">Classique</button></div>
-    <p class="help">Liquid Glass : verre translucide et fond coloré. Réglage propre à cet appareil.</p>
-    <label class="f">Prénom (pour l'accueil)</label>
-    <input data-reg="prenom" value="${esc(reg.prenom||'')}" placeholder="Ton prénom">
-  </section>
+  ${groupe('Chef de projet', [
+    rangee({ic:'spark', c:'#8b5cf6', t:'Clé Gemini', v:L.geminiKey ? (C.gemErr ? '<span class="ko">Erreur</span>' : 'Active') : 'Absente', act:'regGemini'}),
+    rangee({ic:'bolt', c:'#ec4899', t:'Vitesse', v:vit[reg.vitesse] || 'Équilibré', act:'regVitesse'}),
+    rangee({ic:'brain', c:'#6366f1', t:'Modèle', v:esc(reg.model === 'auto' || !reg.model ? 'Automatique' : reg.model), act:'regModele'}),
+    rangee({ic:'alert', c:'#ef4444', t:'Limite par jour', v:`${appelsJour().n} / ${plafondJour()}`, act:'regLimite'})
+  ])}
 
-  <h3 class="sec">Apps suivies</h3>
-  <section class="card">
-    ${appsAll().map((a, i) => `<div class="appedit">
-      <div class="r">
-        <input data-app="${i}" data-field="emoji" value="${esc(a.emoji)}" aria-label="Emoji" style="text-align:center">
-        <input type="color" data-app="${i}" data-field="couleur" value="${esc(a.couleur||'#6366f1')}" aria-label="Couleur">
-        <input data-app="${i}" data-field="name" value="${esc(a.name)}" aria-label="Nom">
-        <button class="ibtn" data-action="delApp" data-i="${i}" aria-label="Retirer" style="height:46px;width:44px">${ic('trash','s')}</button>
-      </div>
-      <div class="r2">
-        <input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" aria-label="Dépôt du code">
-        <input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Dépôt de données (facultatif)" aria-label="Dépôt de données">
-        <input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Fichier d'état" aria-label="Fichier d'état">
-      </div>
-      ${PC ? `<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><span class="sm" style="flex:1;min-width:200px">🧠 Coffre Obsidian : <b>${a.obsidian ? esc(a.obsidian.split(/[\\/]/).pop()) : 'aucun'}</b>${C.obsErr?.[a.repo] ? ` <span class="err">(${esc(C.obsErr[a.repo])})</span>` : ''}</span>
-        <select data-obs="${i}" style="width:auto;min-width:200px"><option value="">Choisir un coffre…</option>${(C.coffres||[]).map(c => `<option value="${esc(c.chemin)}" ${a.obsidian === c.chemin ? 'selected' : ''}>${esc(c.nom)}</option>`).join('')}<option value="__autre">Autre dossier…</option>${a.obsidian ? '<option value="__aucun">Débrancher</option>' : ''}</select></div>`
-      : (C.apps[a.repo]?.obsidian ? `<p class="help">🧠 Cerveau Obsidian reçu du PC : ${C.apps[a.repo].obsidian.notes ?? '?'} notes, ${esc(ago(C.apps[a.repo].obsidian.at))}</p>` : '')}
-      </div>`).join('')}
-    <div class="btns"><button class="btn sm" data-action="addApp">${ic('plus','s')} Ajouter une app</button></div>
-    <p class="help">Atelier lit dans chaque dépôt <code>publication/version.json</code>, le cerveau (<code>CLAUDE.md</code>), les commits et les Issues. Le dépôt de données sert à l'affichage en direct.</p>
-  </section>
+  ${groupe('Apparence', [
+    rangee({ic:'today', c:'#14b8a6', t:'Style', html:`<div class="seg mini"><button class="${L.verre !== false ? 'on' : ''}" data-action="apparence" data-v="1">Verre</button><button class="${L.verre === false ? 'on' : ''}" data-action="apparence" data-v="0">Classique</button></div>`})
+  ], 'Propre à cet appareil.')}
 
-  <h3 class="sec">Données</h3>
-  <section class="card">
-    <div class="btns" style="margin-top:0"><button class="btn sm" data-action="exportCfg">Exporter</button><button class="btn sm" data-action="importCfg">Importer</button><button class="btn sm ghost" data-action="clearCache">Vider le cache de cet appareil</button></div>
-    <p class="help">Atelier ${VERSION} · ${esc(PLATEFORME)} · raccourcis : N nouvelle idée, 1 à 6 les écrans, R actualiser, Ctrl+K rechercher.</p>
-  </section></div>`;
+  ${groupe('Apps suivies', [
+    ...appsAll().map((a, i) => rangee({ic:avatar(a, 's'), c:'transparent', t:esc(a.name), sous:esc(a.repo || 'Dépôt à renseigner'), v:a.obsidian || C.apps[a.repo]?.obsidian ? '🧠' : '', act:'regApp', data:`data-i="${i}"`, cls:'app'})),
+    rangee({ic:'plus', c:'#6366f1', t:'<span class="ac">Ajouter une app</span>', act:'addApp', chev:false})
+  ])}
+
+  ${groupe('Données', [
+    rangee({ic:'copy', c:'#64748b', t:'Exporter la configuration', act:'exportCfg'}),
+    rangee({ic:'redo', c:'#64748b', t:'Importer une configuration', act:'importCfg'}),
+    rangee({ic:'trash', c:'#ef4444', t:'<span class="ko">Vider le cache</span>', act:'clearCache', chev:false})
+  ])}
+  <p class="gp c">Atelier ${VERSION}${LARGE() ? ' · N nouvelle idée · 1-8 écrans · Ctrl+K recherche' : ''}</p>
+  </div>`;
 }
+let REGM = null;   // fenêtre de réglage ouverte (pour la redessiner après une modification)
+function regModal(f){ REGM = f; SHEET = null; modal(`<div class="regm">${f()}</div>`); }
+const champ = (lab, input, aide) => `<label class="f">${lab}</label>${input}${aide ? `<p class="help">${aide}</p>` : ''}`;
+const REGF = {
+  regProfil: () => `<h2>Profil</h2>${champ('Prénom', `<input data-reg="prenom" value="${esc(REG().prenom||'')}" placeholder="Ton prénom">`)}${champ('Nom de cet appareil', `<input data-local="nomAppareil" value="${esc(L.nomAppareil||'')}" placeholder="${esc(PLATEFORME)}">`)}`,
+  regCloud: () => { const ce = cloudEtat(); return `<h2>Synchronisation</h2><div class="grp in">${rangee({ic:ce.ic, c:ce.cls === 'err' ? '#ef4444' : '#0ea5e9', t:esc(ce.txt), sous:`${esc(Cloud.repo)}${Cloud.st.last ? ' · ' + esc(ago(Cloud.st.last)) : ''}`})}</div>${Cloud.st.err && Cloud.st.err !== 'hors ligne' ? `<p class="err">${esc(Cloud.st.err)}</p>` : ''}<div class="btns"><button class="btn primary block" data-action="cloudNow">${ic('sync','s')} Synchroniser</button></div>`; },
+  regAppareils: () => { const devs = Object.values(C.remote).sort((x, y) => (y.updated||0) - (x.updated||0));
+    return `<h2>Appareils</h2><div class="grp in">${rangee({ic:/PC|Mac/.test(PLATEFORME) ? 'desk' : 'phone', c:'#10b981', t:esc(L.nomAppareil || PLATEFORME), v:'Cet appareil'})}${devs.map(r => rangee({ic:/PC|Mac/.test(r.platform||'') ? 'desk' : 'phone', c:'#64748b', t:esc(r.nom || r.platform || 'Appareil'), sous:`${esc(ago(r.updated))}${r.version ? ' · ' + esc(r.version) : ''}`})).join('')}</div>
+      <div class="btns"><button class="btn primary block" data-action="pairPhone">${ic('plus','s')} Connecter un appareil</button></div>`; },
+  regGithub: () => `<h2>Token GitHub</h2>${champ('Token', `<input type="password" data-local="ghToken" value="${esc(L.ghToken)}" placeholder="github_pat_…" autocomplete="off">`, 'Seule chose à coller sur un nouvel appareil.')}<div class="btns"><button class="btn block" data-action="testGh">Tester l’accès</button><button class="btn ghost block" data-go="github">${ic('key','s')} Gérer les tokens</button></div>`,
+  regGemini: () => `<h2>Clé Gemini</h2>${champ('Clé', `<input type="password" data-local="geminiKey" value="${esc(L.geminiKey)}" placeholder="AQ.… ou AIza…" autocomplete="off">`, 'Partagée chiffrée avec tes appareils. Jamais envoyée à Gemini.')}${C.gemErr ? `<p class="err">${esc(C.gemErr.msg || C.gemErr)}</p>` : ''}<div class="btns"><button class="btn block" data-action="testGemini">${ic('bolt','s')} Tester</button></div>`,
+  regVitesse: () => { const v = REG().vitesse || 'equilibre'; return `<h2>Vitesse</h2><div class="grp in">${[['rapide','Rapide','Réponses immédiates'],['equilibre','Équilibré','Rapide pour les questions, soigné pour les analyses'],['approfondi','Approfondi','Plus fin, plus lent']].map(([k, t, d]) => rangee({t, sous:d, act:'regChoix', data:`data-vitesse="${k}"`, html:v === k ? ic('check','s ac') : '', chev:false})).join('')}</div>`; },
+  regModele: () => { const reg = REG(); let c = null; try{ c = C.models?.length ? classer(C.models) : null; }catch{}
+    return `<h2>Modèle</h2>${champ('Modèle', `<input data-reg="model" value="${esc(reg.model||'auto')}" list="models" placeholder="auto"><datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>`, '« auto » choisit le meilleur modèle gratuit et change si le quota est épuisé.')}
+      ${c ? `<div class="grp in">${rangee({t:'Rapide', v:esc(c.lite[0] || '—')})}${rangee({t:'Soigné', v:esc(c.flash[0] || '—')})}${C.lastModel ? rangee({t:'Dernier utilisé', v:esc(C.lastModel)}) : ''}</div>` : ''}<div class="btns"><button class="btn block" data-action="listModels">Voir tous les modèles</button></div>`; },
+  regLimite: () => `<h2>Limite par jour</h2>${champ('Appels Gemini par jour (cet appareil)', `<input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}">`, `Aujourd’hui : ${appelsJour().n}. Au-delà, le chef se met en pause jusqu’à demain.`)}`,
+  regApp: i => { const a = appsAll()[i]; if(!a) return '<p class="muted">App introuvable.</p>';
+    return `<div class="regapp">${avatar(a, 'l')}<h2>${esc(a.name)}</h2></div>
+      <div class="r3">${a.icone || ICONES[a.repo] ? '' : `<div>${champ('Emoji', `<input data-app="${i}" data-field="emoji" value="${esc(a.emoji||'')}" style="text-align:center">`)}</div>`}<div>${champ('Couleur', `<input type="color" data-app="${i}" data-field="couleur" value="${esc(a.couleur||'#6366f1')}">`)}</div><div style="flex:1">${champ('Nom', `<input data-app="${i}" data-field="name" value="${esc(a.name)}">`)}</div></div>
+      ${champ('Dépôt du code', `<input data-app="${i}" data-field="repo" value="${esc(a.repo)}" placeholder="pseudo/depot" autocapitalize="off">`)}
+      ${champ('Dépôt de données', `<input data-app="${i}" data-field="donnees" value="${esc(a.donnees||'')}" placeholder="Facultatif" autocapitalize="off">`)}
+      ${champ('Fichier d’état', `<input data-app="${i}" data-field="etat" value="${esc(a.etat||'')}" placeholder="Facultatif" autocapitalize="off">`)}
+      ${PC ? champ('Coffre Obsidian', `<select data-obs="${i}"><option value="">${a.obsidian ? esc(a.obsidian.split(/[\\/]/).pop()) : 'Aucun'}</option>${(C.coffres||[]).filter(c => c.chemin !== a.obsidian).map(c => `<option value="${esc(c.chemin)}">${esc(c.nom)}</option>`).join('')}<option value="__autre">Autre dossier…</option>${a.obsidian ? '<option value="__aucun">Débrancher</option>' : ''}</select>`, C.obsErr?.[a.repo] ? `<span class="ko">${esc(C.obsErr[a.repo])}</span>` : '')
+        : C.apps[a.repo]?.obsidian ? `<p class="help">🧠 Cerveau Obsidian : ${C.apps[a.repo].obsidian.notes ?? '?'} notes, ${esc(ago(C.apps[a.repo].obsidian.at))}</p>` : ''}
+      <div class="btns"><button class="btn block danger" data-action="delApp" data-i="${i}">${ic('trash','s')} Retirer l’app</button></div>`; }
+};
 
 /* ================================================================
    Accueil (première connexion)
@@ -2002,25 +2041,25 @@ function vGithub(){
   const d = DMD(), tous = [{nom:'Atelier (principal)', t:L.ghToken, principal:true, repos:[], droits:{contents:'write', issues:'write', pull_requests:'write'}}, ...(L.jetons||[])];
   const carteTok = (j, i) => `<div class="tok"><div class="tokh">${ic('key')}<div style="flex:1;min-width:0"><b class="clamp1">${esc(j.nom || 'Token')}</b><div class="xs muted clamp1">${j.pour ? 'Pour ' + esc(j.pour) + ' · ' : ''}${esc(j.t ? j.t.slice(0, 15) + '…' : '—')}${j.cree ? ' · créé ' + esc(ago(j.cree)) : ''}</div></div>${j.test ? `<span class="stp ${j.test.ok ? 'ok' : 'pb'}">${j.test.ok ? 'Valide' : 'Refusé'}</span>` : ''}</div>
       ${j.droits ? `<div class="xs muted" style="margin:6px 0 2px">${esc(libDroits(j.droits))}</div>` : ''}
-      ${(j.repos||[]).length ? `<div class="kv">${j.repos.map(r => `<span class="chip">${esc(r.split('/')[1])}</span>`).join('')}</div>` : j.principal ? '<div class="xs muted">Tous les dépôts des apps suivies et le cloud d’Atelier</div>' : ''}
+      ${(j.repos||[]).length ? `<div class="kv">${j.repos.map(r => `<span class="etq">${esc(r.split('/')[1])}</span>`).join('')}</div>` : j.principal ? '<div class="xs muted">Toutes les apps et le cloud</div>' : ''}
       <div class="btns" style="margin-top:8px"><button class="btn sm" data-action="tokCopier" data-i="${i}">${ic('copy','s')} Copier</button><button class="btn sm ghost" data-action="tokTester" data-i="${i}">Tester</button>${j.principal ? '' : `<button class="btn sm ghost" data-action="delJeton" data-i="${i - 1}">${ic('trash','s')} Retirer</button>`}</div></div>`;
   const dep = (C.ghDepots||[]).slice().sort((a, b) => (b.maj||'').localeCompare(a.maj||''));
   return `${d ? `<section class="card" style="border:1.5px solid var(--ac)"><div class="hd"><h2>${ic('key')} Demande en cours : ${esc(d.nom)}</h2><button class="btn sm ghost" data-action="dmdAnnuler">Annuler</button></div>${etapesDemande(d)}</section>` : ''}
     <section class="card"><div class="hd"><h2>${ic('key')} Coffre à tokens</h2><button class="btn sm primary" data-action="dmdNouveau">${ic('plus','s')} Demander un token</button></div>
-      <p class="help" style="margin-top:0">Tes tokens GitHub, rangés ici et partagés chiffrés avec tous tes appareils. Copie-les quand une app en a besoin, plutôt que de les chercher dans une conversation.</p>
+      <p class="help" style="margin-top:0">Partagés chiffrés avec tes appareils.</p>
       <div class="toks">${tous.map(carteTok).join('')}</div>
       <div class="btns"><button class="btn sm ghost" data-action="ajoutJeton">${ic('plus','s')} J’ai déjà un token</button><a class="btn sm ghost" href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">${ic('link','s')} Mes tokens sur GitHub</a></div></section>
     <section class="card"><div class="hd"><h2>${ic('apps')} Dépôts</h2><div class="btns" style="margin:0"><button class="ibtn" data-action="ghRecharger" aria-label="Actualiser">${GHV.charge ? spin('') : ic('redo','s')}</button><button class="btn sm" data-action="depotNouveau">${ic('plus','s')} Nouveau dépôt</button></div></div>
-      ${!dep.length ? (GHV.charge ? spin(' Lecture des dépôts…') : '<p class="muted sm">Aucun dépôt lisible.</p>') : dep.map(x => `<div class="dep"><div style="flex:1;min-width:0"><b class="clamp1">${esc(x.r.split('/')[1])}</b> <span class="chip ${x.prive ? '' : 'pub'}">${x.prive ? 'privé' : 'public'}</span>${x.pages ? '<span class="chip">site</span>' : ''}<div class="xs muted clamp1">${x.maj ? 'modifié ' + esc(ago(x.maj)) : ''}${x.issues ? ' · ' + plural(x.issues, 'tâche') + ' ouverte' + (x.issues > 1 ? 's' : '') : ''}${x.desc ? ' · ' + esc(x.desc) : ''}</div></div>
+      ${!dep.length ? (GHV.charge ? spin(' Lecture des dépôts…') : '<p class="muted sm">Aucun dépôt lisible.</p>') : dep.map(x => `<div class="dep"><div style="flex:1;min-width:0"><b class="clamp1">${esc(x.r.split('/')[1])}</b> <span class="etq ${x.prive ? '' : 'pub'}">${x.prive ? 'privé' : 'public'}</span>${x.pages ? '<span class="etq">site</span>' : ''}<div class="xs muted clamp1">${x.maj ? 'modifié ' + esc(ago(x.maj)) : ''}${x.issues ? ' · ' + plural(x.issues, 'tâche') + ' ouverte' + (x.issues > 1 ? 's' : '') : ''}${x.desc ? ' · ' + esc(x.desc) : ''}</div></div>
         <div class="btns" style="margin:0;flex-wrap:nowrap"><button class="ibtn" data-action="dmdPour" data-r="${esc(x.r)}" title="Demander un token pour ce dépôt" aria-label="Demander un token pour ce dépôt">${ic('key','s')}</button><a class="ibtn" href="${esc(x.url)}" target="_blank" rel="noopener" aria-label="Ouvrir sur GitHub">${ic('link','s')}</a><a class="ibtn" href="${esc(x.url)}/settings" target="_blank" rel="noopener" aria-label="Paramètres du dépôt">${ic('settings','s')}</a></div></div>`).join('')}
-      ${C.ghDepotsAt ? `<p class="xs muted" style="margin:8px 2px 0">Vérifié ${esc(ago(C.ghDepotsAt))} avec tes tokens.</p>` : ''}</section>`;
+      ${C.ghDepotsAt ? `<p class="xs muted" style="margin:8px 2px 0">Vérifié ${esc(ago(C.ghDepotsAt))}</p>` : ''}</section>`;
 }
 function etapesDemande(d){
   const ouvert = !!d.ouvert;
   return `<div class="xs muted" style="margin-bottom:8px">${esc(libDroits(d.droits))}${d.pour ? ' · pour ' + esc(d.pour) : ''}</div>
     <ol class="etapes">
       <li class="${ouvert ? 'fait' : ''}"><b>Ouvre GitHub</b> : le formulaire est déjà rempli (nom, droits, sans expiration).<div class="btns"><a class="btn sm ${ouvert ? 'ghost' : 'primary'}" href="${esc(urlNouveauToken(d))}" target="_blank" rel="noopener" data-action="dmdOuvert">${ic('link','s')} Ouvrir GitHub</a></div></li>
-      <li><b>Dans « Repository access »</b>, choisis « Only select repositories » et coche :<div class="kv">${(d.repos||[]).map(r => `<span class="chip">${esc(r)}</span>`).join('') || '<span class="muted">—</span>'}</div></li>
+      <li><b>Dans « Repository access »</b>, choisis « Only select repositories » et coche :<div class="kv">${(d.repos||[]).map(r => `<span class="etq">${esc(r)}</span>`).join('') || '<span class="muted">—</span>'}</div></li>
       <li><b>Clique « Generate token »</b>, puis copie le token affiché (il ne s’affiche qu’une fois).</li>
       <li><b>Colle-le ici</b> : Atelier vérifie qu’il ouvre bien ces dépôts et le range dans le coffre.
         <input id="dmdT" type="password" placeholder="github_pat_…" autocomplete="off" style="width:100%;margin-top:6px"><div id="dmdE" class="err" hidden></div>
@@ -2070,8 +2109,9 @@ function renderChrome(){
   $('#snav').innerHTML = nav(true);
   $('#sideApps').innerHTML = tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
   $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
-  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes' || view === 'github';
+  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes' || view === 'github' || view === 'sync';
   document.body.classList.toggle('chef', view === 'chef');
+  $('#gearBtn').style.visibility = view === 'settings' ? 'hidden' : '';
   document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
 function render(){
@@ -2094,7 +2134,7 @@ function modal(html, kind='dialog'){
   m.hidden = false; document.body.style.overflow = 'hidden';
   if(wasOpen) sh.scrollTop = top; else { sh.scrollTop = 0; sh.style.animation = 'none'; sh.offsetHeight; sh.style.animation = ''; }
 }
-function closeModal(){ $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; SHEET = null; }
+function closeModal(){ REGM = null; $('#modal').hidden = true; document.body.style.overflow = ''; $('#modal .sheet').style.transform = ''; SHEET = null; }
 function textModal(title, text, extra=''){
   SHEET = null;
   modal(`<h2>${esc(title)}</h2>${extra}<pre class="pre" id="mtext">${esc(text)}</pre><div class="btns"><button class="btn primary" data-action="copyModal">${ic('copy','s')} Copier</button></div>`);
@@ -2545,8 +2585,12 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     }finally{ if(btn.isConnected){ btn.disabled = false; btn.textContent = 'Ajouter'; } }
   },
 
-  addApp(){ const apps = [...appsAll(), {name:'Nouvelle app', repo:'', emoji:'📦', couleur:COULEURS[appsAll().length % COULEURS.length], donnees:'', etat:''}]; setReg({apps}); render(); },
-  delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${appsAll()[i].name} d'Atelier ? (le dépôt GitHub n'est pas touché)`)){ setReg({apps:appsAll().filter((_, k) => k !== i)}); render(); } },
+  addApp(){ const apps = [...appsAll(), {name:'Nouvelle app', repo:'', emoji:'📦', couleur:COULEURS[appsAll().length % COULEURS.length], donnees:'', etat:''}]; setReg({apps}); render(); const i = apps.length - 1; regModal(() => REGF.regApp(i)); },
+  delApp(el){ const i = +el.dataset.i; if(confirm(`Retirer ${appsAll()[i].name} d'Atelier ? Le dépôt GitHub n'est pas touché.`)){ setReg({apps:appsAll().filter((_, k) => k !== i)}); closeModal(); render(); } },
+  regProfil(){ regModal(REGF.regProfil); }, regCloud(){ regModal(REGF.regCloud); }, regAppareils(){ regModal(REGF.regAppareils); }, regGithub(){ regModal(REGF.regGithub); },
+  regGemini(){ regModal(REGF.regGemini); }, regVitesse(){ regModal(REGF.regVitesse); }, regModele(){ regModal(REGF.regModele); }, regLimite(){ regModal(REGF.regLimite); },
+  regApp(el){ const i = +el.dataset.i; regModal(() => REGF.regApp(i)); },
+  regChoix(el){ setReg({vitesse:el.dataset.vitesse}); render(); if(REGM) modal(`<div class="regm">${REGM()}</div>`); },
   async testGh(){
     const u = await gh('/user');
     const res = await Promise.all([...tracked().map(a => ({n:a.name, r:a.repo})), {n:'Cloud', r:Cloud.repo}, ...(L.jetons||[]).flatMap(j => j.repos.map(r => ({n:r.split('/')[1] + ' (' + j.nom + ')', r})))].map(x => gh(`/repos/${x.r}`).then(r => `✓ ${x.n}${r.permissions?.push ? '' : ' (lecture seule)'}`).catch(e => `✗ ${x.n} : ${e.message}`)));
@@ -2624,7 +2668,7 @@ document.addEventListener('click', async e => {
   const tf = e.target.closest('[data-tf]'); if(tf){ TF.app = tf.dataset.tf; render(); return; }
   const dc = e.target.closest('[data-disc]'); if(dc){ discOuvrir(dc.dataset.disc); render(); scrollBas(); if(!LARGE()) setTimeout(scrollBas, 50); return; }
   const st = e.target.closest('[data-stab]'); if(st && SHEET){ appSheet(SHEET.repo, st.dataset.stab); $('#modal .sheet').scrollTop = 0; return; }
-  const vi = e.target.closest('[data-vitesse]'); if(vi){ setReg({vitesse:vi.dataset.vitesse}); render(); return; }
+  const vi = e.target.closest('[data-vitesse]'); if(vi && !vi.dataset.action){ setReg({vitesse:vi.dataset.vitesse}); render(); return; }
   const el = e.target.closest('[data-action],[data-go]'); if(!el) return;
   if(el.dataset.go){ go(el.dataset.go); return; }
   const fn = ACTIONS[el.dataset.action]; if(!fn) return;
@@ -2655,7 +2699,7 @@ document.addEventListener('change', async e => {
     const i = +el.dataset.obs; let v = el.value;
     if(v === '__autre'){ v = await PC.choisirDossier(); if(!v){ render(); return; } }
     const apps = appsAll().map((x, k) => k === i ? Object.assign({}, x, v === '__aucun' ? {obsidian:'', obsidianNon:true} : {obsidian:v, obsidianNon:false}) : x);
-    setReg({apps}); render();
+    setReg({apps}); render(); if(REGM) modal(`<div class="regm">${REGM()}</div>`);
     if(v && v !== '__aucun'){ toast('Envoi du cerveau au cloud…'); await envoyerCerveaux(true); toast('Cerveau Obsidian envoyé'); syncAll(true); }
     return;
   }
@@ -2663,6 +2707,7 @@ document.addEventListener('change', async e => {
     let v = el.value.trim(); if(el.dataset.field === 'repo' || el.dataset.field === 'donnees') v = el.value = normRepo(v);
     setReg({apps:appsAll().map((a, i) => i === +el.dataset.app ? Object.assign({}, a, {[el.dataset.field]:v}) : a)}); renderChrome();
   }
+  if(view === 'settings' && el.closest('#modal')){ $('#main').innerHTML = vSettings(); }
 });
 document.addEventListener('keydown', e => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
@@ -2684,8 +2729,8 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden && nav
   let y0 = null, dy = 0, lastY = 0;
   const ptr = $('#ptr');
   addEventListener('touchstart', e => { if(!$('#modal').hidden || view === 'chef') return; y0 = scrollY <= 0 ? e.touches[0].clientY : null; dy = 0; }, {passive:true});
-  addEventListener('touchmove', e => { if(y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 70}px) rotate(${dy * 3}deg)`; }, {passive:true});
-  addEventListener('touchend', () => { if(y0 == null) return; ptr.style.transform = ''; if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); } y0 = null; });
+  addEventListener('touchmove', e => { if(y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); ptr.classList.toggle('on', dy > 12); ptr.style.transform = `translate(-50%, ${Math.min(dy, 110) * .6 - 70}px) rotate(${dy * 3}deg)`; }, {passive:true});
+  addEventListener('touchend', () => { if(y0 == null) return; ptr.style.transform = ''; ptr.classList.remove('on'); if(dy > 80 && navigator.onLine){ syncAll(); if(navigator.vibrate) navigator.vibrate(10); } y0 = null; });
   let s0 = null, sd = 0; const sh = $('#modal .sheet');
   sh.addEventListener('touchstart', e => { if(e.target.closest('.grab') && matchMedia('(max-width:899px)').matches){ s0 = e.touches[0].clientY; sd = 0; sh.style.transition = 'none'; } }, {passive:true});
   sh.addEventListener('touchmove', e => { if(s0 == null) return; sd = Math.max(0, e.touches[0].clientY - s0); sh.style.transform = `translateY(${sd}px)`; }, {passive:true});
