@@ -415,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.4.0';
+const VERSION = '3.4.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1133,7 +1133,7 @@ function monterGraphe(slug){
       c.fillStyle = a.c; c.beginPath(); c.arc(a.x, a.y, a.r * (estFoc ? 1.35 : 1) / Math.min(1, Math.sqrt(vue.k)), 0, 6.283); c.fill();
       if(estFoc){ c.strokeStyle = coul.txt; c.lineWidth = 1.5 / vue.k; c.stroke(); c.lineWidth = 1 / Math.max(vue.k, .5); }
       const montrer = estFoc || proche || vue.k > 1.15 || (vue.k > .6 && a.deg >= 6) || a.deg >= 18;
-      if(montrer){ c.globalAlpha = foc != null && !estFoc && !proche ? 0.25 : estFoc || proche ? 1 : Math.min(1, (vue.k - .5)); c.fillStyle = coul.txt; c.font = `${(estFoc ? 13 : 11.5) / Math.max(vue.k, .7)}px Inter, system-ui, sans-serif`; c.textAlign = 'center'; c.fillText(a.nom.length > 34 ? a.nom.slice(0, 32) + '…' : a.nom, a.x, a.y + a.r + 12 / Math.max(vue.k, .7)); }
+      if(montrer){ c.globalAlpha = foc != null && !estFoc && !proche ? 0.25 : estFoc || proche ? 1 : Math.min(1, (vue.k - .5)); c.fillStyle = coul.txt; c.font = `${(estFoc ? 13 : 11.5) / vue.k}px Inter, system-ui, sans-serif`; c.textAlign = 'center'; c.fillText(a.nom.length > 34 ? a.nom.slice(0, 32) + '…' : a.nom, a.x, a.y + a.r / Math.min(1, Math.sqrt(vue.k)) + 13 / vue.k); }
     }
     c.globalAlpha = 1;
   };
@@ -1252,7 +1252,7 @@ function vNotes(){
     const onglets = `<div class="seg" style="margin:0 0 10px"><button class="${OBS.mode === 'graphe' ? 'on' : ''}" data-action="obsMode" data-m="graphe">${ic('vault','s')} Graphe</button><button class="${OBS.mode !== 'graphe' ? 'on' : ''}" data-action="obsMode" data-m="notes">${ic('tasks','s')} Notes</button></div>`;
     const tete = `<div class="btns" style="margin:4px 0 10px;align-items:center"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} Tous les coffres</button><b style="margin-left:4px" class="clamp1">${esc(c.nom)}</b><span class="xs muted">${c.notes} notes</span></div>${onglets}`;
     if(OBS.mode === 'graphe'){
-      setTimeout(() => chargerGraphe(c.slug).then(() => monterGraphe(c.slug)), 0);
+      setTimeout(() => chargerGraphe(c.slug).then(() => G ? monterGraphe(c.slug) : render()), 0);
       const leg = G ? [...(G.groupes || []).map(g => [g.q.replace(/^tag:#?(type\/)?|^path:|^file:/g, ''), g.c])] : [];
       return `${tete}<section class="card gcard"><div class="gbox"><canvas id="gcv" aria-label="Graphe des notes"></canvas>
           <div class="gtools"><input id="gq" type="search" placeholder="Trouver une note…" autocomplete="off"><button class="ibtn" data-action="obsRecentrer" aria-label="Recentrer" title="Recentrer">${ic('redo','s')}</button></div>
