@@ -216,7 +216,17 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .sugg button:hover{border-color:var(--ac)}
 
 /* ===== Markdown ===== */
-.nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.md .cit{border-left:3px solid #7c3aed;padding:2px 0 2px 12px;margin:4px 0;color:var(--tx2)}.md a.wl{color:var(--ac);text-decoration:none;border-bottom:1px dashed}
+.nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.gcard{padding:0;overflow:hidden}.gbox{position:relative;height:min(68vh,640px);background:var(--s1)}#gcv{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.gtools{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px}.gtools input{flex:1;max-width:320px;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(8px)}
+.gsel{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--s2) 92%,transparent);backdrop-filter:blur(10px);border:1px solid var(--bd);box-shadow:var(--sh2)}
+.gsel[hidden],.gtools [hidden]{display:none}.gcharge{position:absolute;inset:0;display:grid;place-items:center;color:var(--mu)}
+.gdot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.gleg{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 14px 0;font-size:12.5px;color:var(--tx2)}.gleg span{display:flex;align-items:center;gap:6px}.gleg i{width:10px;height:10px;border-radius:50%}
+.gcard>p{padding:0 14px 12px}
+.otag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent);margin:1px 2px}
+.callout{border-left:4px solid rgb(var(--cc));background:rgba(var(--cc),.12);border-radius:10px;padding:8px 12px;margin:10px 0}.callout .cot{font-weight:700;color:rgb(var(--cc));margin-bottom:2px}.callout .md{margin:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.md .cit{border-left:3px solid #7c3aed;padding:2px 0 2px 12px;margin:4px 0;color:var(--tx2)}.md a.wl{color:var(--ac);text-decoration:none;border-bottom:1px dashed}
 .md p{margin:6px 0}.md h4{margin:14px 0 4px;font-size:15px}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
 .md code{background:var(--s2);border-radius:6px;padding:1px 6px;font:13px var(--mono)}
 .md pre,pre.pre{white-space:pre-wrap;word-break:break-word;background:var(--s2);border-radius:12px;padding:12px;font:13px/1.55 var(--mono);max-height:55vh;overflow:auto;margin:8px 0}
@@ -405,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.3.0';
+const VERSION = '3.4.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -968,9 +978,9 @@ async function envoyerCoffres(force=false){
     const trouves = await PC.coffres(); C.coffres = trouves;
     const chemins = [...new Map([...trouves, ...(C.coffresPlus||[])].map(c => [c.chemin.toLowerCase(), c])).values()];
     const lus = [];
-    for(const c of chemins){ const r = await PC.lireCoffre(c.chemin); if(r && !r.erreur && r.fichiers.length) lus.push({nom:r.nom || c.nom, fichiers:r.fichiers}); }
+    for(const c of chemins){ const r = await PC.lireCoffre(c.chemin); if(r && !r.erreur && r.fichiers.length) lus.push({nom:r.nom || c.nom, fichiers:r.fichiers, config:r.config || null}); }
     const vus = {}; for(const c of lus){ const b = slugCoffre(c.nom); let s = b, i = 2; while(vus[s]) s = b + '-' + i++; c.slug = s; vus[s] = 1; }
-    const hash = hashTxt(lus.map(c => c.slug + '\n' + c.fichiers.map(f => f.chemin + '\n' + f.texte).join('\n')).join('\n\u0001'));
+    const hash = 'g1:' + hashTxt(lus.map(c => c.slug + '\n' + JSON.stringify(c.config || '') + c.fichiers.map(f => f.chemin + '\n' + f.texte).join('\n')).join('\n\u0001'));
     if(!lus.length || (!force && C.coffresHash === hash)) return;
     const R = Cloud.repo, total = lus.reduce((n, c) => n + c.fichiers.length, 0);
     for(let essai = 0; essai < 4; essai++){
@@ -982,6 +992,9 @@ async function envoyerCoffres(force=false){
       const index = {maj:new Date().toISOString(), appareil:L.nomAppareil || PLATEFORME, coffres:[]};
       for(const c of lus){
         index.coffres.push({nom:c.nom, slug:c.slug, notes:c.fichiers.length, maj:(x => x > 0 ? new Date(x).toISOString() : null)(Math.max(...c.fichiers.map(f => f.mtime || 0)))});
+        const gp = `coffres/${c.slug}.graphe.json`, gt = JSON.stringify(analyserCoffre(c.fichiers, c.config)); garder.add(gp);
+        if(avant[gp] !== await shaGit(gt)) entrees.push({path:gp, mode:'100644', type:'blob', content:gt});
+        OBS.graphes[c.slug] = null;
         for(const f of c.fichiers){
           const p = `coffres/${c.slug}/${f.chemin.replace(/\\/g, '/')}`; garder.add(p);
           if(avant[p] !== await shaGit(f.texte)) entrees.push({path:p, mode:'100644', type:'blob', content:f.texte});
@@ -1001,8 +1014,169 @@ async function envoyerCoffres(force=false){
   finally{ coffresEnCours = false; busy.coffres = false; saveC(); if(view === 'notes') render(); }
 }
 
+/* ================================================================
+   Graphe et couleurs des coffres (3.4) : le PC calcule les liens, étiquettes et couleurs de chaque coffre
+   (coffres/<slug>.graphe.json) ; tous les appareils dessinent le graphe comme Obsidian.
+================================================================ */
+const rgbHex = n => '#' + (n >>> 0 & 0xffffff).toString(16).padStart(6, '0');
+function tagsDe(t){
+  const tags = new Set(), fm = t.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if(fm){
+    const y = fm[1], m = y.match(/^tags?:[ \t]*(.*)$/m);
+    if(m){
+      if(m[1].trim()) m[1].replace(/[[\]]/g, '').split(/[,\s]+/).forEach(x => x && tags.add(x.replace(/^#/, '')));
+      else { const après = y.slice(y.indexOf(m[0]) + m[0].length).split('\n'); for(const l of après.slice(1)){ const x = l.match(/^\s*-\s*(.+)/); if(!x) break; tags.add(x[1].trim().replace(/^#|["']/g, '')); } }
+    }
+  }
+  const corps = fm ? t.slice(fm[0].length) : t;
+  for(const m of corps.replace(/```[\s\S]*?```|`[^`]*`/g, '').matchAll(/(^|[\s(])#([\p{L}\p{N}_][\p{L}\p{N}_/-]*)/gu)) if(!/^\d+$/.test(m[2])) tags.add(m[2]);
+  return [...tags].filter(Boolean);
+}
+function couleursCss(css){
+  const c = {callouts:{}, dossiers:[], tags:[]};
+  for(const m of (css||'').matchAll(/\.callout\[data-callout="([^"]+)"\]\s*\{[^}]*--callout-color:\s*([\d\s,]+)/g)) c.callouts[m[1]] = m[2].trim();
+  for(const m of (css||'').matchAll(/\.nav-folder-title\[data-path\^="([^"]+)"\]\s*\{[^}]*?color:\s*(rgba?\([^)]+\)|#[0-9a-f]{3,8})/gi)) c.dossiers.push([m[1], m[2]]);
+  for(const m of (css||'').matchAll(/\.tag\[href\^="#([^"]+)"\]\s*\{([^}]*)\}/g)){ const fg = m[2].match(/(?:^|;)\s*color:\s*([^;]+)/), bg = m[2].match(/background(?:-color)?:\s*([^;]+)/); c.tags.push([m[1], fg?.[1].trim() || '', bg?.[1].trim() || '']); }
+  return c;
+}
+function analyserCoffre(fichiers, config){
+  const parBase = {}, parChemin = {};
+  for(const f of fichiers){ const p = f.chemin.replace(/\\/g, '/'); (parBase[sansAccent(titreNote(p))] ||= []).push(p); parChemin[sansAccent(p.replace(/\.md$/i, ''))] = p; }
+  const resoudre = n => { n = n.trim().replace(/\.md$/i, ''); const k = sansAccent(n); return parChemin[k] || (parBase[sansAccent(n.split('/').pop())] || [])[0] || Object.entries(parChemin).find(([c]) => c.endsWith('/' + k))?.[1] || null; };
+  const notes = fichiers.map(f => {
+    const p = f.chemin.replace(/\\/g, '/'), l = new Set(), u = new Set();
+    for(const m of f.texte.matchAll(/!?\[\[([^\]|#^]+)[^\]]*\]\]/g)){ const r = resoudre(m[1]); if(r){ if(r !== p) l.add(r); } else if(!/\.(png|jpe?g|gif|svg|pdf|webp|mp4|mp3)$/i.test(m[1])) u.add(m[1].trim()); }
+    for(const m of f.texte.matchAll(/\]\(([^)]+?\.md)\)/g)){ const r = resoudre(decodeURIComponent(m[1]).split('/').pop()); if(r && r !== p) l.add(r); }
+    return {p, t:tagsDe(f.texte), l:[...l], u:[...u]};
+  });
+  const g = config?.graph;
+  return {v:1, notes, groupes:(g?.colorGroups || []).map(x => ({q:x.query, c:rgbHex(x.color?.rgb || 0)})), masquerNonCrees:!!g?.hideUnresolved, orphelins:g ? g.showOrphans : true, css:couleursCss(config?.css)};
+}
+
+/* Couleurs (même logique que les groupes de couleur d'Obsidian : le premier groupe qui correspond gagne) */
+function correspond(q, n){
+  return q.split(/\s+OR\s+/).some(part => part.trim().split(/\s+/).every(t => {
+    t = t.replace(/^"|"$/g, ''); const neg = t.startsWith('-'); if(neg) t = t.slice(1);
+    let ok; const [k, v] = t.includes(':') ? [t.slice(0, t.indexOf(':')), sansAccent(t.slice(t.indexOf(':') + 1).replace(/^"|"$/g, ''))] : ['', sansAccent(t)];
+    if(k === 'tag') ok = n.t.some(x => { x = sansAccent(x); const w = v.replace(/^#/, ''); return x === w || x.startsWith(w + '/'); });
+    else if(k === 'path') ok = sansAccent(n.p).includes(v);
+    else if(k === 'file') ok = sansAccent(titreNote(n.p)).includes(v);
+    else ok = sansAccent(n.p).includes(v);
+    return neg ? !ok : ok;
+  }));
+}
+function couleurNote(G, n){
+  if(n.nc) return null;
+  for(const g of G.groupes || []) if(correspond(g.q, n)) return g.c;
+  for(const [pre, c] of G.css?.dossiers || []) if(n.p.startsWith(pre)) return c;
+  return null;
+}
+function couleurDossier(G, d){ for(const [pre, c] of G?.css?.dossiers || []) if(d.startsWith(pre)) return c; return ''; }
+function styleTag(G, tag){
+  for(const [pre, fg, bg] of G?.css?.tags || []) if(tag === pre || tag.startsWith(pre)) return `color:${fg || 'var(--ac)'};background:${bg || 'transparent'}`;
+  const gr = (G?.groupes || []).find(g => correspond(g.q, {p:'', t:[tag]}));
+  return gr ? `color:${gr.c};background:${gr.c}22` : '';
+}
+const CALLOUTS_STD = {note:'68,138,255', info:'68,138,255', tip:'0,191,165', success:'8,185,78', question:'236,117,0', warning:'236,117,0', danger:'233,49,71', bug:'233,49,71', example:'120,82,238', quote:'158,158,158', abstract:'0,176,255', todo:'68,138,255', failure:'233,49,71'};
+
+async function chargerGraphe(slug){
+  if(OBS.graphes[slug]) return OBS.graphes[slug];
+  const t = await ghRaw(Cloud.repo, `coffres/${slug}.graphe.json`).catch(() => null);
+  return (OBS.graphes[slug] = t ? JSON.parse(t) : {notes:(OBS.arbre?.[slug] || []).map(n => ({p:n.p, t:[], l:[], u:[]})), groupes:[], css:{}, vide:true});
+}
+
+/* Dessin du graphe : simulation de forces sur un canvas, glisser / pincer / molette, toucher une note */
+const GV = {pos:{}};
+function monterGraphe(slug){
+  const cv = $('#gcv'); const G = OBS.graphes[slug]; if(!cv || !G) return;
+  if(GV.stop) GV.stop();
+  const dpr = window.devicePixelRatio || 1, cs = getComputedStyle(document.body);
+  const coul = {fond:cs.getPropertyValue('--s1').trim() || '#111', trait:cs.getPropertyValue('--bd').trim() || '#444', txt:cs.getPropertyValue('--tx').trim() || '#eee', mu:cs.getPropertyValue('--mu').trim() || '#888', ac:cs.getPropertyValue('--ac').trim() || '#7c3aed'};
+  const etat = GV.pos[slug] ||= {n:{}, vue:null};
+  const nodes = [], idx = {};
+  const ajout = (id, p, nc) => { if(idx[id] != null) return idx[id]; const old = etat.n[id], a = Math.random()*6.283, r = 40 + Math.random()*260; idx[id] = nodes.length; nodes.push({id, p, nc, t:[], x:old?.x ?? Math.cos(a)*r, y:old?.y ?? Math.sin(a)*r, vx:0, vy:0, deg:0}); return idx[id]; };
+  for(const n of G.notes) Object.assign(nodes[ajout(n.p, n.p, false)], {t:n.t});
+  const edges = [];
+  for(const n of G.notes){
+    for(const l of n.l) if(idx[l] != null) edges.push([idx[n.p], idx[l]]);
+    if(!G.masquerNonCrees) for(const u of n.u) edges.push([idx[n.p], ajout('?' + u, u, true)]);
+  }
+  for(const [a, b] of edges){ nodes[a].deg++; nodes[b].deg++; }
+  const vis = G.orphelins === false ? nodes.filter(n => n.deg) : nodes;
+  for(const n of nodes){ n.c = couleurNote(G, n) || (n.nc ? coul.mu : '#8b8fa3'); n.r = 3.2 + Math.sqrt(n.deg) * 1.9; n.nom = n.nc ? n.p : titreNote(n.p); }
+  const voisins = nodes.map(() => new Set()); for(const [a, b] of edges){ voisins[a].add(b); voisins[b].add(a); }
+  let W = 0, H = 0, vue = etat.vue || {x:0, y:0, k:0.9}, alpha = Object.keys(etat.n).length ? 0.3 : 1, sel = GV.focus && idx[GV.focus] != null ? idx[GV.focus] : null, survol = null, raf = 0, vivant = true;
+  const taille = () => { const r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W*dpr; cv.height = H*dpr; };
+  taille();
+  cv.parentElement.querySelector('.gcharge')?.remove();
+  const pas = () => {
+    const n = vis.length, k = 1;
+    for(let i = 0; i < n; i++){ const a = vis[i]; for(let j = i + 1; j < n; j++){ const b = vis[j]; let dx = a.x - b.x, dy = a.y - b.y, d2 = dx*dx + dy*dy + 0.01; if(d2 > 250000) continue; const f = 900 * alpha / d2; dx *= f; dy *= f; a.vx += dx; a.vy += dy; b.vx -= dx; b.vy -= dy; } }
+    for(const [i, j] of edges){ const a = nodes[i], b = nodes[j]; const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx*dx + dy*dy) || 1, f = (d - 70) * 0.04 * alpha / d; a.vx += dx*f; a.vy += dy*f; b.vx -= dx*f; b.vy -= dy*f; }
+    for(const a of vis){ if(a === GV.tenu) { a.vx = a.vy = 0; continue; } a.vx -= a.x * 0.012 * alpha * k; a.vy -= a.y * 0.012 * alpha * k; a.vx *= 0.6; a.vy *= 0.6; a.x += a.vx; a.y += a.vy; }
+    alpha = Math.max(alpha * 0.985, 0);
+  };
+  const dessiner = () => {
+    const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
+    c.translate(W/2 + vue.x, H/2 + vue.y); c.scale(vue.k, vue.k);
+    const foc = sel ?? survol, proches = foc != null ? voisins[foc] : null;
+    c.lineWidth = 1 / Math.max(vue.k, .5);
+    for(const [i, j] of edges){
+      const a = nodes[i], b = nodes[j]; if(G.orphelins === false && (!a.deg || !b.deg)) continue;
+      const allume = foc != null && (i === foc || j === foc);
+      c.strokeStyle = allume ? nodes[foc].c === '#8b8fa3' ? coul.ac : nodes[foc].c : coul.trait; c.globalAlpha = foc != null && !allume ? 0.25 : allume ? 0.95 : 0.7;
+      c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke();
+    }
+    for(const [ii, a] of vis.entries()){
+      const i = idx[a.id], estFoc = i === foc, proche = proches?.has(i);
+      c.globalAlpha = foc != null && !estFoc && !proche ? 0.3 : 1;
+      c.fillStyle = a.c; c.beginPath(); c.arc(a.x, a.y, a.r * (estFoc ? 1.35 : 1) / Math.min(1, Math.sqrt(vue.k)), 0, 6.283); c.fill();
+      if(estFoc){ c.strokeStyle = coul.txt; c.lineWidth = 1.5 / vue.k; c.stroke(); c.lineWidth = 1 / Math.max(vue.k, .5); }
+      const montrer = estFoc || proche || vue.k > 1.15 || (vue.k > .6 && a.deg >= 6) || a.deg >= 18;
+      if(montrer){ c.globalAlpha = foc != null && !estFoc && !proche ? 0.25 : estFoc || proche ? 1 : Math.min(1, (vue.k - .5)); c.fillStyle = coul.txt; c.font = `${(estFoc ? 13 : 11.5) / Math.max(vue.k, .7)}px Inter, system-ui, sans-serif`; c.textAlign = 'center'; c.fillText(a.nom.length > 34 ? a.nom.slice(0, 32) + '…' : a.nom, a.x, a.y + a.r + 12 / Math.max(vue.k, .7)); }
+    }
+    c.globalAlpha = 1;
+  };
+  if(!Object.keys(etat.n).length){ for(let i = 0; i < 220 && alpha > 0.02; i++) pas(); }
+  if(!etat.vue){
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity; for(const a of vis){ x0 = Math.min(x0, a.x); x1 = Math.max(x1, a.x); y0 = Math.min(y0, a.y); y1 = Math.max(y1, a.y); }
+    if(isFinite(x0)){ vue.k = Math.min(2, Math.max(.2, Math.min((W - 40) / (x1 - x0 + 1), (H - 130) / (y1 - y0 + 1)))); vue.x = -(x0 + x1) / 2 * vue.k; vue.y = -(y0 + y1) / 2 * vue.k + 10; }
+    if(sel != null){ vue.k = Math.max(vue.k, 1.1); vue.x = -nodes[sel].x*vue.k; vue.y = -nodes[sel].y*vue.k; }
+  }
+  const boucle = () => { if(!vivant || !cv.isConnected){ sauver(); return; } if(alpha > 0.004) pas(); dessiner(); raf = requestAnimationFrame(boucle); };
+  const sauver = () => { for(const n of nodes) etat.n[n.id] = {x:n.x, y:n.y}; etat.vue = vue; };
+  GV.stop = () => { vivant = false; cancelAnimationFrame(raf); sauver(); };
+  const monde = (cx, cy) => { const r = cv.getBoundingClientRect(); return [(cx - r.left - W/2 - vue.x) / vue.k, (cy - r.top - H/2 - vue.y) / vue.k]; };
+  const trouver = (cx, cy) => { const [x, y] = monde(cx, cy); let best = null, bd = Infinity; for(const a of vis){ const d = Math.hypot(a.x - x, a.y - y); if(d < Math.max(a.r + 6/vue.k, 12/vue.k) && d < bd){ bd = d; best = idx[a.id]; } } return best; };
+  const choisir = i => { sel = i; GV.focus = i != null ? nodes[i].id : null; const b = $('#gsel'); if(!b) return;
+    if(i == null){ b.hidden = true; return; }
+    const n = nodes[i]; b.hidden = false;
+    b.innerHTML = `<span class="gdot" style="background:${n.c}"></span><div style="min-width:0;flex:1"><b class="clamp1">${esc(n.nom)}</b><div class="xs muted">${n.nc ? 'Note pas encore créée' : `${plural(voisins[i].size, 'lien')}${n.t.length ? ' · #' + esc(n.t.slice(0, 3).join(' #')) : ''}`}</div></div>${n.nc ? '' : `<button class="btn sm primary" data-action="obsNote" data-p="${esc(n.p)}">Ouvrir</button>`}`; };
+  const P = new Map(); let geste = null;
+  cv.onpointerdown = e => { cv.setPointerCapture(e.pointerId); P.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(P.size === 1){ const i = trouver(e.clientX, e.clientY); geste = {type:i != null ? 'noeud' : 'pan', i, x0:e.clientX, y0:e.clientY, bouge:false, vx:vue.x, vy:vue.y}; if(i != null){ GV.tenu = nodes[i]; } }
+    else if(P.size === 2){ const [a, b] = [...P.values()]; geste = {type:'pince', d0:Math.hypot(a.x - b.x, a.y - b.y), k0:vue.k, vx:vue.x, vy:vue.y, mx:(a.x + b.x)/2, my:(a.y + b.y)/2}; GV.tenu = null; } };
+  cv.onpointermove = e => {
+    if(!P.has(e.pointerId)){ if(e.pointerType === 'mouse'){ const i = trouver(e.clientX, e.clientY); if(i !== survol){ survol = i; cv.style.cursor = i != null ? 'pointer' : 'grab'; } } return; }
+    P.set(e.pointerId, {x:e.clientX, y:e.clientY}); if(!geste) return;
+    if(geste.type === 'pince' && P.size === 2){ const [a, b] = [...P.values()], d = Math.hypot(a.x - b.x, a.y - b.y), k = Math.min(4, Math.max(.15, geste.k0 * d / geste.d0)); const r = cv.getBoundingClientRect(), cx = geste.mx - r.left - W/2, cy = geste.my - r.top - H/2; vue.x = cx - (cx - geste.vx) * k / geste.k0; vue.y = cy - (cy - geste.vy) * k / geste.k0; vue.k = k; return; }
+    const dx = e.clientX - geste.x0, dy = e.clientY - geste.y0; if(Math.hypot(dx, dy) > 5) geste.bouge = true; if(!geste.bouge) return;
+    if(geste.type === 'pan'){ vue.x = geste.vx + dx; vue.y = geste.vy + dy; }
+    else if(geste.type === 'noeud'){ const [x, y] = monde(e.clientX, e.clientY), n = nodes[geste.i]; n.x = x; n.y = y; alpha = Math.max(alpha, .25); }
+  };
+  const fin = e => { P.delete(e.pointerId); if(geste && !geste.bouge && geste.type !== 'pince' && P.size === 0){ const i = geste.type === 'noeud' ? geste.i : null; if(i != null && i === sel && !nodes[i].nc) ACTIONS.obsNote({dataset:{p:nodes[i].p}}); else choisir(i); } if(P.size === 0){ geste = null; GV.tenu = null; } };
+  cv.onpointerup = fin; cv.onpointercancel = fin;
+  cv.onwheel = e => { e.preventDefault(); const r = cv.getBoundingClientRect(), cx = e.clientX - r.left - W/2, cy = e.clientY - r.top - H/2, k = Math.min(4, Math.max(.15, vue.k * Math.exp(-e.deltaY * 0.0015))); vue.x = cx - (cx - vue.x) * k / vue.k; vue.y = cy - (cy - vue.y) * k / vue.k; vue.k = k; };
+  cv.ondblclick = e => { const i = trouver(e.clientX, e.clientY); if(i != null && !nodes[i].nc) ACTIONS.obsNote({dataset:{p:nodes[i].p}}); };
+  new ResizeObserver(() => { if(cv.isConnected) taille(); }).observe(cv);
+  GV.recentrer = () => { etat.vue = null; GV.focus = null; monterGraphe(slug); };
+  GV.chercher = q => { q = sansAccent(q.trim()); if(!q) return; const n = vis.find(a => sansAccent(a.nom).startsWith(q)) || vis.find(a => sansAccent(a.nom).includes(q)); if(!n) return toast('Aucune note ne correspond', true); const i = idx[n.id]; vue.k = Math.max(vue.k, 1.3); vue.x = -n.x * vue.k; vue.y = -n.y * vue.k; choisir(i); };
+  choisir(sel);
+  boucle();
+}
+
 /* Lecture (tous les appareils) */
-const OBS = {index:null, arbre:null, coffre:LS.get('atelier.obs.coffre', null), note:null, q:'', textes:{}, charge:false, err:null, plein:{}, ouverts:{}};
+const OBS = {index:null, arbre:null, coffre:LS.get('atelier.obs.coffre', null), note:null, q:'', textes:{}, charge:false, err:null, plein:{}, ouverts:{}, graphes:{}, mode:LS.get('atelier.obs.mode', 'graphe')};
 async function chargerCoffres(force=false){
   if(OBS.charge || !L.ghToken) return;
   if(!force && OBS.index && OBS.arbre) return;
@@ -1029,12 +1203,26 @@ async function texteNote(slug, p){
   return (OBS.textes[k] = t);
 }
 const titreNote = p => p.split('/').pop().replace(/\.md$/i, '');
-function mdNote(t){
-  t = t.replace(/^---\n[\s\S]*?\n---\n/, '');
+function mdNote(t, G){
+  t = t.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');
   const liens = [];
-  t = t.replace(/!?\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (m, cible, alias) => { liens.push([cible.trim(), (alias || cible).trim()]); return `\u0001${liens.length - 1}\u0001`; });
-  t = t.replace(/^>\s*\[!(\w+)\][-+]?\s*(.*)$/gm, (m, k, x) => `> **${x || k}**`).replace(/^(\s*[-*])\s+\[x\]/gim, '$1 ☑').replace(/^(\s*[-*])\s+\[ \]/gm, '$1 ☐');
-  return md(t).replace(/<p>&gt;\s?(.*?)<\/p>/g, '<p class="cit">$1</p>').replace(/\u0001(\d+)\u0001/g, (m, i) => `<a href="#" class="wl" data-action="obsLien" data-n="${esc(liens[i][0])}">${esc(liens[i][1])}</a>`);
+  t = t.replace(/!?\[\[([^\]|#^]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (m, cible, alias) => { liens.push([cible.trim(), (alias || cible).trim()]); return `\u0001${liens.length - 1}\u0001`; });
+  t = t.replace(/^(\s*[-*])\s+\[x\]/gim, '$1 ☑').replace(/^(\s*[-*])\s+\[ \]/gm, '$1 ☐');
+  // encadrés (callouts) : blocs de lignes « > », colorés comme dans Obsidian
+  const lignes = t.split('\n'), blocs = []; let cur = [];
+  const pousser = () => { if(cur.length) blocs.push({md:cur.join('\n')}); cur = []; };
+  for(let i = 0; i < lignes.length; i++){
+    if(/^>/.test(lignes[i])){
+      pousser(); const q = []; while(i < lignes.length && /^>/.test(lignes[i])) q.push(lignes[i++].replace(/^>\s?/, '')); i--;
+      const m = q[0].match(/^\[!([\w-]+)\][-+]?\s*(.*)$/);
+      blocs.push(m ? {co:m[1].toLowerCase(), titre:m[2] || m[1], md:q.slice(1).join('\n')} : {cit:q.join('\n')});
+    } else cur.push(lignes[i]);
+  }
+  pousser();
+  const coul = k => G?.css?.callouts?.[k] || CALLOUTS_STD[k] || '124,92,230';
+  let html = blocs.map(b => b.co ? `<div class="callout" style="--cc:${coul(b.co)}"><div class="cot">${esc(b.titre).replace(/\u0001(\d+)\u0001/g, (m, i) => esc(liens[i][1]))}</div>${b.md.trim() ? md(b.md) : ''}</div>` : b.cit != null ? `<div class="cit">${md(b.cit)}</div>` : md(b.md)).join('');
+  html = html.replace(/\u0001(\d+)\u0001/g, (m, i) => `<a href="#" class="wl" data-action="obsLien" data-n="${esc(liens[i][0])}">${esc(liens[i][1])}</a>`);
+  return html.replace(/(^|[\s>(])#([\p{L}\p{N}_][\p{L}\p{N}_/-]*)/gu, (m, av, tag) => /^\d+$/.test(tag) ? m : `${av}<span class="otag" style="${styleTag(G, tag)}">#${tag}</span>`);
 }
 function vNotes(){
   if(!OBS.index && !OBS.charge){ OBS.index = C.obsIndex || null; OBS.arbre = C.obsArbre || null; }
@@ -1045,18 +1233,35 @@ function vNotes(){
       ${C.coffresErr ? `<div class="err" style="margin-top:8px">${esc(C.coffresErr)}</div>` : ''}
       <div class="btns" style="margin-top:10px"><button class="btn sm ghost" data-action="coffreAjouter">${ic('plus','s')} Ajouter un autre dossier</button></div></section>` : '';
   if(OBS.note && OBS.coffre){
-    const k = OBS.coffre + '/' + OBS.note, t = OBS.textes[k];
+    const k = OBS.coffre + '/' + OBS.note, t = OBS.textes[k], G = OBS.graphes[OBS.coffre];
     if(t == null) setTimeout(() => texteNote(OBS.coffre, OBS.note).then(() => render()).catch(e => { OBS.textes[k] = '⚠︎ ' + e.message; render(); }), 0);
+    if(G === undefined) setTimeout(() => chargerGraphe(OBS.coffre).then(() => render()), 0);
     const dossier = OBS.note.includes('/') ? OBS.note.split('/').slice(0, -1).join(' › ') : '';
-    return `<div class="btns" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} ${esc(cof.find(c => c.slug === OBS.coffre)?.nom || 'Coffre')}</button></div>
-      <section class="card"><div class="xs muted">${esc(dossier)}</div><h2 style="margin:2px 0 10px;font-size:21px">${esc(titreNote(OBS.note))}</h2>
-        ${t == null ? spin(' Chargement…') : mdNote(t)}
-        ${t ? `<div class="btns" style="margin-top:14px"><button class="btn sm" data-action="obsChef">${ic('chef','s')} En parler au chef</button><button class="btn sm ghost" data-action="obsCopier">${ic('copy','s')} Copier</button></div>` : ''}</section>`;
+    const moi = G?.notes?.find(n => n.p === OBS.note), retro = (G?.notes || []).filter(n => n.l.includes(OBS.note));
+    const c0 = moi && G ? couleurNote(G, moi) : null;
+    const lien = n => `<button class="nitem" data-action="obsNote" data-p="${esc(n.p)}"><span class="gdot" style="background:${couleurNote(G, n) || '#8b8fa3'}"></span><span class="clamp1">${esc(titreNote(n.p))}</span></button>`;
+    return `<div class="btns" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} ${esc(cof.find(c => c.slug === OBS.coffre)?.nom || 'Coffre')}</button><button class="btn sm ghost" data-action="obsVoirGraphe">${ic('vault','s')} Dans le graphe</button></div>
+      <section class="card" ${c0 ? `style="border-top:3px solid ${c0}"` : ''}><div class="xs" style="color:${esc(couleurDossier(G, OBS.note)) || 'var(--mu)'};font-weight:600">${esc(dossier)}</div><h2 style="margin:2px 0 8px;font-size:21px">${esc(titreNote(OBS.note))}</h2>
+        ${moi?.t?.length ? `<div class="kv" style="margin-bottom:8px">${moi.t.map(x => `<span class="otag" style="${styleTag(G, x)}">#${esc(x)}</span>`).join('')}</div>` : ''}
+        ${t == null ? spin(' Chargement…') : mdNote(t, G)}
+        ${t ? `<div class="btns" style="margin-top:14px"><button class="btn sm" data-action="obsChef">${ic('chef','s')} En parler au chef</button><button class="btn sm ghost" data-action="obsCopier">${ic('copy','s')} Copier</button></div>` : ''}</section>
+      ${retro.length || moi?.l?.length ? `<section class="card"><div class="grid2">${moi?.l?.length ? `<div><div class="xs muted" style="font-weight:600;margin-bottom:4px">CETTE NOTE MÈNE À · ${moi.l.length}</div>${moi.l.map(p => lien(G.notes.find(n => n.p === p) || {p, t:[]})).join('')}</div>` : ''}${retro.length ? `<div><div class="xs muted" style="font-weight:600;margin-bottom:4px">CITÉE PAR · ${retro.length}</div>${retro.map(lien).join('')}</div>` : ''}</div></section>` : ''}`;
   }
   if(OBS.coffre && cof.some(c => c.slug === OBS.coffre)){
-    const c = cof.find(x => x.slug === OBS.coffre);
-    return `<div class="btns" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} Tous les coffres</button></div>
-      <section class="card"><div class="hd"><h2>${esc(c.nom)}</h2><span class="xs muted">${c.notes} notes</span></div>
+    const c = cof.find(x => x.slug === OBS.coffre), G = OBS.graphes[c.slug];
+    const onglets = `<div class="seg" style="margin:0 0 10px"><button class="${OBS.mode === 'graphe' ? 'on' : ''}" data-action="obsMode" data-m="graphe">${ic('vault','s')} Graphe</button><button class="${OBS.mode !== 'graphe' ? 'on' : ''}" data-action="obsMode" data-m="notes">${ic('tasks','s')} Notes</button></div>`;
+    const tete = `<div class="btns" style="margin:4px 0 10px;align-items:center"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} Tous les coffres</button><b style="margin-left:4px" class="clamp1">${esc(c.nom)}</b><span class="xs muted">${c.notes} notes</span></div>${onglets}`;
+    if(OBS.mode === 'graphe'){
+      setTimeout(() => chargerGraphe(c.slug).then(() => monterGraphe(c.slug)), 0);
+      const leg = G ? [...(G.groupes || []).map(g => [g.q.replace(/^tag:#?(type\/)?|^path:|^file:/g, ''), g.c])] : [];
+      return `${tete}<section class="card gcard"><div class="gbox"><canvas id="gcv" aria-label="Graphe des notes"></canvas>
+          <div class="gtools"><input id="gq" type="search" placeholder="Trouver une note…" autocomplete="off"><button class="ibtn" data-action="obsRecentrer" aria-label="Recentrer" title="Recentrer">${ic('redo','s')}</button></div>
+          <div id="gsel" class="gsel" hidden></div>${G ? '' : `<div class="gcharge">${spin(' Préparation du graphe…')}</div>`}</div>
+        ${leg.length ? `<div class="gleg">${leg.map(([n, col]) => `<span><i style="background:${col}"></i>${esc(n)}</span>`).join('')}</div>` : G?.vide ? '<p class="xs muted" style="margin:8px 2px 0">Liens et couleurs pas encore envoyés : ouvre Atelier sur le PC (version 3.4 ou plus).</p>' : ''}
+        <p class="xs muted" style="margin:8px 2px 0">Touche une note pour voir ses liens, touche-la encore pour l'ouvrir. Glisse pour te déplacer, pince ou molette pour zoomer.</p></section>`;
+    }
+    if(G === undefined) setTimeout(() => chargerGraphe(c.slug).then(() => { const l = $('#oliste'); if(l) l.innerHTML = listeNotes(c.slug); }), 0);
+    return `${tete}<section class="card">
         <input id="oq" type="search" style="width:100%" placeholder="Chercher une note…" value="${esc(OBS.q)}" autocomplete="off">
         <label class="xs muted" style="display:flex;gap:8px;align-items:center;margin-top:10px;cursor:pointer"><input type="checkbox" id="obsPlein" style="width:18px;height:18px;flex:none;margin:0" ${OBS.plein[c.slug] ? 'checked' : ''}> Chercher aussi dans le texte des notes</label>
         <div id="oliste" style="margin-top:10px">${listeNotes(c.slug)}</div></section>`;
@@ -1073,10 +1278,11 @@ function listeNotes(slug){
   const vis = notes.filter(ok);
   if(!notes.length) return OBS.charge ? spin(' Chargement…') : '<p class="muted sm">Aucune note.</p>';
   if(!vis.length) return '<p class="muted sm">Aucune note ne correspond.</p>';
-  const item = n => `<button class="nitem" data-action="obsNote" data-p="${esc(n.p)}">${ic('edit','s')}<span class="clamp1">${esc(titreNote(n.p))}</span>${q ? `<span class="xs muted clamp1">${esc(n.p.split('/').slice(0, -1).join(' › '))}</span>` : ''}</button>`;
+  const G = OBS.graphes[slug], gn = G?.notes ? Object.fromEntries(G.notes.map(x => [x.p, x])) : {};
+  const item = n => `<button class="nitem" data-action="obsNote" data-p="${esc(n.p)}"><span class="gdot" style="background:${(gn[n.p] && couleurNote(G, gn[n.p])) || '#8b8fa3'}"></span><span class="clamp1">${esc(titreNote(n.p))}</span>${q ? `<span class="xs muted clamp1">${esc(n.p.split('/').slice(0, -1).join(' › '))}</span>` : ''}</button>`;
   if(q) return vis.slice(0, 200).map(item).join('');
   const groupes = {}; for(const n of vis){ const d = n.p.includes('/') ? n.p.split('/').slice(0, -1).join(' › ') : ''; (groupes[d] ||= []).push(n); }
-  return Object.keys(groupes).sort((a, b) => a.localeCompare(b, 'fr')).map(d => d ? `<details class="ndos" data-dos="${esc(d)}" ${OBS.ouverts[slug + d] ? 'open' : ''}><summary>${ic('apps','s')} ${esc(d)} <span class="xs muted">${groupes[d].length}</span></summary>${groupes[d].map(item).join('')}</details>` : groupes[d].map(item).join('')).join('');
+  return Object.keys(groupes).sort((a, b) => a.localeCompare(b, 'fr')).map(d => d ? `<details class="ndos" data-dos="${esc(d)}" ${OBS.ouverts[slug + d] ? 'open' : ''}><summary style="color:${esc(couleurDossier(G, d.replace(/ › /g, '/'))) || 'inherit'}">${ic('apps','s')} ${esc(d)} <span class="xs muted">${groupes[d].length}</span></summary>${groupes[d].map(item).join('')}</details>` : groupes[d].map(item).join('')).join('');
 }
 async function chargerTextes(slug){
   const notes = (OBS.arbre?.[slug] || []).filter(n => OBS.textes[slug + '/' + n.p] == null);
@@ -1613,7 +1819,7 @@ function renderChrome(){
   $('#snav').innerHTML = nav(true);
   $('#sideApps').innerHTML = tracked().map(a => { const sp = pireDe(C.sante?.apps?.[a.repo]); const h = sp === 'pb' ? {cls:'red', label:'problème de synchro'} : sp === 'att' ? {cls:'orange', label:'à surveiller'} : health(C.apps[a.repo]); return `<button class="sapp" data-action="openApp" data-repo="${esc(a.repo)}">${avatar(a, 's')}<span class="nm">${esc(a.name)}</span><span class="dot ${h.cls}" title="${esc(h.label)}"></span></button>`; }).join('');
   $('#sideVer').textContent = `Atelier ${VERSION} · ${L.nomAppareil || PLATEFORME}`;
-  $('#fab').hidden = view === 'settings' || view === 'chef';
+  $('#fab').hidden = view === 'settings' || view === 'chef' || view === 'notes';
   document.body.classList.toggle('chef', view === 'chef');
   document.title = (VUES[view]?.t || 'Atelier') + ' · Atelier';
 }
@@ -1950,8 +2156,11 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     await envoyer(`Atelier a détecté ceci sur ${nomApp(repo)} : « ${msg} ». Explique simplement ce qui se passe, si c'est grave, et ce que je dois faire (avec la consigne pour Claude si c'est du code).`, d);
   },
   verifier(){ return verifierTout(true); },
-  obsCoffre(el){ OBS.coffre = el.dataset.s; OBS.note = null; OBS.q = ''; LS.set('atelier.obs.coffre', OBS.coffre); render(); window.scrollTo(0, 0); },
-  obsNote(el){ OBS.note = el.dataset.p; render(); window.scrollTo(0, 0); },
+  obsCoffre(el){ OBS.coffre = el.dataset.s; OBS.note = null; OBS.q = ''; GV.focus = null; LS.set('atelier.obs.coffre', OBS.coffre); render(); window.scrollTo(0, 0); },
+  obsNote(el){ OBS.note = el.dataset.p; GV.focus = el.dataset.p; if(view !== 'notes') go('notes'); else render(); window.scrollTo(0, 0); },
+  obsMode(el){ OBS.mode = el.dataset.m; LS.set('atelier.obs.mode', OBS.mode); render(); },
+  obsVoirGraphe(){ GV.focus = OBS.note; const e = GV.pos[OBS.coffre]; if(e) e.vue = null; OBS.note = null; OBS.mode = 'graphe'; LS.set('atelier.obs.mode', 'graphe'); render(); window.scrollTo(0, 0); },
+  obsRecentrer(){ GV.recentrer?.(); },
   obsRetour(){ if(OBS.note) OBS.note = null; else { OBS.coffre = null; LS.set('atelier.obs.coffre', null); } render(); window.scrollTo(0, 0); },
   obsLien(el){
     const n = sansAccent(el.dataset.n.split('/').pop()), liste = OBS.arbre?.[OBS.coffre] || [];
@@ -2116,7 +2325,7 @@ document.addEventListener('click', async e => {
   e.preventDefault();
   try{ await fn(el); }catch(err){ toast(err.message || String(err), true); console.error(err); }
 });
-document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); });
+document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); if(e.key === 'Enter' && e.target.id === 'gq'){ e.preventDefault(); GV.chercher?.(e.target.value); e.target.blur(); } });
 document.addEventListener('toggle', e => { const d = e.target; if(d.classList?.contains('ndos')) OBS.ouverts[OBS.coffre + d.dataset.dos] = d.open; }, true);
 document.addEventListener('input', e => {
   if(e.target.id === 'tq'){ TF.q = e.target.value; render(); }
