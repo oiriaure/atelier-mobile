@@ -216,6 +216,7 @@ body.chef main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .sugg button:hover{border-color:var(--ac)}
 
 /* ===== Markdown ===== */
+.nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--tx);text-align:left;padding:9px 8px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}.nitem:hover{background:var(--s2)}.nitem .xs{margin-left:auto;flex-shrink:1}.ndos summary{cursor:pointer;padding:9px 6px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center;list-style:none}.ndos summary::-webkit-details-marker{display:none}.ndos .nitem{padding-left:22px}.md .cit{border-left:3px solid #7c3aed;padding:2px 0 2px 12px;margin:4px 0;color:var(--tx2)}.md a.wl{color:var(--ac);text-decoration:none;border-bottom:1px dashed}
 .md p{margin:6px 0}.md h4{margin:14px 0 4px;font-size:15px}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
 .md code{background:var(--s2);border-radius:6px;padding:1px 6px;font:13px var(--mono)}
 .md pre,pre.pre{white-space:pre-wrap;word-break:break-word;background:var(--s2);border-radius:12px;padding:12px;font:13px/1.55 var(--mono);max-height:55vh;overflow:auto;margin:8px 0}
@@ -390,6 +391,7 @@ details[open]>summary::before{transform:rotate(90deg)}
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M9 15l6-6M10.5 6.5l1.8-1.8a4 4 0 0 1 5.7 5.7l-1.8 1.8M13.5 17.5l-1.8 1.8a4 4 0 0 1-5.7-5.7l1.8-1.8"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-vault" viewBox="0 0 24 24"><path d="M12 2.5l7.5 4.3v8.4L12 21.5l-7.5-6.3V6.8z"/><path d="M12 2.5v19M4.5 6.8L12 11l7.5-4.2"/></symbol>
   <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/></symbol>
   <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
@@ -403,7 +405,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.2.1';
+const VERSION = '3.3.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -947,6 +949,142 @@ async function rangerCoffres(){
 }
 
 /* ================================================================
+   Coffres Obsidian dans le cloud (3.3) : l'app Atelier du PC envoie TOUS les coffres trouvés
+   (notes .md avec leurs dossiers) dans atelier-donnees › coffres/<coffre>/… en UN commit,
+   seulement les notes changées ; coffres/index.json = liste. Lecture partout (écran Obsidian).
+================================================================ */
+const slugCoffre = n => sansAccent(n).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'coffre';
+async function shaGit(txt){
+  const b = new TextEncoder().encode(txt), h = new TextEncoder().encode(`blob ${b.length}\0`);
+  const all = new Uint8Array(h.length + b.length); all.set(h); all.set(b, h.length);
+  return [...new Uint8Array(await crypto.subtle.digest('SHA-1', all))].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+let coffresEnCours = false;
+async function envoyerCoffres(force=false){
+  if(!PC || coffresEnCours || !L.ghToken) return;
+  if(!Cloud.joined){ setTimeout(() => envoyerCoffres(force), 30e3); return; }
+  coffresEnCours = true; busy.coffres = true; if(view === 'notes') render();
+  try{
+    const trouves = await PC.coffres(); C.coffres = trouves;
+    const chemins = [...new Map([...trouves, ...(C.coffresPlus||[])].map(c => [c.chemin.toLowerCase(), c])).values()];
+    const lus = [];
+    for(const c of chemins){ const r = await PC.lireCoffre(c.chemin); if(r && !r.erreur && r.fichiers.length) lus.push({nom:r.nom || c.nom, fichiers:r.fichiers}); }
+    const vus = {}; for(const c of lus){ const b = slugCoffre(c.nom); let s = b, i = 2; while(vus[s]) s = b + '-' + i++; c.slug = s; vus[s] = 1; }
+    const hash = hashTxt(lus.map(c => c.slug + '\n' + c.fichiers.map(f => f.chemin + '\n' + f.texte).join('\n')).join('\n\u0001'));
+    if(!lus.length || (!force && C.coffresHash === hash)) return;
+    const R = Cloud.repo, total = lus.reduce((n, c) => n + c.fichiers.length, 0);
+    for(let essai = 0; essai < 4; essai++){
+      const base = (await gh(`/repos/${R}/git/ref/heads/main`)).object.sha;
+      const commit = await gh(`/repos/${R}/git/commits/${base}`);
+      const arbre = await gh(`/repos/${R}/git/trees/${commit.tree.sha}?recursive=1`, {allow404:true});
+      const avant = {}; for(const f of arbre?.tree || []) if(f.type === 'blob' && f.path.startsWith('coffres/')) avant[f.path] = f.sha;
+      const entrees = [], garder = new Set(['coffres/index.json']);
+      const index = {maj:new Date().toISOString(), appareil:L.nomAppareil || PLATEFORME, coffres:[]};
+      for(const c of lus){
+        index.coffres.push({nom:c.nom, slug:c.slug, notes:c.fichiers.length, maj:(x => x > 0 ? new Date(x).toISOString() : null)(Math.max(...c.fichiers.map(f => f.mtime || 0)))});
+        for(const f of c.fichiers){
+          const p = `coffres/${c.slug}/${f.chemin.replace(/\\/g, '/')}`; garder.add(p);
+          if(avant[p] !== await shaGit(f.texte)) entrees.push({path:p, mode:'100644', type:'blob', content:f.texte});
+        }
+      }
+      for(const p of Object.keys(avant)) if(!garder.has(p)) entrees.push({path:p, mode:'100644', type:'blob', sha:null});
+      if(!entrees.length && avant['coffres/index.json']){ C.coffresHash = hash; break; }
+      entrees.push({path:'coffres/index.json', mode:'100644', type:'blob', content:JSON.stringify(index, null, 1)});
+      const t = await gh(`/repos/${R}/git/trees`, {method:'POST', body:{base_tree:commit.tree.sha, tree:entrees}});
+      const nc = await gh(`/repos/${R}/git/commits`, {method:'POST', body:{message:`Coffres Obsidian depuis ${L.nomAppareil || PLATEFORME} : ${plural(lus.length, 'coffre')}, ${total} notes (${entrees.length - 1} modifiées)`, tree:t.sha, parents:[base]}});
+      try{ await gh(`/repos/${R}/git/refs/heads/main`, {method:'PATCH', body:{sha:nc.sha}}); }
+      catch(e){ if(e.status === 422 && essai < 3){ await sleep(700 + Math.random()*900); continue; } throw e; }
+      C.coffresHash = hash; C.coffresEnvoi = Date.now(); delete C.coffresErr; OBS.index = index; OBS.arbre = null;
+      break;
+    }
+  }catch(e){ console.warn('coffres', e); C.coffresErr = e.message; }
+  finally{ coffresEnCours = false; busy.coffres = false; saveC(); if(view === 'notes') render(); }
+}
+
+/* Lecture (tous les appareils) */
+const OBS = {index:null, arbre:null, coffre:LS.get('atelier.obs.coffre', null), note:null, q:'', textes:{}, charge:false, err:null, plein:{}, ouverts:{}};
+async function chargerCoffres(force=false){
+  if(OBS.charge || !L.ghToken) return;
+  if(!force && OBS.index && OBS.arbre) return;
+  OBS.charge = true; OBS.err = null;
+  try{
+    const t = await ghRaw(Cloud.repo, 'coffres/index.json');
+    OBS.index = t ? JSON.parse(t) : {coffres:[]};
+    const ref = await gh(`/repos/${Cloud.repo}/git/trees/main?recursive=1`, {allow404:true});
+    OBS.arbre = {};
+    for(const f of ref?.tree || []){
+      const m = f.type === 'blob' && f.path.match(/^coffres\/([^/]+)\/(.+\.md)$/i); if(!m) continue;
+      (OBS.arbre[m[1]] ||= []).push({p:m[2], sha:f.sha});
+    }
+    C.obsIndex = OBS.index; C.obsArbre = OBS.arbre; saveC();
+  }catch(e){ OBS.err = e.message; OBS.index ||= C.obsIndex || null; OBS.arbre ||= C.obsArbre || null; }
+  finally{ OBS.charge = false; if(view === 'notes') render(); }
+}
+async function texteNote(slug, p){
+  const k = slug + '/' + p; if(OBS.textes[k] != null) return OBS.textes[k];
+  const n = (OBS.arbre?.[slug] || []).find(x => x.p === p);
+  let t;
+  if(n){ const g = await gh(`/repos/${Cloud.repo}/git/blobs/${n.sha}`); t = b64utf8(g.content); }
+  else t = await ghRaw(Cloud.repo, `coffres/${slug}/${p}`) || '';
+  return (OBS.textes[k] = t);
+}
+const titreNote = p => p.split('/').pop().replace(/\.md$/i, '');
+function mdNote(t){
+  t = t.replace(/^---\n[\s\S]*?\n---\n/, '');
+  const liens = [];
+  t = t.replace(/!?\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (m, cible, alias) => { liens.push([cible.trim(), (alias || cible).trim()]); return `\u0001${liens.length - 1}\u0001`; });
+  t = t.replace(/^>\s*\[!(\w+)\][-+]?\s*(.*)$/gm, (m, k, x) => `> **${x || k}**`).replace(/^(\s*[-*])\s+\[x\]/gim, '$1 ☑').replace(/^(\s*[-*])\s+\[ \]/gm, '$1 ☐');
+  return md(t).replace(/<p>&gt;\s?(.*?)<\/p>/g, '<p class="cit">$1</p>').replace(/\u0001(\d+)\u0001/g, (m, i) => `<a href="#" class="wl" data-action="obsLien" data-n="${esc(liens[i][0])}">${esc(liens[i][1])}</a>`);
+}
+function vNotes(){
+  if(!OBS.index && !OBS.charge){ OBS.index = C.obsIndex || null; OBS.arbre = C.obsArbre || null; }
+  if(!OBS.charge && (!OBS.index || !OBS.arbre)) setTimeout(() => chargerCoffres(), 0);
+  const cof = OBS.index?.coffres || [];
+  const pcBloc = PC ? `<section class="card"><div class="hd"><h2>${ic('desk')} Ce PC</h2><button class="btn sm" data-action="coffresEnvoyer" ${busy.coffres ? 'disabled' : ''}>${busy.coffres ? spin(' Envoi…') : ic('sync','s') + ' Envoyer maintenant'}</button></div>
+      <p class="sm muted" style="margin:0">Atelier envoie tout seul ${C.coffres?.length ? plural(C.coffres.length + (C.coffresPlus||[]).length, 'coffre') + ' trouvé(s) sur ce PC' : 'les coffres Obsidian de ce PC'} au cloud privé, toutes les 10 min quand une note change.${C.coffresEnvoi ? ' Dernier envoi ' + esc(ago(C.coffresEnvoi)) + '.' : ''}</p>
+      ${C.coffresErr ? `<div class="err" style="margin-top:8px">${esc(C.coffresErr)}</div>` : ''}
+      <div class="btns" style="margin-top:10px"><button class="btn sm ghost" data-action="coffreAjouter">${ic('plus','s')} Ajouter un autre dossier</button></div></section>` : '';
+  if(OBS.note && OBS.coffre){
+    const k = OBS.coffre + '/' + OBS.note, t = OBS.textes[k];
+    if(t == null) setTimeout(() => texteNote(OBS.coffre, OBS.note).then(() => render()).catch(e => { OBS.textes[k] = '⚠︎ ' + e.message; render(); }), 0);
+    const dossier = OBS.note.includes('/') ? OBS.note.split('/').slice(0, -1).join(' › ') : '';
+    return `<div class="btns" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} ${esc(cof.find(c => c.slug === OBS.coffre)?.nom || 'Coffre')}</button></div>
+      <section class="card"><div class="xs muted">${esc(dossier)}</div><h2 style="margin:2px 0 10px;font-size:21px">${esc(titreNote(OBS.note))}</h2>
+        ${t == null ? spin(' Chargement…') : mdNote(t)}
+        ${t ? `<div class="btns" style="margin-top:14px"><button class="btn sm" data-action="obsChef">${ic('chef','s')} En parler au chef</button><button class="btn sm ghost" data-action="obsCopier">${ic('copy','s')} Copier</button></div>` : ''}</section>`;
+  }
+  if(OBS.coffre && cof.some(c => c.slug === OBS.coffre)){
+    const c = cof.find(x => x.slug === OBS.coffre);
+    return `<div class="btns" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="obsRetour">${ic('back','s')} Tous les coffres</button></div>
+      <section class="card"><div class="hd"><h2>${esc(c.nom)}</h2><span class="xs muted">${c.notes} notes</span></div>
+        <input id="oq" type="search" style="width:100%" placeholder="Chercher une note…" value="${esc(OBS.q)}" autocomplete="off">
+        <label class="xs muted" style="display:flex;gap:8px;align-items:center;margin-top:10px;cursor:pointer"><input type="checkbox" id="obsPlein" style="width:18px;height:18px;flex:none;margin:0" ${OBS.plein[c.slug] ? 'checked' : ''}> Chercher aussi dans le texte des notes</label>
+        <div id="oliste" style="margin-top:10px">${listeNotes(c.slug)}</div></section>`;
+  }
+  return `${!cof.length ? (OBS.charge || !OBS.index ? `<section class="card">${spin(' Lecture du cloud…')}</section>` : empty('🗂️', 'Aucun coffre dans le cloud', PC ? 'Touche « Envoyer maintenant » : Atelier envoie tous les coffres Obsidian de ce PC.' : 'Ouvre l\'app Atelier sur ton PC : elle envoie tous tes coffres Obsidian au cloud, puis ils apparaissent ici sur tous tes appareils.')) : ''}
+    ${cof.length ? `<div class="sgrid">${cof.map(c => `<section class="card acard" tabindex="0" data-action="obsCoffre" data-s="${esc(c.slug)}" style="--c:#7c3aed"><div class="top"><span class="av" style="background:#7c3aed22;color:#a78bfa">${ic('vault')}</span><div style="min-width:0"><div class="nm clamp1">${esc(c.nom)}</div><div class="xs muted">${c.notes} notes${c.maj ? ' · modifié ' + esc(ago(c.maj)) : ''}</div></div></div></section>`).join('')}</div>
+      <p class="xs muted" style="margin:10px 2px">${OBS.index?.maj ? `Envoyés depuis ${esc(OBS.index.appareil || 'le PC')} ${esc(ago(OBS.index.maj))}. ` : ''}Stockés dans ton cloud privé (atelier-donnees), lisibles sur tous tes appareils.${OBS.err ? ' ⚠︎ ' + esc(OBS.err) : ''}</p>` : ''}
+    ${pcBloc}`;
+}
+function listeNotes(slug){
+  const q = sansAccent(OBS.q.trim()), notes = (OBS.arbre?.[slug] || []).slice().sort((a, b) => a.p.localeCompare(b.p, 'fr'));
+  const plein = OBS.plein[slug];
+  const ok = n => !q || sansAccent(n.p).includes(q) || (plein && sansAccent(OBS.textes[slug + '/' + n.p] || '').includes(q));
+  const vis = notes.filter(ok);
+  if(!notes.length) return OBS.charge ? spin(' Chargement…') : '<p class="muted sm">Aucune note.</p>';
+  if(!vis.length) return '<p class="muted sm">Aucune note ne correspond.</p>';
+  const item = n => `<button class="nitem" data-action="obsNote" data-p="${esc(n.p)}">${ic('edit','s')}<span class="clamp1">${esc(titreNote(n.p))}</span>${q ? `<span class="xs muted clamp1">${esc(n.p.split('/').slice(0, -1).join(' › '))}</span>` : ''}</button>`;
+  if(q) return vis.slice(0, 200).map(item).join('');
+  const groupes = {}; for(const n of vis){ const d = n.p.includes('/') ? n.p.split('/').slice(0, -1).join(' › ') : ''; (groupes[d] ||= []).push(n); }
+  return Object.keys(groupes).sort((a, b) => a.localeCompare(b, 'fr')).map(d => d ? `<details class="ndos" data-dos="${esc(d)}" ${OBS.ouverts[slug + d] ? 'open' : ''}><summary>${ic('apps','s')} ${esc(d)} <span class="xs muted">${groupes[d].length}</span></summary>${groupes[d].map(item).join('')}</details>` : groupes[d].map(item).join('')).join('');
+}
+async function chargerTextes(slug){
+  const notes = (OBS.arbre?.[slug] || []).filter(n => OBS.textes[slug + '/' + n.p] == null);
+  let i = 0; const pool = Array.from({length:6}, async () => { while(i < notes.length){ const n = notes[i++]; try{ await texteNote(slug, n.p); }catch{} } });
+  await Promise.all(pool);
+}
+
+/* ================================================================
    Suivi des synchros (3.1) : chaque app, ses envois, sa publication, ses sites
 ================================================================ */
 const SUIVI_DEFAUT = {
@@ -1017,6 +1155,7 @@ async function verifierApp(a){
   return items;
 }
 async function verifierAtelier(){
+  await chargerCoffres(true).catch(() => {});
   const ce = cloudEtat();
   const apps = {[(L.nomAppareil || PLATEFORME) + ' (cet appareil)']:new Date(Cloud.st.pushed || Date.now()).toISOString()};
   for(const r of Object.values(C.remote)) if(r.updated) apps[r.nom || r.platform] = new Date(r.updated).toISOString();
@@ -1025,6 +1164,8 @@ async function verifierAtelier(){
   return [
     {id:'cloud', nom:'Cloud Atelier', statut:Cloud.st.err ? (Cloud.st.err === 'hors ligne' ? 'att' : 'pb') : 'ok', detail:Cloud.st.err || ce.txt + (Cloud.st.last ? ' · vérifié il y a ' + dureeTxt(Date.now() - Cloud.st.last) : ''), appareils:apps},
     envois, site,
+    (() => { const ix = OBS.index || C.obsIndex, at = ix?.maj ? Date.parse(ix.maj) : 0, vieux = at && Date.now() - at > 7*864e5;
+      return {id:'coffres', nom:'Coffres Obsidian', statut:!ix?.coffres?.length ? 'info' : vieux ? 'att' : 'ok', detail:ix?.coffres?.length ? `${plural(ix.coffres.length, 'coffre')}, ${ix.coffres.reduce((n, c) => n + c.notes, 0)} notes · envoyés ${ago(ix.maj)} depuis ${ix.appareil || 'le PC'}` : 'Pas encore envoyés : ouvre Atelier sur le PC', quand:ix?.maj}; })(),
     {id:'ia', nom:'Chef de projet (Gemini)', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? `Clé présente${C.lastModel ? ' · dernier modèle : ' + C.lastModel : ''}` : 'Ajoute la clé Gemini dans les Réglages'}
   ];
 }
@@ -1156,8 +1297,8 @@ function cloudEtat(){
 /* ================================================================
    Vues
 ================================================================ */
-const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
-const ORDRE = ['today','apps','tasks','chef','sync','settings'];
+const VUES = {today:{t:'Aujourd\'hui', c:'Aujourd\'hui', i:'today'}, apps:{t:'Mes apps', c:'Apps', i:'apps'}, tasks:{t:'Tâches', c:'Tâches', i:'tasks'}, chef:{t:'Chef de projet', c:'Chef', i:'chef'}, notes:{t:'Obsidian', c:'Obsidian', i:'vault'}, sync:{t:'Synchro', c:'Synchro', i:'pulse'}, settings:{t:'Réglages', c:'Réglages', i:'settings'}};
+const ORDRE = ['today','apps','tasks','chef','notes','sync','settings'];
 const empty = (big, t, s, btn) => `<div class="empty"><div class="big">${big}</div><h3>${esc(t)}</h3><p>${esc(s)}</p>${btn||''}</div>`;
 
 function liveCard(a, folded=true){
@@ -1478,7 +1619,7 @@ function renderChrome(){
 }
 function render(){
   const keep = $('#chatIn')?.value, focusId = ['tq', 'dq', 'chatIn'].find(id => document.activeElement?.id === id);
-  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, sync:vSync, settings:vSettings}[view] || vToday)();
+  $('#main').innerHTML = ({today:vToday, apps:vApps, tasks:vTasks, chef:vChef, notes:vNotes, sync:vSync, settings:vSettings}[view] || vToday)();
   if(keep && $('#chatIn')) $('#chatIn').value = keep;
   if(focusId && $('#' + focusId)){ const t = $('#' + focusId); t.focus(); try{ t.setSelectionRange(t.value.length, t.value.length); }catch{} }
   renderChrome();
@@ -1809,6 +1950,28 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     await envoyer(`Atelier a détecté ceci sur ${nomApp(repo)} : « ${msg} ». Explique simplement ce qui se passe, si c'est grave, et ce que je dois faire (avec la consigne pour Claude si c'est du code).`, d);
   },
   verifier(){ return verifierTout(true); },
+  obsCoffre(el){ OBS.coffre = el.dataset.s; OBS.note = null; OBS.q = ''; LS.set('atelier.obs.coffre', OBS.coffre); render(); window.scrollTo(0, 0); },
+  obsNote(el){ OBS.note = el.dataset.p; render(); window.scrollTo(0, 0); },
+  obsRetour(){ if(OBS.note) OBS.note = null; else { OBS.coffre = null; LS.set('atelier.obs.coffre', null); } render(); window.scrollTo(0, 0); },
+  obsLien(el){
+    const n = sansAccent(el.dataset.n.split('/').pop()), liste = OBS.arbre?.[OBS.coffre] || [];
+    const x = liste.find(y => sansAccent(titreNote(y.p)) === n) || liste.find(y => sansAccent(y.p.replace(/\.md$/i, '')).endsWith(sansAccent(el.dataset.n)));
+    if(!x) return toast('Cette note n\'existe pas encore dans le coffre', true);
+    OBS.note = x.p; render(); window.scrollTo(0, 0);
+  },
+  async obsPlein(el){ /* via change */ OBS.plein[OBS.coffre] = el.checked; if(el.checked){ const l = $('#oliste'); if(l) l.innerHTML = spin(' Lecture de toutes les notes…'); await chargerTextes(OBS.coffre); } const l = $('#oliste'); if(l) l.innerHTML = listeNotes(OBS.coffre); },
+  async obsCopier(){ await navigator.clipboard.writeText(OBS.textes[OBS.coffre + '/' + OBS.note] || ''); toast('Note copiée'); },
+  async obsChef(){
+    const t = OBS.textes[OBS.coffre + '/' + OBS.note] || '', nom = titreNote(OBS.note);
+    const d = discNew(null, 'Note : ' + nom); discOuvrir(d.id); go('chef');
+    await envoyer(`Voici ma note Obsidian « ${nom} » :\n\n${clip(t, 12000)}\n\nRésume-la, dis-moi ce qui est important et ce que je pourrais en faire.`, d);
+  },
+  async coffresEnvoyer(){ await envoyerCoffres(true); toast(C.coffresErr ? 'Envoi impossible : ' + C.coffresErr : 'Coffres Obsidian envoyés au cloud', !!C.coffresErr); await chargerCoffres(true); },
+  async coffreAjouter(){
+    const dos = await PC?.choisirDossier(); if(!dos) return;
+    C.coffresPlus = [...(C.coffresPlus||[]).filter(c => c.chemin !== dos), {nom:dos.split(/[\\/]/).pop(), chemin:dos}]; saveC();
+    await envoyerCoffres(true); await chargerCoffres(true); toast('Dossier ajouté et envoyé');
+  },
   async obsEnvoyer(){ toast('Envoi du cerveau…'); await envoyerCerveaux(true); toast('Cerveau Obsidian envoyé'); syncAll(true); },
   ajoutJeton(){
     SHEET = null;
@@ -1917,6 +2080,7 @@ function palItems(q){
     {ic:'chef', t:'Nouvelle discussion', k:'Chef', run:() => { go('chef'); ACTIONS.newDisc(); }},
     ...discs().map(d => ({av:d.app ? appBy(d.app) : {emoji:'✦', couleur:'#6366f1'}, t:d.titre, k:'Discussion', run:() => { discOuvrir(d.id); go('chef'); }})),
     ...tracked().map(a => ({av:a, t:a.name, k:'App', run:() => appSheet(a.repo)})),
+    ...Object.entries(OBS.arbre || C.obsArbre || {}).flatMap(([sl, ns]) => ns.map(n => ({ic:'vault', t:titreNote(n.p), k:'Note', run:() => { OBS.coffre = sl; OBS.note = n.p; go('notes'); }}))),
     ...tracked().flatMap(a => (C.apps[a.repo]?.issues||[]).map(i => ({av:a, t:i.title, k:'Tâche #' + i.number, run:() => ACTIONS.issuePrompt({dataset:{repo:a.repo, n:i.number}}).catch(e => toast(e.message, true))})))
   ];
   return (q ? items.filter(x => (x.t + ' ' + x.k).toLowerCase().includes(q)) : items).slice(0, 40);
@@ -1953,13 +2117,16 @@ document.addEventListener('click', async e => {
   try{ await fn(el); }catch(err){ toast(err.message || String(err), true); console.error(err); }
 });
 document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList?.contains('acard')) e.target.click(); });
+document.addEventListener('toggle', e => { const d = e.target; if(d.classList?.contains('ndos')) OBS.ouverts[OBS.coffre + d.dataset.dos] = d.open; }, true);
 document.addEventListener('input', e => {
   if(e.target.id === 'tq'){ TF.q = e.target.value; render(); }
   if(e.target.id === 'dq'){ CHEF.q = e.target.value; render(); }
+  if(e.target.id === 'oq'){ OBS.q = e.target.value; const l = $('#oliste'); if(l) l.innerHTML = listeNotes(OBS.coffre); }
   if(e.target.id === 'chatIn'){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 140) + 'px'; }
 });
 document.addEventListener('change', async e => {
   const el = e.target;
+  if(el.id === 'obsPlein'){ ACTIONS.obsPlein(el); return; }
   if(el.dataset.local){
     const k = el.dataset.local, v = el.value.trim(), avant = L[k];
     L[k] = v; saveL();
@@ -2041,7 +2208,7 @@ else {
   adopterCles().then(() => { const c = get('cles', null); if((L.geminiKey && !c?.g) || ((L.jetons||[]).length && !c?.j)) partagerCle(); });
   if(navigator.onLine && tracked().length && Date.now() - (C.lastSync||0) > 5*60e3) syncAll(true);
   setTimeout(() => { if(Date.now() - (C.sante?.at||0) > 5*60e3) verifierTout(); }, 4000);
-  if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); }, 6000); setInterval(() => envoyerCerveaux(), 10*60e3); }
+  if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 6000); setInterval(async () => { await envoyerCerveaux(); await envoyerCoffres(); }, 10*60e3); }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
 /* Nouvelle version publiée : on le signale et on recharge en un geste */
