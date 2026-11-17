@@ -798,6 +798,17 @@ main{max-width:var(--maxw)}
   .seg button{font-size:12.5px;padding:8px 4px}
   .idseg button svg.i{display:none}
 }
+
+/* ===== 4.2 : formation en parcours ===== */
+.fseg{display:flex;margin:0 0 14px;overflow-x:auto;scrollbar-width:none}
+.fseg button{flex:1 1 auto;white-space:nowrap;padding:6px 8px;font-size:12.5px}
+.fparc{display:flex;flex-direction:column;gap:10px}
+.fpc{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;border:1px solid var(--bd);background:var(--s1);border-radius:18px;padding:14px;color:var(--tx);font:inherit;cursor:pointer}
+.fpc .rgt{white-space:normal;line-height:1.35}.fpc b{font-size:15px}.fpc small{display:block;color:var(--mu);font-size:12.5px;margin-top:3px}
+.fpc .form-bar{display:block;margin:10px 0 0;height:5px}
+.fpi{width:42px;height:42px;border-radius:13px;background:var(--s2);display:grid;place-items:center;font-size:22px;flex:none}
+.fphead{display:flex;align-items:center;gap:12px;margin:0 0 6px}.fphead b{display:block;font-size:16px}.fphead small{color:var(--mu);font-size:12.5px}
+html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border-color:var(--g-bord2);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
 @media (prefers-reduced-transparency:reduce){html.verre :is(.card,.kpi,.trow,#side,#tabs,#modal .sheet){background:var(--g-fort)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -884,7 +895,7 @@ main{max-width:var(--maxw)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.1.0';
+const VERSION = '4.2.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1367,10 +1378,18 @@ function flux(id){ let raf = 0, txt = ''; return t => { txt = t; if(raf) return;
 /* ================================================================
    Contexte du chef (résumés de cerveau : prompts courts = réponses rapides)
 ================================================================ */
-const F = window.FORMATION || {modules:[], critique:'', essentiels:'', total:0, texte:() => ''};
+const F = window.FORMATION || {modules:[], PARCOURS:[], critique:'', essentiels:'', plan:'', total:0, texte:() => '', selection:() => [], pour:() => '', naturesDe:() => new Set()};
+// Ce que le chef sait d'une app pour choisir les modules de sa formation (nom, cerveau résumé, indices connus)
+const INDICES_APPS = {boussole:'trading bourse swing marchés actions positions stop bougies electron windows mac', trousseau:'electron windows mac bureau', revisions:'pwa iphone site github pages', atelier:'pwa iphone site github pages gemini electron windows'};
+function profilApp(a){
+  if(!a) return '';
+  const d = C.apps?.[a.repo] || {}, indice = INDICES_APPS[slugApp(a.repo).replace(/[^a-z]/g, '')] || '';
+  return `${a.name} ${a.repo} ${indice}\n${get('resumes', {})[a.repo]?.text || clip(typeof cerveauTexte === 'function' ? cerveauTexte(d) || '' : '', 4000)}`;
+}
+const formationPour = (a, sujet, budget, base=[], seuil=5) => F.pour({contexte:profilApp(a), sujet, budget, base, seuil});
 const ROLE_CHEF = `Tu es le chef de projet et directeur technique de Clément, étudiant qui développe seul plusieurs apps (Electron pour Mac/Windows avec une version téléphone sur GitHub Pages, mises à jour publiées sur GitHub). Le code est écrit par une IA (Claude Code) à qui Clément donne des consignes : tu l'aides à décider quoi faire, à comprendre son code et à rédiger des consignes claires.
 Réponds en français, directement, de façon concrète et courte. Appuie-toi sur les faits fournis ; dis quand une information manque au lieu d'inventer.
-Esprit critique : tu ne valides jamais par politesse. Dis franchement ce qui ne va pas (valeur, coût, risque, cohérence avec l'existant) et propose mieux ; si c'est bon, dis-le simplement sans inventer de défaut. Tu as suivi une formation de ${F.total} h en développement d'applications web (${F.modules.map(m => m.titre.toLowerCase()).join(', ')}), dont la rédaction de prompts structurés pour Claude Code.`;
+Esprit critique : tu ne valides jamais par politesse. Dis franchement ce qui ne va pas (valeur, coût, risque, cohérence avec l'existant) et propose mieux ; si c'est bon, dis-le simplement sans inventer de défaut. Tu as suivi une formation de ${F.total} h en trois parcours : ${(F.PARCOURS || []).map(p => `${p.titre.toLowerCase()} (${p.h} h)`).join(' ; ')}. Tu appliques ce qu'elle enseigne et tu le cites quand c'est utile (« règle des mises à jour : ne jamais casser le démarrage »).`;
 let resumeEnCours = false;
 async function resumerCerveaux(){
   if(resumeEnCours || !L.geminiKey) return;
@@ -1491,7 +1510,7 @@ ${x.titre && !x.titreAuto ? x.titre + '\n' : ''}${x.texte}
 Lis cette idée avec ton esprit critique, en tenant compte de l'app, de son cerveau, de ses tâches, des prompts déjà faits et des autres idées. Réponds en JSON strict :
 {"titre":"titre court, 2 à 6 mots","compris":"ce que tu as compris de son intention, 1 ou 2 phrases","verdict":"bonne | a_preciser | a_ameliorer | a_revoir","avis":"ton avis franc en 2 à 4 phrases : valeur, coût, risques, cohérence avec l'existant","amelioration":"la note réécrite en mieux, prête à remplacer l'originale (garde son intention, précise le comportement attendu, 2 à 6 lignes) ; chaîne vide si l'idée est bonne telle quelle","questions":["0 à 3 questions courtes qui débloquent une décision"],"liens":[{"id":"identifiant d'une autre idée ci-dessus","relation":"complète | dépend de | contredit | doublon"}],"theme":"thème de 1 à 3 mots${themes.length ? ' (réutilise si possible : ' + themes.join(', ') + ')' : ''}","effort":"petit | moyen | gros","impact":"faible | moyen | fort"}
 Verdicts : bonne = claire et utile, à faire telle quelle (alors amelioration vide, n'invente aucun défaut) ; a_preciser = l'intention est bonne mais des décisions manquent (pose les questions) ; a_ameliorer = une meilleure version existe (donne-la) ; a_revoir = déjà faite, en double, risquée, contraire à une règle du cerveau ou peu utile (dis pourquoi et propose une alternative).`,
-      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\nTa formation (${F.total} h) :\n${F.essentiels}\n\n${F.texte(['produit'])}`});
+      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\nPlan de ta formation (${F.total} h) :\n${F.plan}\n\nModules de ta formation utiles pour cette idée :\n\n${formationPour(a, `${x.titre || ''} ${x.texte}`, 9000, ['produit'])}`});
     const y = ideeGet(x.id); if(!y) return;
     const ids = new Set(autres.map(z => z.id)), verdict = VERDICTS[r.verdict] ? r.verdict : 'a_preciser';
     let amelioration = verdict === 'bonne' ? '' : txt(r.amelioration);
@@ -1527,7 +1546,7 @@ ${list.map(x => ligneIdee(x) + (x.avis?.avis ? `\n  Avis : ${x.avis.avis}` : '')
 
 Fais la lecture d'ensemble de ces idées, comme un directeur produit exigeant. JSON strict :
 {"synthese":"3 à 5 phrases : ce qui se dégage, la cohérence de l'ensemble, ton avis global franc","ordre":["identifiants des idées non réalisées, dans l'ordre conseillé (les plus utiles et les plus sûres d'abord, les dépendances avant)"],"tensions":["contradictions, doublons ou choix à trancher (0 à 4)"],"manques":["ce qui manque pour que l'ensemble tienne (0 à 3)"],"themes":{"identifiant":"thème de 1 à 3 mots, harmonisé (5 thèmes au plus pour toute l'app)"}}`,
-      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\n${F.texte(['produit'])}`});
+      {json:true, temperature:0.3, system:`${ROLE_CHEF}\n\n${F.critique}\n\nModules de ta formation utiles ici :\n\n${formationPour(a, list.map(x => `${x.titre || ''} ${x.texte}`).join('\n'), 9000, ['produit', 'portefeuille'])}`});
     const ids = new Set(list.map(x => x.id)), themes = {};
     for(const [k, v] of Object.entries(r.themes || {})) if(ids.has(k) && txt(v)) themes[k] = txt(v).slice(0, 32);
     put(CP + repo, {at:Date.now(), h, synthese:txt(r.synthese), ordre:tab(r.ordre).filter(id => ids.has(id)), tensions:tab(r.tensions).map(txt).filter(Boolean).slice(0, 4), manques:tab(r.manques).map(txt).filter(Boolean).slice(0, 3), themes});
@@ -1561,7 +1580,7 @@ ${p.precision ? `\n## Précision de Clément pour ce prompt\n${p.precision}` : '
 
 Rédige maintenant LE prompt complet que Clément enverra tel quel à Claude Code pour réaliser ces idées dans ${a.name} (dépôt ${repo}). Suis exactement le modèle de ta formation (titres « ## »). Appuie-toi sur le cerveau de l'app : cite les fichiers, fonctions, règles et la procédure de publication qui s'y trouvent ; n'invente pas de fichier. Tranche toi-même les questions ouvertes de façon raisonnable et écris-les dans « Points à trancher » comme hypothèses. Si plusieurs idées, ordonne-les en étapes. Textes de l'interface exacts entre guillemets « ». Aucune clé ni donnée personnelle.
 Réponds uniquement par le prompt, en markdown, première ligne « # Titre ». Pas de bloc de code autour, pas de phrase avant ni après.`,
-      {system:`${ROLE_CHEF}\n\n${F.critique}\n\nTa formation complète (${F.total} h) :\n\n${F.texte()}`, temperature:0.35, pense:true, signal:PCTRL.signal,
+      {system:`${ROLE_CHEF}\n\n${F.critique}\n\nModules de ta formation choisis pour ce prompt (sur ${F.total} h) :\n\n${formationPour(a, choisies.map(x => `${titreIdee(x)} ${x.texte} ${x.avis?.amelioration || ''}`).join('\n') + ' ' + p.precision, 32000, ['prompts', 'agents-ia'], 4)}`, temperature:0.35, pense:true, signal:PCTRL.signal,
        onText:t => { const el = $('#promptLive'); if(el){ el.innerHTML = md(t); const sh = $('#modal .sheet'); if(sh && sh.scrollHeight - sh.scrollTop - sh.clientHeight < 240) sh.scrollTop = sh.scrollHeight; } }});
     p.texte = texte.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
     p.titre = (p.texte.match(/^#\s+(.+)$/m) || [])[1]?.replace(/[*_`]/g, '').trim().slice(0, 100) || titreIdee(choisies[0]);
@@ -2139,7 +2158,7 @@ async function envoyer(q, d){
                   : `Vue d'ensemble (${dateFR(Date.now())}) :\n\n${contexteGlobal()}\n\nSynchro et santé :\n${santeTexte()}`;
     const hist = d.msgs.slice(-16).map(m => ({role:m.r === 'u' ? 'user' : 'model', parts:[{text:m.t}]}));
     const text = await gemini([{role:'user', parts:[{text:ctx}]}, {role:'model', parts:[{text:'Compris.'}]}, ...hist],
-      {system:ROLE_CHEF + '\nQuand Clément demande une consigne pour Claude, mets-la dans un bloc de code.', signal:CTRL.signal,
+      {system:ROLE_CHEF + '\nQuand Clément demande une consigne pour Claude, mets-la dans un bloc de code.' + (() => { const f = formationPour(a, q, 7000); return f ? `\n\nModules de ta formation utiles pour cette question :\n\n${f}` : ''; })(), signal:CTRL.signal,
        onText:t => { partiel = t; const el = $('#chatLive'); if(el){ el.innerHTML = md(t); if(innerHeight + scrollY > document.body.scrollHeight - 260) scrollBas(); } }});
     const d2 = discGet(d.id) || d; d2.msgs.push({r:'m', t:text, at:Date.now()}); discPut(d2);
     if(d2.auto && d2.msgs.length <= 2) titrer(d2);
@@ -2459,15 +2478,24 @@ function vSettings(){
   <p class="gp c">Atelier ${VERSION}${LARGE() ? ' · N nouvelle idée · 1-9 écrans · Ctrl+K recherche · Ctrl+B barre latérale' : ''}</p>
   </div></div>`;
 }
-let REGM = null;   // fenêtre de réglage ouverte (pour la redessiner après une modification)
+let REGM = null, FORM_P = 'tout';   // fenêtre de réglage ouverte (pour la redessiner après une modification)
 function regModal(f){ REGM = f; SHEET = null; modal(`<div class="regm">${f()}</div>`); }
 const champ = (lab, input, aide) => `<label class="f">${lab}</label>${input}${aide ? `<p class="help">${aide}</p>` : ''}`;
 const REGF = {
-  regFormation: () => `<div class="form-h"><div class="form-ic">${ic('grad')}</div><div><h2 style="margin:0">Formation du chef</h2><p class="muted sm" style="margin:2px 0 0">${F.modules.length} modules · ${F.total} h · terminée</p></div></div>
-    <div class="form-bar"><i></i></div>
-    <p class="sm muted" style="margin:0 0 12px">Ce que le chef applique quand il lit tes idées et rédige tes prompts.</p>
-    <details class="fmod"><summary><span class="fmi">🧭</span><span class="rgt">Esprit critique<small>Comment il juge une idée</small></span></summary><div class="fmc">${md(F.critique.replace(/^ESPRIT CRITIQUE.*\n/, ''))}</div></details>
-    ${F.modules.map(m => `<details class="fmod"><summary><span class="fmi">${m.icone}</span><span class="rgt">${esc(m.titre)}<small>${esc(m.resume)}</small></span><span class="fmh">${m.h} h</span></summary><div class="fmc">${md(m.contenu, true)}</div></details>`).join('')}`,
+  regFormation: () => {
+    const P = F.PARCOURS || [], seg = FORM_P;
+    const mod = m => `<details class="fmod"><summary><span class="fmi">${m.icone}</span><span class="rgt">${esc(m.titre)}<small>${esc(m.resume)}</small></span><span class="fmh">${m.h} h</span></summary><div class="fmc">${md(m.contenu, true)}</div></details>`;
+    const entete = `<div class="form-h"><div class="form-ic">${ic('grad')}</div><div><h2 style="margin:0">Formation du chef</h2><p class="muted sm" style="margin:2px 0 0">${F.total} h · ${P.length} parcours · ${F.modules.length} modules · terminée</p></div></div>
+      <div class="seg mini fseg">${[['tout', 'Ensemble'], ...P.map(p => [p.id, p.id === 'dev' ? 'Dév. & gestion' : p.court])].map(([k, l]) => `<button class="${seg === k ? 'on' : ''}" data-action="formParcours" data-p="${k}">${esc(l)}</button>`).join('')}</div>`;
+    if(seg === 'tout') return entete + `<div class="fparc">${P.map(p => `<button class="fpc" data-action="formParcours" data-p="${p.id}"><span class="fpi">${p.icone}</span><span class="rgt"><b>${esc(p.titre)}</b><small>${esc(p.desc)}</small><span class="form-bar"><i></i></span><small>${p.modules.length} modules · terminé</small></span><span class="fmh">${p.h} h</span></button>`).join('')}</div>
+      <h3 class="gh" style="margin-left:2px">Ce qu’il mobilise pour tes apps</h3>
+      <div class="grp in">${tracked().map(a => { const l = F.selection({contexte:profilApp(a), sujet:'', budget:1e9, max:6, seuil:4}); return rangee({ic:avatar(a, 's'), c:'transparent', t:esc(a.name), sous:esc(l.map(m => m.titre).join(' · ') || 'Socle général'), cls:'app'}); }).join('')}</div>
+      <details class="fmod"><summary><span class="fmi">🧭</span><span class="rgt">Esprit critique<small>Comment il juge une idée</small></span></summary><div class="fmc">${md(F.critique.replace(/^ESPRIT CRITIQUE.*\n/, ''))}</div></details>
+      <p class="gp">Le chef ne relit pas les ${F.total} h à chaque fois : pour chaque idée, prompt ou question, il choisit les modules utiles selon l’app et le sujet.</p>`;
+    const p = P.find(x => x.id === seg) || P[0], blocs = [...new Set(p.modules.map(m => m.bloc))];
+    return entete + `<div class="fphead"><span class="fpi">${p.icone}</span><div><b>${esc(p.titre)}</b><small>${p.h} h · ${p.modules.length} modules</small></div></div><p class="sm muted" style="margin:0 2px 8px">${esc(p.desc)}</p>`
+      + blocs.map(b => `${blocs.length > 1 ? `<h3 class="gh" style="margin-left:2px">${esc(b)} <span class="cn">${p.modules.filter(m => m.bloc === b).reduce((n, m) => n + m.h, 0)} h</span></h3>` : ''}${p.modules.filter(m => m.bloc === b).map(mod).join('')}`).join('');
+  },
   regProfil: () => `<h2>Profil</h2>${champ('Prénom', `<input data-reg="prenom" value="${esc(REG().prenom||'')}" placeholder="Ton prénom">`)}${champ('Nom de cet appareil', `<input data-local="nomAppareil" value="${esc(L.nomAppareil||'')}" placeholder="${esc(PLATEFORME)}">`)}`,
   regCloud: () => { const ce = cloudEtat(); return `<h2>Synchronisation</h2><div class="grp in">${rangee({ic:ce.ic, c:ce.cls === 'err' ? '#ef4444' : '#0ea5e9', t:esc(ce.txt), sous:`${esc(Cloud.repo)}${Cloud.st.last ? ' · ' + esc(ago(Cloud.st.last)) : ''}`})}</div>${Cloud.st.err && Cloud.st.err !== 'hors ligne' ? `<p class="err">${esc(Cloud.st.err)}</p>` : ''}<div class="btns"><button class="btn primary block" data-action="cloudNow">${ic('sync','s')} Synchroniser</button></div>`; },
   regAppareils: () => { const devs = Object.values(C.remote).sort((x, y) => (y.updated||0) - (x.updated||0));
@@ -3153,6 +3181,7 @@ const ACTIONS = {
   sideRail(){ if(TABLETTE()) SIDE_DEPLIE = !SIDE_DEPLIE; else LS.set('atelier.side.rail', !document.body.classList.contains('rail')); appliquerEcran(); renderChrome(); if(view === 'idees' && IDV.seg === 'carte') setTimeout(render, 300); },
   sideSection(el){ const s = el.dataset.s, p = new Set(LS.get('atelier.side.plie', [])); p.has(s) ? p.delete(s) : p.add(s); LS.set('atelier.side.plie', [...p]); renderChrome(); },
   regFormation(){ regModal(REGF.regFormation); },
+  formParcours(el){ FORM_P = el.dataset.p; regModal(REGF.regFormation); const sh = $('#modal .sheet'); if(sh) sh.scrollTop = 0; },
 
   sync: () => syncAll(),
   cloudNow(){ Cloud.tick(true); Cloud.schedule(true); toast('Synchronisation du cloud…'); },
@@ -3183,7 +3212,7 @@ const ACTIONS = {
     try{
       const data = await gemini(`Nous sommes le ${dateFR(Date.now())}. État des apps :\n\n${contexteGlobal()}\n\nChoisis les 3 actions les plus utiles maintenant, toutes apps confondues (tâches déjà ouvertes, problèmes visibles en direct, petites actions qui débloquent beaucoup).
 Pour chaque action, "prompt_code" = consigne complète et autonome pour Claude Code (contexte, résultat attendu, contraintes : respecter le cerveau, ne rien casser, publier comme d'habitude ; critères de vérification).
-JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot","titre":"action courte","pourquoi":"1 phrase","duree_min":30,"prompt_code":"…"}]}`, {json:true, system:ROLE_CHEF});
+JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot","titre":"action courte","pourquoi":"1 phrase","duree_min":30,"prompt_code":"…"}]}`, {json:true, system:`${ROLE_CHEF}\n\n${F.texte(['portefeuille', 'prompts'])}`});
       put('today', {at:Date.now(), data});
     }finally{ busy.advise = false; render(); }
   },
@@ -3224,7 +3253,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     busy['review'+repo] = true; appSheet(repo, 'apercu');
     try{
       const diffs = await recentDiffs(repo, 5);
-      const text = await gemini(`Revue de code des derniers commits de ${a.name}.\nRègles (cerveau) :\n${get('resumes', {})[repo]?.text || clip(cerveauTexte(d), 8000)}\n\nModifications :\n${diffs}\n\nMarkdown court, en citant fichier et commit :\n### Bugs probables\n### Risques\n### Écarts avec les règles\n### Améliorations simples\n« RAS » si rien. N'invente rien.`, {system:ROLE_CHEF, temperature:0.3, onText:flux('reviewLive')});
+      const text = await gemini(`Revue de code des derniers commits de ${a.name}.\nRègles (cerveau) :\n${get('resumes', {})[repo]?.text || clip(cerveauTexte(d), 8000)}\n\nModifications :\n${diffs}\n\nMarkdown court, en citant fichier et commit :\n### Bugs probables\n### Risques\n### Écarts avec les règles\n### Améliorations simples\n« RAS » si rien. N'invente rien.`, {system:`${ROLE_CHEF}\n\nModules de ta formation utiles pour cette revue :\n\n${formationPour(a, clip(diffs, 4000), 9000, ['qualite'])}`, temperature:0.3, onText:flux('reviewLive')});
       setAi(repo, {review:{at:Date.now(), text}});
     }finally{ busy['review'+repo] = false; if(SHEET?.repo === repo && !SHEET.lock) appSheet(repo, SHEET.tab); }
   },
@@ -3232,7 +3261,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     const repo = SHEET.repo, a = appBy(repo);
     busy['ideas'+repo] = true; appSheet(repo, 'apercu');
     try{
-      const r = await gemini(`${ficheApp(a)}\n\nPropose les 5 améliorations les plus utiles pour ${a.name}, sans reprendre ce qui est fait ou déjà en tâche. Mélange rapides et une plus ambitieuse.\nJSON strict : {"idees":[{"titre":"…","pourquoi":"1 phrase","effort":"petit|moyen|gros","impact":"faible|moyen|fort","consigne":"consigne complète pour Claude Code"}]}`, {json:true, system:ROLE_CHEF, temperature:0.7});
+      const r = await gemini(`${ficheApp(a)}\n\nPropose les 5 améliorations les plus utiles pour ${a.name}, sans reprendre ce qui est fait ou déjà en tâche. Mélange rapides et une plus ambitieuse.\nJSON strict : {"idees":[{"titre":"…","pourquoi":"1 phrase","effort":"petit|moyen|gros","impact":"faible|moyen|fort","consigne":"consigne complète pour Claude Code"}]}`, {json:true, system:`${ROLE_CHEF}\n\n${F.critique}\n\n${formationPour(a, '', 7000, ['produit', 'portefeuille'])}`, temperature:0.7});
       setAi(repo, {ideas:{at:Date.now(), list:(r.idees||[]).slice(0,5)}});
     }finally{ busy['ideas'+repo] = false; if(SHEET?.repo === repo && !SHEET.lock) appSheet(repo, SHEET.tab); }
   },
@@ -3323,7 +3352,7 @@ JSON strict : {"resume":"2 phrases","actions":[{"app":"nom","repo":"pseudo/depot
     SHEET = null;
     modal(`<h2>Consigne pour Claude</h2><p class="muted sm">${esc(a.name)} · #${n} ${esc(issue.title)}</p><div class="card" id="promptLive" style="margin:8px 0">${spin('Le chef rédige…')}</div>`);
     try{
-      const text = await gemini(`Rédige UNE consigne complète, prête à coller dans Claude Code, pour réaliser la tâche ci-dessous dans ${a.name} : 2-3 phrases sur l'app, résultat attendu précis, règles du cerveau qui s'appliquent (versions, publication, Mac/Windows/téléphone), critères de vérification. Réponds uniquement avec la consigne.\n\n${ficheApp(a, true)}\n\nTÂCHE #${n} : ${issue.title}\n${issue.body||''}`, {system:ROLE_CHEF, onText:t => { const el2 = $('#promptLive'); if(el2) el2.innerHTML = `<pre class="pre" style="margin:0;max-height:none;background:none;padding:0">${esc(t)}</pre>`; }});
+      const text = await gemini(`Rédige UNE consigne complète, prête à coller dans Claude Code, pour réaliser la tâche ci-dessous dans ${a.name} : 2-3 phrases sur l'app, résultat attendu précis, règles du cerveau qui s'appliquent (versions, publication, Mac/Windows/téléphone), critères de vérification. Réponds uniquement avec la consigne.\n\n${ficheApp(a, true)}\n\nTÂCHE #${n} : ${issue.title}\n${issue.body||''}`, {system:`${ROLE_CHEF}\n\n${formationPour(a, `${issue.title} ${issue.body || ''}`, 16000, ['prompts', 'agents-ia'], 4)}`, onText:t => { const el2 = $('#promptLive'); if(el2) el2.innerHTML = `<pre class="pre" style="margin:0;max-height:none;background:none;padding:0">${esc(t)}</pre>`; }});
       textModal('Consigne pour Claude', text, `<p class="muted sm">${esc(a.name)} · #${n} ${esc(issue.title)}</p>`);
     }catch(e){ closeModal(); throw e; }
   },
