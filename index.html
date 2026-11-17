@@ -415,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.4.1';
+const VERSION = '3.4.2';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -782,9 +782,13 @@ const GEM = 'https://generativelanguage.googleapis.com/v1beta';
 function gemErr(status, d){
   const m = d?.error?.message || '';
   if(status === 429) return 'Quota Gemini gratuit atteint, réessaie dans une minute';
-  if(status === 400 && /API key/i.test(m)) return 'Clé Gemini refusée : vérifie-la dans les Réglages';
-  if(status === 403) return 'Clé Gemini refusée : ' + m;
-  return `Gemini ${status} ${m}`.trim();
+  if(status === 400 && /API key/i.test(m)){ C.gemErr = {msg:'Clé Gemini refusée : vérifie-la dans les Réglages', at:Date.now(), cle:(L.geminiKey||'').slice(-6)}; saveC(); return C.gemErr.msg; }
+  let t;
+  if(/suspended/i.test(m)) t = 'Google a suspendu le projet de ta clé Gemini : elle ne marche plus. Crée une nouvelle clé (voir Synchro › Chef de projet)';
+  else if(status === 403) t = 'Clé Gemini refusée : ' + m;
+  else return `Gemini ${status} ${m}`.trim();
+  C.gemErr = {msg:t, at:Date.now(), cle:(L.geminiKey||'').slice(-6)}; saveC();
+  return t;
 }
 async function listModels(force=false){
   if(!force && C.models?.length && Date.now() - (C.modelsAt||0) < 864e5) return C.models;
@@ -863,7 +867,7 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
       }
       text = text.trim();
       if(!text){ last = new Error('Réponse vide de Gemini'); break; }
-      C.lastModel = m; saveC();
+      C.lastModel = m; C.gemErr = null; saveC();
       return json ? parseJSON(text) : text;
     }
   }
@@ -1372,7 +1376,9 @@ async function verifierAtelier(){
     envois, site,
     (() => { const ix = OBS.index || C.obsIndex, at = ix?.maj ? Date.parse(ix.maj) : 0, vieux = at && Date.now() - at > 7*864e5;
       return {id:'coffres', nom:'Coffres Obsidian', statut:!ix?.coffres?.length ? 'info' : vieux ? 'att' : 'ok', detail:ix?.coffres?.length ? `${plural(ix.coffres.length, 'coffre')}, ${ix.coffres.reduce((n, c) => n + c.notes, 0)} notes · envoyés ${ago(ix.maj)} depuis ${ix.appareil || 'le PC'}` : 'Pas encore envoyés : ouvre Atelier sur le PC', quand:ix?.maj}; })(),
-    {id:'ia', nom:'Chef de projet (Gemini)', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? `Clé présente${C.lastModel ? ' · dernier modèle : ' + C.lastModel : ''}` : 'Ajoute la clé Gemini dans les Réglages'}
+    (() => { const ge = C.gemErr && C.gemErr.cle === (L.geminiKey||'').slice(-6) && Date.now() - C.gemErr.at < 864e5 ? C.gemErr : null;
+      return ge ? {id:'ia', nom:'Chef de projet (Gemini)', statut:'pb', detail:ge.msg + '. Sur le compte Google de la clé : aistudio.google.com › Clés API › Créer une clé (dans un NOUVEAU projet), puis colle-la dans Réglages › Intelligence.', quand:new Date(ge.at).toISOString()}
+        : {id:'ia', nom:'Chef de projet (Gemini)', statut:L.geminiKey ? 'ok' : 'att', detail:L.geminiKey ? `Clé présente${C.lastModel ? ' · dernier modèle : ' + C.lastModel : ''}` : 'Ajoute la clé Gemini dans les Réglages'}; })(),
   ];
 }
 function compterSante(repo){
