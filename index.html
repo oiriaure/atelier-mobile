@@ -403,7 +403,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.2.0';
+const VERSION = '3.2.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -693,9 +693,9 @@ const Cloud = {
     const sha = (await r.json()).object.sha;
     if(sha === this.head) return false;
     const t = await fetch(`${API}/repos/${this.repo}/git/trees/${sha}?recursive=1`, {headers:ghHeaders(), cache:'no-store'});
-    if(!t.ok) throw new Error('lecture du cloud ' + t.status);
+    if(!t.ok && t.status !== 404) throw new Error('lecture du cloud ' + t.status);
     let changed = false;
-    for(const f of (await t.json()).tree || []){
+    for(const f of (t.ok ? (await t.json()).tree : []) || []){   // 404 = arbre vide (dépôt sans fichier)
       const m = f.type === 'blob' && f.path.match(/^sync\/([A-Za-z0-9_-]+)\.json$/); if(!m) continue;
       const dev = m[1];
       if(dev === L.device){ this.shas[f.path] = f.sha; continue; }
@@ -910,7 +910,8 @@ async function lireObsidian(repo){
 }
 let obsEnCours = false;
 async function envoyerCerveaux(force=false){
-  if(!PC || obsEnCours || !L.ghToken || !Cloud.joined) return;
+  if(!PC || obsEnCours || !L.ghToken) return;
+  if(!Cloud.joined){ setTimeout(() => envoyerCerveaux(force), 30e3); return; }
   obsEnCours = true;
   try{
     for(const a of tracked()){
