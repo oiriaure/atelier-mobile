@@ -415,7 +415,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '3.4.2';
+const VERSION = '3.5.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -781,7 +781,7 @@ async function adopterCles(){
 const GEM = 'https://generativelanguage.googleapis.com/v1beta';
 function gemErr(status, d){
   const m = d?.error?.message || '';
-  if(status === 429) return 'Quota Gemini gratuit atteint, réessaie dans une minute';
+  if(status === 429) return 'Trop de demandes à Gemini, réessaie dans une minute';
   if(status === 400 && /API key/i.test(m)){ C.gemErr = {msg:'Clé Gemini refusée : vérifie-la dans les Réglages', at:Date.now(), cle:(L.geminiKey||'').slice(-6)}; saveC(); return C.gemErr.msg; }
   let t;
   if(/suspended/i.test(m)) t = 'Google a suspendu le projet de ta clé Gemini : elle ne marche plus. Crée une nouvelle clé (voir Synchro › Chef de projet)';
@@ -825,9 +825,23 @@ function reflexion(m){
   if(/^gemini-([3-9]|\d\d)/.test(m)) return {thinkingLevel:deep ? 'low' : 'minimal'};
   return null;
 }
+/* Garde-fous (3.5) : la clé peut être payante. Plafond d'appels par jour et par appareil, rythme limité,
+   et aucune clé ni aucun token n'est jamais envoyé à Gemini. */
+const SECRETS = /github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}|AIza[0-9A-Za-z_-]{30,}|AQ\.[A-Za-z0-9_-]{30,}|sk[-]ant[-][A-Za-z0-9_-]{20,}/g;
+const masquer = t => typeof t === 'string' ? t.replace(SECRETS, '[clé masquée]') : t;
+const plafondJour = () => Math.max(10, +get('reglages', {}).plafondJour || 150);
+function appelsJour(){ const j = today(); if(C.gemJour?.j !== j) C.gemJour = {j, n:0}; return C.gemJour; }
+async function garde(){
+  const a = appelsJour();
+  if(a.n >= plafondJour()) throw new Error(`Limite de sécurité atteinte : ${a.n} appels Gemini aujourd'hui sur cet appareil (réglable dans Réglages › Intelligence)`);
+  C.gemMin = (C.gemMin || []).filter(t => Date.now() - t < 60e3);
+  if(C.gemMin.length >= 12) await sleep(60e3 - (Date.now() - C.gemMin[0]) + 200);
+  C.gemMin.push(Date.now()); a.n++; saveC();
+}
 async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
-  const contents = typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input;
+  const contents = (typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input).map(c => ({...c, parts:c.parts.map(p => p.text != null ? {...p, text:masquer(p.text)} : p)}));
+  system = masquer(system);
   let last = null;
   for(const m of await modelChain(tier)){
     for(let essai = 0; essai < 2; essai++){
@@ -837,6 +851,7 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
       if(json) body.generationConfig.responseMimeType = 'application/json';
       const enFlux = !!onText && !json;
       let r;
+      await garde();
       try{
         r = await fetch(`${GEM}/models/${encodeURIComponent(m)}:${enFlux ? 'streamGenerateContent?alt=sse' : 'generateContent'}`, {method:'POST', headers:{'Content-Type':'application/json', 'x-goog-api-key':L.geminiKey}, body:JSON.stringify(body), signal});
       }catch(e){ if(e.name === 'AbortError') throw e; throw new Error('Pas de réseau pour joindre Gemini'); }
@@ -1743,13 +1758,16 @@ function vSettings(){
     <label class="f" style="margin-top:0">Vitesse des réponses</label>
     <div class="seg">${[['rapide','⚡ Rapide'],['equilibre','Équilibré'],['approfondi','Approfondi']].map(([k, t]) => `<button class="${reg.vitesse === k ? 'on' : ''}" data-vitesse="${k}">${t}</button>`).join('')}</div>
     <p class="help">${reg.vitesse === 'rapide' ? 'Réponses quasi instantanées, un peu moins fines.' : reg.vitesse === 'approfondi' ? 'Le chef réfléchit plus longtemps : plus fin, mais plus lent.' : 'Rapide pour les petites demandes, soigné pour les analyses.'}</p>
-    <label class="f">Clé Gemini (compte gratuit)</label>
-    <input type="password" data-local="geminiKey" value="${esc(L.geminiKey)}" placeholder="AIza…" autocomplete="off">
+    <label class="f">Clé Gemini</label>
+    <input type="password" data-local="geminiKey" value="${esc(L.geminiKey)}" placeholder="AQ.… ou AIza…" autocomplete="off">
     <p class="help">Partagée chiffrée avec tes autres appareils par le cloud : à coller une seule fois.</p>
     <label class="f">Modèle</label>
     <input data-reg="model" value="${esc(reg.model)}" list="models" placeholder="auto">
     <datalist id="models"><option value="auto">${(C.models||[]).map(m => `<option value="${esc(m)}">`).join('')}</datalist>
     <p class="help">« auto » choisit le plus récent modèle gratuit et passe au suivant si le quota du jour est épuisé.${c ? ' Rapide : ' + esc(c.lite[0] || '—') + ' · Soigné : ' + esc(c.flash[0] || '—') + '.' : ''}${C.lastModel ? ' Dernier utilisé : ' + esc(C.lastModel) + '.' : ''}</p>
+    <label class="f">Limite de sécurité (appels par jour, par appareil)</label>
+    <input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}" style="max-width:140px">
+    <p class="help">Aujourd'hui : ${appelsJour().n} appel(s) sur cet appareil. Protège une clé payante : au-delà, Atelier n'appelle plus Gemini jusqu'à demain. Les clés et tokens ne sont jamais envoyés à Gemini.</p>
     <div class="btns"><button class="btn sm" data-action="testGemini">${ic('bolt','s')} Tester la vitesse</button><button class="btn sm" data-action="listModels">Voir les modèles</button></div>
   </section>
 
