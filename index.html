@@ -861,6 +861,18 @@ html.verre .vsel{background:var(--g-bg2);border-color:var(--g-bord2);-webkit-bac
 html.verre .vsel[aria-expanded="true"]{background:var(--g-bg);box-shadow:inset 0 1px 0 var(--g-reflet),0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
 html.verre #vsMenu:not(#x){background:var(--g-fort);border-color:var(--g-bord);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);box-shadow:var(--g-ombre),inset 0 1px 0 var(--g-reflet)}
 @media (prefers-reduced-motion:reduce){#vsMenu{animation:none}.vsel svg.i{transition:none}}
+
+/* ===== Barres de défilement (4.4.1) : fines, arrondies, sans flèches, assorties au thème (PC Windows surtout) ===== */
+:root{color-scheme:light dark}
+::-webkit-scrollbar{width:10px;height:10px;background:transparent}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--mu) 38%,transparent);border-radius:10px;border:3px solid transparent;background-clip:padding-box;min-height:40px}
+::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,var(--mu) 62%,transparent)}
+::-webkit-scrollbar-thumb:active{background-color:color-mix(in srgb,var(--ac) 70%,transparent)}
+html.verre ::-webkit-scrollbar-thumb{background-color:color-mix(in srgb,var(--tx) 22%,transparent)}
+html.verre ::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,var(--tx) 38%,transparent)}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--mu) 45%,transparent) transparent}}
 </style>
 </head>
 <body>
@@ -946,7 +958,7 @@ html.verre #vsMenu:not(#x){background:var(--g-fort);border-color:var(--g-bord);-
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.4.0';
+const VERSION = '4.4.1';
 /* ================================================================
    Utilitaires
 ================================================================ */
