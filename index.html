@@ -895,7 +895,7 @@ html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.3.1';
+const VERSION = '4.3.2';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1840,10 +1840,15 @@ async function rangerCoffres(){
     const cof = await PC.coffres(); C.coffres = cof; saveC();
     const apps = appsAll(); let ch = false;
     for(const a of apps){
-      if(a.obsidian || a.obsidianNon) continue;
+      if(a.obsidianNon) continue;
+      // chemin déjà branché : on le garde s'il se lit encore ; sinon (dossier déplacé ou vidé) on cherche à nouveau
+      if(a.obsidian){
+        if(cof.some(x => x.chemin === a.obsidian)) continue;
+        try{ const r = await PC.lireCoffre(a.obsidian); if(r && !r.erreur && (r.fichiers || []).length) continue; }catch{}
+      }
       const nom = sansAccent(a.name).replace(/s$/, '');
       const c = cof.find(x => sansAccent(x.nom).includes(nom));
-      if(c){ a.obsidian = c.chemin; ch = true; }
+      if(c && c.chemin !== a.obsidian){ a.obsidian = c.chemin; ch = true; }
     }
     if(ch){ setReg({apps}); toast('Cerveau Obsidian trouvé sur ce PC et branché'); envoyerCerveaux(true); }
   }catch{}
