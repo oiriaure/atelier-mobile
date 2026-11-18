@@ -951,6 +951,7 @@ html.verre ::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,va
   <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1-3.6 2.2-4.8.3 1.6 1.1 2.6 2.3 3 0-3.2-.2-5.6.5-8.2z"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
   <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
@@ -958,7 +959,7 @@ html.verre ::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,va
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.4.1';
+const VERSION = '4.5.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1194,6 +1195,171 @@ function resumeEtat(j){
   if(Object.keys(s).length <= 1) s.cles = Object.keys(j).slice(0,20);
   return s;
 }
+
+/* ================================================================
+   Notifications (4.5)
+   Chaque appareil Atelier détecte les nouvelles (version publiée, problème de synchro, alerte d'une app, souci du chef)
+   et les écrit dans la branche « notifs » du dépôt Atelier (evenements/<appareil>.json).
+   Le workflow GitHub « Notifications » de cette branche les envoie par Web Push à chaque appareil abonné
+   (iPhone : Atelier installé sur l'écran d'accueil, iOS 16.4+). L'app Windows (Electron) n'a pas le Web Push :
+   elle affiche ses propres notifications Windows quand elle détecte une nouvelle.
+   Clé VAPID : créée ici une seule fois ; la clé privée n'est montrée qu'une fois, pour être collée comme secret GitHub.
+================================================================ */
+const NB = 'notifs', NREPO = () => REPO_ATELIER;
+const NOTIF_CATS = {maj:'Nouvelles versions', pb:'Problèmes (synchro, publication)', alertes:'Alertes des apps', chef:'Chef de projet (clé, budget)'};
+const notifPrefs = () => Object.assign({maj:true, pb:true, alertes:true, chef:true}, REG().notifs || {});
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const deb64u = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)), c => c.charCodeAt(0));
+const empreinteCourte = t => { let h = 0; for(const c of String(t)) h = (h * 31 + c.charCodeAt(0)) | 0; return (h >>> 0).toString(36); };
+const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const STANDALONE = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const pushPossible = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window && !PC;
+
+async function nLire(p){
+  const r = await fetch(`${API}/repos/${NREPO()}/contents/${encPath(p)}?ref=${NB}`, {headers:ghHeaders(null, `/repos/${NREPO()}/`), cache:'no-store'});
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error('GitHub ' + r.status);
+  const d = await r.json();
+  if(Array.isArray(d)) return {liste:d};
+  let json = null; try{ json = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(d.content.replace(/\n/g, '')), c => c.charCodeAt(0)))); }catch{}
+  return {sha:d.sha, json};
+}
+async function nEcrire(p, obj, msg){
+  const contenu = btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 1) + '\n')));
+  for(let i = 0; i < 4; i++){
+    const cur = await nLire(p).catch(() => null);
+    try{ return await gh(`/repos/${NREPO()}/contents/${encPath(p)}`, {method:'PUT', body:Object.assign({message:msg, content:contenu, branch:NB}, cur?.sha ? {sha:cur.sha} : {})}); }
+    catch(e){ if(![409, 422].includes(e.status) || i === 3) throw e; await new Promise(r => setTimeout(r, 800 * (i + 1))); }
+  }
+}
+async function nSuppr(p, msg){ const cur = await nLire(p).catch(() => null); if(cur?.sha) await gh(`/repos/${NREPO()}/contents/${encPath(p)}`, {method:'DELETE', body:{message:msg, sha:cur.sha, branch:NB}}); }
+async function notifConfig(force=false){
+  if(!force && C.notifCfg && Date.now() - (C.notifCfgAt || 0) < 6 * 36e5) return C.notifCfg;
+  const r = await nLire('config.json').catch(() => undefined);
+  if(r === undefined) return C.notifCfg || null;
+  C.notifCfg = r?.json?.vapidPublic ? r.json : null; C.notifCfgAt = Date.now(); saveC();
+  return C.notifCfg;
+}
+
+// Une nouvelle à signaler. id stable = la même nouvelle n'est envoyée qu'une fois, même vue par plusieurs appareils.
+let NFILE_T = 0;
+function signaler(ev){
+  if(ev.cat !== 'test' && !notifPrefs()[ev.cat]) return;
+  C.notifVus ||= {};
+  if(C.notifVus[ev.id]) return;
+  C.notifVus[ev.id] = Date.now();
+  for(const [k, t] of Object.entries(C.notifVus)) if(Date.now() - t > 30 * 864e5) delete C.notifVus[k];
+  ev = Object.assign({t:Date.now(), vue:'today'}, ev);
+  C.notifFile = [ev, ...(C.notifFile || [])].filter(x => Date.now() - x.t < 7 * 864e5).slice(0, 40); saveC();
+  // notification locale : app Windows, ou appareil sans Web Push qui l'a demandée
+  if(L.notifLocal && !L.notifPush && 'Notification' in window && Notification.permission === 'granted' && (!ev.pour || ev.pour === L.device)){
+    navigator.serviceWorker?.getRegistration().then(r => r ? r.showNotification(ev.titre, {body:ev.corps || '', icon:'icon-192.png', tag:ev.id, data:{vue:ev.vue}}) : new Notification(ev.titre, {body:ev.corps || '', icon:'icon-192.png', tag:ev.id}))
+      .catch(() => { try{ new Notification(ev.titre, {body:ev.corps || '', icon:'icon-192.png'}); }catch{} });
+  }
+  clearTimeout(NFILE_T); NFILE_T = setTimeout(envoyerEvenements, 4000);
+}
+async function envoyerEvenements(){
+  if(!L.ghToken || !navigator.onLine || !(C.notifFile || []).length) return;
+  try{
+    if(!(await notifConfig())) return;   // notifications pas préparées : rien à envoyer (évite de lancer GitHub pour rien)
+    const h = empreinteCourte(JSON.stringify(C.notifFile.map(x => x.id)));
+    if(C.notifFileH === h) return;
+    await nEcrire(`evenements/${L.device}.json`, {device:L.device, nom:L.nomAppareil || PLATEFORME, evenements:C.notifFile.map(({id, t, titre, corps, cat, vue, pour}) => ({id, t, titre, corps, cat, vue, pour}))}, 'Nouvelles de ' + (L.nomAppareil || PLATEFORME));
+    C.notifFileH = h; saveC();
+  }catch(e){ console.warn('notifs', e.message); }
+}
+
+// Détection
+function notifVersion(a, v){
+  if(!v?.version) return;
+  C.notifVer ||= {};
+  const avant = C.notifVer[a.repo];
+  C.notifVer[a.repo] = v.version; saveC();
+  if(avant && avant !== v.version){
+    const note = (v.notes || [])[0];
+    signaler({id:`maj:${a.repo}:${v.version}`, cat:'maj', titre:`${a.name} ${v.version} est sortie`, corps:note ? String(note).slice(0, 140) : 'Nouvelle version publiée.', vue:'apps'});
+  }
+}
+function notifAlertes(a, live){
+  if(!live?.alertes?.length) return;
+  C.notifAl ||= {};
+  const vues = C.notifAl[a.repo], ids = live.alertes.map(x => empreinteCourte(x.texte));
+  C.notifAl[a.repo] = ids; saveC();
+  if(!vues) return;   // première lecture : on ne signale pas l'existant
+  const neuves = live.alertes.filter((x, i) => !vues.includes(ids[i]));
+  if(neuves.length) signaler({id:`al:${a.repo}:${ids[live.alertes.indexOf(neuves[0])]}`, cat:'alertes', titre:`${a.name} : alerte`, corps:String(neuves[0].texte).slice(0, 160), vue:'today'});
+}
+function notifIncident(inc, ouvert){
+  if(inc.statut !== 'pb') return;
+  const nom = inc.app === 'atelier' ? 'Atelier' : (appBy(inc.app)?.name || inc.app);
+  if(ouvert) signaler({id:`pb:${inc.key}:${inc.debut}`, cat:'pb', titre:`${nom} : ${inc.nom}`, corps:inc.msg || 'Problème détecté', vue:'sync'});
+  else signaler({id:`ok:${inc.key}:${inc.debut}`, cat:'pb', titre:`${nom} : réglé`, corps:`${inc.nom} refonctionne.`, vue:'sync'});
+}
+
+// Activation sur cet appareil
+async function notifPreparer(){
+  const k = await crypto.subtle.generateKey({name:'ECDSA', namedCurve:'P-256'}, true, ['sign', 'verify']);
+  const pub = b64u(await crypto.subtle.exportKey('raw', k.publicKey)), priv = (await crypto.subtle.exportKey('jwk', k.privateKey)).d;
+  await nEcrire('config.json', {vapidPublic:pub, cree:new Date().toISOString(), par:L.nomAppareil || PLATEFORME}, 'Préparation des notifications');
+  C.notifCfg = {vapidPublic:pub}; C.notifCfgAt = Date.now(); saveC();
+  return priv;
+}
+async function notifActiver(){
+  if(PC || !pushPossible()){
+    if(!('Notification' in window)) throw new Error('Notifications indisponibles ici');
+    const p = await Notification.requestPermission();
+    if(p !== 'granted') throw new Error('Autorisation refusée');
+    L.notifLocal = true; saveL(); return 'local';
+  }
+  if(IOS && !STANDALONE()) throw new Error('Ouvre Atelier depuis son icône sur l’écran d’accueil');
+  const cfg = await notifConfig(true);
+  if(!cfg) throw new Error('Prépare d’abord les notifications');
+  const p = await Notification.requestPermission();
+  if(p !== 'granted') throw new Error('Autorisation refusée : Réglages de l’iPhone › Notifications › Atelier');
+  const reg = await Promise.race([navigator.serviceWorker.ready, new Promise((_, ko) => setTimeout(() => ko(new Error('Service de notifications pas prêt : recharge Atelier et réessaie')), 10000))]);
+  let sub = await reg.pushManager.getSubscription();
+  if(sub && b64u(sub.options?.applicationServerKey || new ArrayBuffer(0)) !== cfg.vapidPublic){ await sub.unsubscribe().catch(() => {}); sub = null; }
+  if(!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:deb64u(cfg.vapidPublic)});
+  await nEcrire(`abonnements/${L.device}.json`, {device:L.device, nom:L.nomAppareil || PLATEFORME, plateforme:PLATEFORME, cle:cfg.vapidPublic, sub:sub.toJSON(), ajoute:new Date().toISOString()}, 'Notifications : ' + (L.nomAppareil || PLATEFORME));
+  L.notifPush = true; L.notifLocal = false; saveL(); return 'push';
+}
+async function notifDesactiver(){
+  try{ const reg = await navigator.serviceWorker?.getRegistration(); const sub = await reg?.pushManager?.getSubscription(); await sub?.unsubscribe(); }catch{}
+  if(L.notifPush) await nSuppr(`abonnements/${L.device}.json`, 'Notifications coupées : ' + (L.nomAppareil || PLATEFORME)).catch(() => {});
+  L.notifPush = false; L.notifLocal = false; saveL();
+}
+// au démarrage : l'abonnement existe-t-il toujours ? (iOS peut l'effacer)
+async function notifControle(){
+  if(!L.notifPush || !pushPossible()) return;
+  try{
+    const reg = await navigator.serviceWorker.getRegistration(); if(!reg) return;
+    const sub = await reg.pushManager.getSubscription(), cfg = await notifConfig();
+    if(!sub || Notification.permission !== 'granted'){ L.notifPush = false; saveL(); return; }
+    if(cfg && b64u(sub.options?.applicationServerKey || new ArrayBuffer(0)) !== cfg.vapidPublic) await notifActiver().catch(() => { L.notifPush = false; saveL(); });
+  }catch{}
+}
+function notifEtatAppareil(){
+  if(L.notifPush) return {on:true, txt:'Activées'};
+  if(L.notifLocal) return {on:true, txt:'Activées (Windows)'};
+  return {on:false, txt:'Coupées'};
+}
+
+
+async function notifRafraichir(force=false){
+  if(!L.ghToken || !navigator.onLine) return;
+  try{
+    await notifConfig(force || !C.notifCfg);
+    const [et, ab] = await Promise.all([nLire('etat.json').catch(() => null), nLire('abonnements').catch(() => null)]);
+    C.notifEtat = et?.json || null;
+    C.notifSubs = (ab?.liste || []).filter(f => f.name.endsWith('.json')).map(f => f.name.replace(/\.json$/, '') === L.device ? (L.nomAppareil || PLATEFORME) + ' (cet appareil)' : f.name.replace(/\.json$/, '').slice(0, 10));
+    saveC();
+    if(REGM === REGF.regNotifs && !$('#modal').hidden && !enSaisie()) regModal(REGF.regNotifs);
+  }catch(e){ if(force) toast(e.message, true); }
+}
+document.addEventListener('change', e => {
+  const k = e.target?.dataset?.ncat; if(!k) return;
+  const reg = Object.assign({}, REG()); reg.notifs = Object.assign({}, notifPrefs(), {[k]:e.target.checked}); put('reglages', reg);
+});
 async function syncApp(a){
   const repo = a.repo; let issuesErr = null;
   const [info, verTxt, brain, commits, issues, etatTxt, obsidian] = await Promise.all([
@@ -1244,7 +1410,7 @@ async function syncAll(quiet=false){
     let errs = 0;
     res.forEach((r, i) => {
       const repo = apps[i].repo;
-      if(r.status === 'fulfilled') C.apps[repo] = r.value;
+      if(r.status === 'fulfilled'){ C.apps[repo] = r.value; notifVersion(apps[i], r.value.version); notifAlertes(apps[i], r.value.live); }
       else { errs++; C.apps[repo] = Object.assign({}, C.apps[repo]||{}, {error:r.reason.message}); }
     });
     C.lastSync = Date.now(); saveC();
@@ -1415,6 +1581,7 @@ function gemErr(status, d){
   else if(status === 403) t = 'Clé Gemini refusée : ' + m;
   else return `Gemini ${status} ${m}`.trim();
   C.gemErr = {msg:t, at:Date.now(), cle:(L.geminiKey||'').slice(-6)}; saveC();
+  if(typeof signaler === 'function' && /suspend|refus|invalide|révoqu/i.test(t)) signaler({id:`gem:${today()}:${empreinteCourte(t)}`, cat:'chef', titre:'Chef de projet : clé Gemini', corps:t.slice(0, 150), vue:'settings'});
   return t;
 }
 async function listModels(force=false){
@@ -1563,6 +1730,7 @@ function premiumMois(){ const m = today().slice(0, 7), d = get('premium', null);
 const premiumDispo = () => !!L.claudeKey && navigator.onLine && premiumMois().eur < budgetPremium();
 function premiumNote(eur, quoi, modele){
   const d = Object.assign({}, premiumMois());
+  if(d.eur < budgetPremium() && d.eur + eur >= budgetPremium()) setTimeout(() => signaler({id:`prem:${d.mois}`, cat:'chef', titre:'Chef premium : plafond atteint', corps:`${eur2(budgetPremium())} dépensés ce mois-ci : le chef repasse sur Gemini.`, vue:'settings'}), 0);
   d.eur = +((d.eur || 0) + eur).toFixed(4); d.n = (d.n || 0) + 1;
   d.hist = [{t:Date.now(), eur:+eur.toFixed(4), quoi, modele}, ...(d.hist || [])].slice(0, 30);
   put('premium', d);
@@ -2402,6 +2570,7 @@ async function chkPublication(a){
     if(!vtxt) return {id, nom, statut:'info', detail:'Non configurée'};
     let v; try{ v = JSON.parse(vtxt); }catch{ return {id, nom, statut:'pb', detail:'version.json illisible : mises à jour bloquées'}; }
     if(!Array.isArray(v.fichiers || v.files) && !v.version) return {id, nom, statut:'att', detail:'version.json sans version'};
+    notifVersion(a, v);
     const D = vc[0] ? dateCommit(vc[0]) : null;
     const apres = D ? (await gh(`/repos/${repo}/commits?since=${encodeURIComponent(D)}&per_page=50`)).filter(c => c.sha !== vc[0].sha) : [];
     if(!apres.length) return {id, nom, statut:'ok', detail:`v${v.version || '?'} · il y a ${D ? dureeTxt(Date.now() - new Date(D)) : '?'}`, quand:D};
@@ -2455,9 +2624,9 @@ function majIncidents(res){
   for(const it of all){
     const key = it.app + '|' + it.id, open = inc.find(x => x.key === key && !x.fin);
     if(it.statut === 'pb' || it.statut === 'att'){
-      if(!open){ inc.unshift({key, app:it.app, nom:it.nom, statut:it.statut, msg:it.detail, debut:now, par:L.nomAppareil || PLATEFORME}); ch = true; }
-      else if(open.statut !== it.statut){ open.statut = it.statut; open.msg = it.detail; ch = true; }
-    } else if(open){ open.fin = now; ch = true; }
+      if(!open){ const n = {key, app:it.app, nom:it.nom, statut:it.statut, msg:it.detail, debut:now, par:L.nomAppareil || PLATEFORME}; inc.unshift(n); ch = true; notifIncident(n, true); }
+      else if(open.statut !== it.statut){ open.statut = it.statut; open.msg = it.detail; ch = true; if(it.statut === 'pb') notifIncident(open, true); }
+    } else if(open){ open.fin = now; ch = true; notifIncident(open, false); }
   }
   if(ch) put('incidents', inc.slice(0, 40));
 }
@@ -2810,7 +2979,8 @@ function vSettings(){
     rangee({ic:ce.ic, c:ce.cls === 'err' ? '#ef4444' : '#0ea5e9', t:'Synchronisation', v:esc(ce.cls === 'ok' ? 'Active' : ce.txt), act:'regCloud'}),
     rangee({ic:'phone', c:'#10b981', t:'Appareils', v:String(devs.length + 1), act:'regAppareils'}),
     rangee({ic:'git', c:'#334155', t:'Token GitHub', v:L.ghToken ? masque(L.ghToken) : 'Absent', act:'regGithub'}),
-    rangee({ic:'key', c:'#f59e0b', t:'GitHub et tokens', v:(L.jetons||[]).length ? String((L.jetons||[]).length + 1) : '', go:'github'})
+    rangee({ic:'key', c:'#f59e0b', t:'GitHub et tokens', v:(L.jetons||[]).length ? String((L.jetons||[]).length + 1) : '', go:'github'}),
+    rangee({ic:'bell', c:'#ef4444', t:'Notifications', v:notifEtatAppareil().txt, act:'regNotifs'})
   ])}
 
   ${groupe('Chef de projet', [
@@ -2871,6 +3041,30 @@ const REGF = {
       ${c ? `<div class="grp in">${rangee({t:'Rapide', v:esc(c.lite[0] || '—')})}${rangee({t:'Soigné', v:esc(c.flash[0] || '—')})}${C.lastModel ? rangee({t:'Dernier utilisé', v:esc(C.lastModel)}) : ''}</div>` : ''}<div class="btns"><button class="btn block" data-action="listModels">Voir tous les modèles</button></div>`; },
   regPremium: () => { const d = premiumMois(); return `<h2>Chef premium (Claude)</h2><p class="muted sm" style="margin:-4px 0 10px">Le chef n’appelle Claude que pour un gros projet ou un prompt complexe, et le dit. Tout le reste reste sur Gemini, gratuit.</p>${champ('Clé Claude', `<input type="password" data-local="claudeKey" value="${esc(L.claudeKey || '')}" placeholder="Clé de la console Anthropic" autocomplete="off">`, 'Partagée chiffrée avec tes appareils. Jamais envoyée à Gemini.')}${champ('Budget du mois (€)', `<input data-reg="budgetPremium" inputmode="decimal" value="${esc(String(budgetPremium()))}">`, `Dépensé ce mois-ci : ${eur2(d.eur)} (${plural(d.n || 0, 'appel')}). Au-delà, le chef repasse sur Gemini.`)}<div class="btns"><button class="btn block" data-action="testClaude">${ic('bolt','s')} Tester</button></div>${(d.hist || []).length ? `<h3 class="sec">Derniers appels</h3><div class="grp in">${d.hist.slice(0, 8).map(h => `<div class="rg"><span class="rgt">${esc(h.quoi)}<small>${esc(ago(h.t))}</small></span><span class="muted">${eur2(h.eur)}</span></div>`).join('')}</div>` : ''}`; },
   regLecons: () => { const l = lecons(); return `<h2>Ce que le chef a appris</h2><p class="muted sm" style="margin:-4px 0 10px">Règles tirées de tes retours après un prompt terminé. Le chef les relit à chaque travail. Retire celles qui ne te conviennent pas.</p>${l.length ? `<div class="grp in">${l.map(x => `<div class="rg"><span class="rgt">${esc(x.texte)}<small>${esc(ago(x.t))}</small></span><button class="ibtn" data-action="lecDel" data-id="${esc(x.id)}" aria-label="Oublier">${ic('trash','s')}</button></div>`).join('')}</div>` : '<p class="muted">Rien pour l’instant. Quand tu marques un prompt « fait », dis en une phrase ce qui a marché ou non.</p>'}`; },
+  regNotifs: () => {
+    const cfg = C.notifCfg, et = C.notifEtat, ea = notifEtatAppareil(), prefs = notifPrefs(), subs = C.notifSubs || [];
+    const ici = PC ? 'Sur ce PC, Atelier affiche des notifications Windows tant qu’il est ouvert (même réduit).'
+      : !pushPossible() ? 'Ce navigateur ne sait pas recevoir de notifications.'
+      : IOS && !STANDALONE() ? 'Sur iPhone, les notifications ne marchent que dans Atelier installé : Partager › Sur l’écran d’accueil, puis ouvre Atelier depuis son icône.'
+      : 'Tu les reçois même app fermée.';
+    const etatSrv = !cfg ? '' : !et ? 'Aucun envoi pour l’instant.' : et.erreur ? `<span class="ko">${esc(et.erreur)}</span>` : `Dernier envoi ${esc(ago(new Date(et.at).getTime()))} · ${plural(et.appareils || 0, 'appareil')}`;
+    return `<h2>Notifications</h2><p class="muted sm" style="margin:-4px 0 12px">Nouvelles versions, problèmes de synchro, alertes de tes apps.</p>
+    ${!cfg ? `<div class="card" style="margin:0 0 14px"><b>Préparer (une seule fois)</b><p class="sm muted" style="margin:4px 0 10px">Atelier crée une clé d’envoi. Tu colles sa partie secrète dans GitHub : c’est GitHub qui enverra les notifications, même quand tes appareils sont éteints.</p><button class="btn primary block" data-action="notifPreparer">${ic('key','s')} Préparer</button></div>`
+      : `<div class="grp in" style="margin-bottom:14px"><div class="rg"><span class="rgt">Envoi par GitHub<small>${etatSrv}</small></span><button class="btn sm ghost" data-action="notifRelire">${ic('sync','s')}</button></div></div>`}
+    <h3 class="sec">Cet appareil</h3>
+    <div class="grp in"><div class="rg"><span class="rgt">${esc(L.nomAppareil || PLATEFORME)}<small>${ici}</small></span><span class="${ea.on ? 'ok' : 'muted'}">${ea.txt}</span></div></div>
+    <div class="btns">${ea.on ? `<button class="btn" data-action="notifTest">${ic('bell','s')} Tester</button><button class="btn ghost" data-action="notifOff">Couper</button>` : `<button class="btn primary block" data-action="notifOn" ${(!cfg && !PC) || (!PC && !pushPossible()) ? 'disabled' : ''}>${ic('bell','s')} Activer sur cet appareil</button>`}</div>
+    <h3 class="sec">Me prévenir pour</h3>
+    <div class="grp in">${Object.entries(NOTIF_CATS).map(([k, t]) => `<label class="rg chk" style="cursor:pointer"><span class="rgt">${t}</span><input type="checkbox" data-ncat="${k}" ${prefs[k] ? 'checked' : ''}></label>`).join('')}</div>
+    <p class="gp">Réglage commun à tous tes appareils.</p>
+    ${subs.length ? `<h3 class="sec">Appareils qui reçoivent</h3><div class="grp in">${subs.map(n => `<div class="rg"><span class="rgt">${esc(n)}</span></div>`).join('')}</div>` : ''}`;
+  },
+  regNotifCle: priv => `<h2>Dernière étape sur GitHub</h2>
+    <p class="muted sm" style="margin:-4px 0 12px">Cette clé secrète n’est affichée qu’<b>une seule fois</b> et n’est enregistrée nulle part. Elle permet à GitHub d’envoyer tes notifications.</p>
+    <ol class="sm" style="padding-left:20px;line-height:1.7;margin:0 0 12px"><li>Copie la clé.</li><li>Ouvre GitHub (bouton ci-dessous) et connecte-toi si besoin.</li><li>Nom : <b>VAPID_PRIVATE</b>, Secret : colle la clé, puis <b>Add secret</b>.</li><li>Reviens ici et active les notifications sur chaque appareil.</li></ol>
+    <div class="cle-ligne" style="display:flex;gap:8px;align-items:center"><input readonly value="${esc(priv)}" id="nPriv" style="font-family:var(--mono,monospace);font-size:13px"><button class="btn" data-action="notifCopier">${ic('copy','s')}</button></div>
+    <div class="btns" style="flex-wrap:wrap"><button class="btn" data-action="notifCopierNom">Copier « VAPID_PRIVATE »</button><a class="btn primary" href="https://github.com/${REPO_ATELIER}/settings/secrets/actions/new" target="_blank" rel="noopener">${ic('git','s')} Ouvrir GitHub</a></div>
+    <div class="btns"><button class="btn block" data-action="regNotifs">C’est fait</button></div>`,
   regLimite: () => `<h2>Limite par jour</h2>${champ('Appels Gemini par jour (cet appareil)', `<input data-reg="plafondJour" inputmode="numeric" value="${esc(String(plafondJour()))}">`, `Aujourd’hui : ${appelsJour().n}. Au-delà, le chef se met en pause jusqu’à demain.`)}${(C.gemLog || []).length ? `<h3 class="sec">Derniers appels</h3><div class="grp in">${C.gemLog.slice(0, 10).map(g => `<div class="rg"><span class="rgt">${esc(g.m)}<small>${esc(ago(g.t))}${g.err ? ' · ' + esc(g.err) : ''}</small></span><span class="muted">${(g.ms / 1000).toFixed(1)} s</span></div>`).join('')}</div>` : ''}`,
   regApp: i => { const a = appsAll()[i]; if(!a) return '<p class="muted">App introuvable.</p>';
     return `<div class="regapp">${avatar(a, 'l')}<h2>${esc(a.name)}</h2></div>
@@ -3539,6 +3733,27 @@ const ACTIONS = {
   lecDel(el){ const d = Object.assign({}, get('lecons', {l:[]})); d.l = (d.l || []).filter(x => x.id !== el.dataset.id); put('lecons', d); regModal(REGF.regLecons); },
   async testClaude(){ try{ const t0 = performance.now(); const t = await claude('Réponds uniquement : OK', {system:'Test de connexion.', max:20, quoi:'test'}); toast(`« ${t.slice(0, 12)} » en ${((performance.now() - t0)/1000).toFixed(1)} s avec ${CLAUDE_LAST.modele}`); regModal(REGF.regPremium); }catch(e){ toast(e.message, true); } },
   regPremium(){ regModal(REGF.regPremium); }, regLecons(){ regModal(REGF.regLecons); },
+  async regNotifs(){ regModal(REGF.regNotifs); notifRafraichir(); },
+  async notifRelire(){ await notifRafraichir(true); },
+  async notifPreparer(el){
+    el.disabled = true; el.innerHTML = spin(' Préparation…');
+    try{ const priv = await notifPreparer(); regModal(() => REGF.regNotifCle(priv)); }
+    catch(e){ toast('Préparation impossible : ' + e.message, true); regModal(REGF.regNotifs); }
+  },
+  notifCopier(){ copy($('#nPriv').value); },
+  notifCopierNom(){ copy('VAPID_PRIVATE'); },
+  async notifOn(el){
+    el.disabled = true; el.innerHTML = spin(' Activation…');
+    try{ const m = await notifActiver(); toast(m === 'push' ? 'Notifications activées sur cet appareil' : 'Notifications Windows activées'); }
+    catch(e){ toast(e.message, true); }
+    regModal(REGF.regNotifs); notifRafraichir();
+  },
+  async notifOff(){ await notifDesactiver(); toast('Notifications coupées sur cet appareil'); regModal(REGF.regNotifs); notifRafraichir(); },
+  async notifTest(){
+    signaler({id:'test:' + Date.now(), cat:'test', titre:'Atelier : test', corps:'Les notifications fonctionnent sur ' + (L.nomAppareil || PLATEFORME) + '.', pour:L.device, vue:'settings'});
+    clearTimeout(NFILE_T); await envoyerEvenements();
+    toast(L.notifPush ? 'Test envoyé : il arrive en moins d’une minute' : 'Test affiché');
+  },
   prCopier(el){ const p = promptGet(el.dataset.id); if(!p) return; copy(p.texte); p.copie = Date.now(); promptPut(p); if(IDSHEET?.type === 'prompt' && !$('#modal').hidden) promptSheet(p.id); },
   async prPartager(el){ const p = promptGet(el.dataset.id); if(!p) return; try{ await navigator.share({title:p.titre, text:p.texte}); p.copie = Date.now(); promptPut(p); promptSheet(p.id); }catch{} },
   prModifier(el){ promptSheet(el.dataset.id, true); },
@@ -4148,7 +4363,18 @@ else {
   setTimeout(avisEnAttente, 9000); setInterval(() => { if(!document.hidden) avisEnAttente(); }, 60e3);
   if(PC){ setTimeout(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 6000); setInterval(async () => { await rangerCoffres(); await envoyerCerveaux(); await envoyerCoffres(); }, 10*60e3); }
 }
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).catch(() => {});
+  navigator.serviceWorker.addEventListener('message', e => { if(e.data?.type === 'vue' && ORDRE.includes(e.data.vue)) go(e.data.vue); });
+}
+(() => { const v = new URLSearchParams(location.search).get('vue'); if(v && ORDRE.includes(v)){ go(v); history.replaceState(null, '', location.pathname + location.hash); } })();
+if(L.ghToken){
+  setTimeout(notifControle, 5000);
+  setTimeout(envoyerEvenements, 8000);
+  // app Windows réduite ou appareil avec notifications : on continue à vérifier en arrière-plan
+  setInterval(() => { if(document.hidden && (PC || L.notifLocal || L.notifPush) && navigator.onLine && Date.now() - (C.sante?.at||0) > 10*60e3) verifierTout(); }, 60e3);
+  if(PC) setInterval(() => { if(navigator.onLine && Date.now() - (C.lastSync||0) > 30*60e3) syncAll(true); }, 5*60e3);
+}
 /* Nouvelle version publiée : on le signale et on recharge en un geste */
 let MAJ_VUE = false;
 async function verifierVersion(){
