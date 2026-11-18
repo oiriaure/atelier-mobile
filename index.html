@@ -131,7 +131,8 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 @keyframes sk{to{background-position:-200% 0}}
 .spinner{display:inline-block;width:15px;height:15px;border:2px solid color-mix(in srgb,currentColor 25%,transparent);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex:none}
 .empty{text-align:center;padding:36px 16px;color:var(--mu)}
-.empty .big{font-size:40px;margin-bottom:6px}
+.empty .big{font-size:40px;margin-bottom:6px;line-height:1}
+.empty .big svg.i{width:44px;height:44px;stroke-width:1.5;vertical-align:0;color:var(--mu)}
 .empty h3{color:var(--tx);margin:4px 0 6px;font-size:18px}
 
 /* ===== Aujourd'hui ===== */
@@ -811,6 +812,55 @@ main{max-width:var(--maxw)}
 html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);border-color:var(--g-bord2);box-shadow:inset 0 1px 0 var(--g-reflet),var(--g-ombre)}
 @media (prefers-reduced-transparency:reduce){html.verre :is(.card,.kpi,.trow,#side,#tabs,#modal .sheet){background:var(--g-fort)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== Aujourd'hui : alignements (4.4) ===== */
+.card .hd h2{display:flex;align-items:center;gap:8px;min-width:0}
+.card .hd h2 svg.i{vertical-align:0}
+.kpi{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center}
+.kpi .kic{grid-row:1/3;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--acs);color:var(--ac)}
+.kpi .kic svg.i{width:18px;height:18px;vertical-align:0}
+.kpi b{font-size:22px}
+.kpi span:not(.kic){line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi.feu .kic{background:color-mix(in srgb,#f97316 18%,transparent);color:#f97316}
+.act{align-items:flex-start}
+.act .n{margin-top:1px}
+.act .meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.act .meta svg.i{width:13px;height:13px;vertical-align:0}
+.act .meta + .meta{margin-top:2px;display:-webkit-box}
+.ligne{display:flex;align-items:center;gap:8px}
+.ligne svg.i{vertical-align:0;flex:none}
+.alerte{align-items:flex-start;margin-top:4px}
+.alerte svg.i{width:15px;height:15px;margin-top:2px;color:var(--wa)}
+.card.ligne{flex-wrap:wrap}
+.fi{align-items:center}
+.fi .tx{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.banner > div{min-width:0}
+
+/* ===== Sélecteur Liquid Glass (4.4) : remplace chaque <select> natif, qui reste caché comme source de vérité ===== */
+select.vs-natif{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;border:0!important}
+.vsel{width:100%;display:flex;align-items:center;gap:10px;font:inherit;font-size:16px;color:var(--tx);text-align:left;background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s}
+.vsel .vst{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vsel svg.i{width:16px;height:16px;vertical-align:0;color:var(--mu);transform:rotate(90deg);transition:transform .2s}
+.vsel[aria-expanded="true"]{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+.vsel[aria-expanded="true"] svg.i{transform:rotate(-90deg)}
+.vsel:focus-visible{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+.vsel:disabled{opacity:.55;cursor:default}
+.drt .vsel{width:auto;min-width:150px}
+#vsMenu{position:fixed;z-index:50;min-width:200px;max-width:min(420px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;padding:6px;border-radius:16px;background:var(--s1);border:1px solid var(--bd);box-shadow:0 18px 50px rgba(10,14,40,.22),0 3px 10px rgba(10,14,40,.1);animation:vsIn .14s ease-out;transform-origin:top center}
+#vsMenu.haut{transform-origin:bottom center}
+#vsMenu[hidden]{display:none}
+@keyframes vsIn{from{opacity:0;transform:scale(.97) translateY(-4px)}to{opacity:1;transform:none}}
+#vsMenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;font-size:15.5px;color:var(--tx);text-align:left;padding:10px 12px;border-radius:11px;cursor:pointer;min-height:42px}
+#vsMenu button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#vsMenu button svg.i{width:16px;height:16px;vertical-align:0;color:var(--ac);opacity:0}
+#vsMenu button[aria-selected="true"]{font-weight:600}
+#vsMenu button[aria-selected="true"] svg.i{opacity:1}
+#vsMenu button:hover,#vsMenu button:focus-visible{background:var(--acs);outline:0}
+#vsMenu button:disabled{color:var(--mu);opacity:.55;cursor:default;background:none}
+html.verre .vsel{background:var(--g-bg2);border-color:var(--g-bord2);-webkit-backdrop-filter:var(--g-flou2);backdrop-filter:var(--g-flou2);box-shadow:inset 0 1px 0 var(--g-reflet)}
+html.verre .vsel[aria-expanded="true"]{background:var(--g-bg);box-shadow:inset 0 1px 0 var(--g-reflet),0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+html.verre #vsMenu:not(#x){background:var(--g-fort);border-color:var(--g-bord);-webkit-backdrop-filter:var(--g-flou);backdrop-filter:var(--g-flou);box-shadow:var(--g-ombre),inset 0 1px 0 var(--g-reflet)}
+@media (prefers-reduced-motion:reduce){#vsMenu{animation:none}.vsel svg.i{transition:none}}
 </style>
 </head>
 <body>
@@ -889,19 +939,97 @@ html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
   <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1-3.6 2.2-4.8.3 1.6 1.1 2.6 2.3 3 0-3.2-.2-5.6.5-8.2z"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
   <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
 </svg>
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.3.4';
+const VERSION = '4.4.0';
 /* ================================================================
    Utilitaires
 ================================================================ */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ic = (n, cls='') => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
+
+/* ================================================================
+   Sélecteur Liquid Glass (4.4) : chaque <select> reçoit un bouton et un menu flottant en verre.
+   Le <select> natif reste dans la page (caché) : sa valeur et l'événement « change » restent la source de vérité,
+   donc tout le code existant ($('#ppQ').value, data-obs, data-drt…) continue de marcher.
+================================================================ */
+const VS = {sel:null, btn:null, menu:null};
+function vsLibelle(sel){ const o = sel.options[sel.selectedIndex]; return o ? o.textContent.trim() : ''; }
+function vsMaj(sel){ const b = sel.nextElementSibling; if(b?.classList.contains('vsel')){ b.querySelector('.vst').textContent = vsLibelle(sel) || '—'; b.disabled = sel.disabled; } }
+function habillerSelects(root=document){
+  for(const sel of root.querySelectorAll('select:not([data-vs]):not([data-natif])')){
+    sel.dataset.vs = '1'; sel.classList.add('vs-natif'); sel.tabIndex = -1; sel.setAttribute('aria-hidden', 'true');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'vsel'; b.setAttribute('aria-haspopup', 'listbox'); b.setAttribute('aria-expanded', 'false');
+    if(sel.id){ b.id = 'vs-' + sel.id; const lab = document.querySelector(`label[for="${CSS.escape(sel.id)}"]`); if(lab) lab.htmlFor = b.id; }
+    b.innerHTML = `<span class="vst"></span>${ic('chev')}`;
+    sel.after(b); vsMaj(sel);
+    sel.addEventListener('change', () => vsMaj(sel));
+  }
+}
+function vsFermer(rendreFocus=false){
+  if(!VS.menu || VS.menu.hidden) return;
+  VS.menu.hidden = true; VS.btn?.setAttribute('aria-expanded', 'false');
+  if(rendreFocus) VS.btn?.focus();
+  VS.sel = VS.btn = null;
+}
+function vsPlacer(){
+  const m = VS.menu, r = VS.btn.getBoundingClientRect(), vh = innerHeight, marge = 12;
+  m.style.minWidth = Math.max(200, r.width) + 'px';
+  const bas = vh - r.bottom - marge, haut = r.top - marge, h = Math.min(m.scrollHeight, 340);
+  const enHaut = bas < Math.min(h, 220) && haut > bas;
+  m.style.maxHeight = Math.max(140, Math.min(340, enHaut ? haut - 6 : bas - 6)) + 'px';
+  m.classList.toggle('haut', enHaut);
+  const w = m.offsetWidth, left = Math.min(Math.max(marge, r.left), innerWidth - w - marge);
+  m.style.left = left + 'px';
+  m.style.top = (enHaut ? r.top - 6 - Math.min(m.scrollHeight, parseFloat(m.style.maxHeight)) : r.bottom + 6) + 'px';
+}
+function vsOuvrir(b){
+  const sel = b.previousElementSibling; if(!sel || sel.tagName !== 'SELECT' || sel.disabled) return;
+  if(VS.btn === b){ vsFermer(true); return; }
+  vsFermer();
+  if(!VS.menu){ VS.menu = document.createElement('div'); VS.menu.id = 'vsMenu'; VS.menu.setAttribute('role', 'listbox'); VS.menu.hidden = true; document.body.appendChild(VS.menu); }
+  VS.sel = sel; VS.btn = b;
+  VS.menu.innerHTML = [...sel.options].map((o, i) => `<button type="button" role="option" data-vi="${i}" aria-selected="${o.selected}" ${o.disabled ? 'disabled' : ''}><span>${esc(o.textContent.trim())}</span>${ic('check')}</button>`).join('');
+  VS.menu.hidden = false; b.setAttribute('aria-expanded', 'true');
+  vsPlacer();
+  const cur = VS.menu.querySelector('[aria-selected="true"]:not(:disabled)') || VS.menu.querySelector('button:not(:disabled)');
+  cur?.scrollIntoView({block:'nearest'}); cur?.focus({preventScroll:true});
+}
+function vsChoisir(i){
+  const sel = VS.sel; if(!sel) return;
+  const o = sel.options[i]; if(!o || o.disabled){ return; }
+  const avant = sel.value;
+  sel.selectedIndex = i; vsMaj(sel); vsFermer(true);
+  if(sel.value !== avant){ sel.dispatchEvent(new Event('input', {bubbles:true})); sel.dispatchEvent(new Event('change', {bubbles:true})); }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.vsel'); if(b){ e.preventDefault(); vsOuvrir(b); return; }
+  const o = e.target.closest('#vsMenu button[data-vi]'); if(o){ e.preventDefault(); vsChoisir(+o.dataset.vi); }
+}, true);
+document.addEventListener('pointerdown', e => { if(VS.menu && !VS.menu.hidden && !e.target.closest('#vsMenu,.vsel')) vsFermer(); }, true);
+document.addEventListener('keydown', e => {
+  const b = e.target.closest?.('.vsel');
+  if(b && !VS.btn && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)){ e.preventDefault(); vsOuvrir(b); return; }
+  if(!VS.menu || VS.menu.hidden) return;
+  if(e.key === 'Escape' || e.key === 'Tab'){ if(e.key === 'Escape'){ e.preventDefault(); e.stopImmediatePropagation(); } vsFermer(e.key === 'Escape'); return; }
+  const opts = [...VS.menu.querySelectorAll('button:not(:disabled)')], i = opts.indexOf(document.activeElement);
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); const n = opts[(i + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length]; n?.focus(); n?.scrollIntoView({block:'nearest'}); }
+  else if(e.key === 'Home' || e.key === 'End'){ e.preventDefault(); opts[e.key === 'Home' ? 0 : opts.length - 1]?.focus(); }
+  else if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); if(document.activeElement?.dataset.vi) vsChoisir(+document.activeElement.dataset.vi); }
+}, true);
+addEventListener('resize', () => vsFermer());
+document.addEventListener('scroll', e => { if(VS.menu && !VS.menu.hidden && !VS.menu.contains(e.target)) vsFermer(); }, true);
+// tout <select> ajouté plus tard (écrans, feuilles, réglages) est habillé automatiquement
+let vsRaf = 0;
+new MutationObserver(() => { if(vsRaf) return; vsRaf = requestAnimationFrame(() => { vsRaf = 0; habillerSelects(); if(VS.btn && !VS.btn.isConnected) vsFermer(); }); }).observe(document.body, {childList:true, subtree:true});
+
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch{ return d; } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.warn('stockage plein', e); } },
@@ -2439,13 +2567,13 @@ function liveCard(a, folded=true){
   if(d.liveErr) return `<div class="err">Données en direct de ${esc(a.name)} : ${esc(d.liveErr)}</div>`;
   const l = d.live; if(!l) return '';
   const old = l.t && Date.now() - l.t > 3*3600e3;
-  return `<div class="xs ${old ? 'err' : 'muted'}" style="display:flex;gap:6px;align-items:center"><span class="dot ${old ? 'orange' : 'green'}"></span>${esc(a.name)} en direct · ${esc(ago(l.t))}${old ? ' · l\'ordinateur est peut-être éteint' : ''}</div>
+  return `<div class="xs ${old ? 'err' : 'muted'}" style="display:flex;gap:6px;align-items:center"><span class="dot ${old ? 'orange' : 'green'}"></span>${esc(a.name)} en direct · ${esc(ago(l.t))}${old ? ' · PC éteint ?' : ''}</div>
     ${l.climat ? `<div class="t">${esc(l.climat.titre)}</div>` : ''}
-    ${l.compteurs ? `<div class="kv">${l.compteurs.opp != null ? `<span class="pill">${l.compteurs.opp} opportunité(s)</span>` : ''}${l.compteurs.surv != null ? `<span class="pill">${l.compteurs.surv} à surveiller</span>` : ''}${l.compteurs.pos != null ? `<span class="pill">${l.compteurs.pos} position(s)</span>` : ''}${l.resultats?.totalTxt ? `<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>` : ''}</div>` : ''}
-    ${(l.alertes||[]).length ? `<div class="sm clamp2">⚠︎ ${esc(l.alertes[0].texte)}</div>` : ''}
+    ${l.compteurs ? `<div class="kv">${l.compteurs.opp != null ? `<span class="pill">${plural(l.compteurs.opp, 'opportunité')}</span>` : ''}${l.compteurs.surv != null ? `<span class="pill">${l.compteurs.surv} à surveiller</span>` : ''}${l.compteurs.pos != null ? `<span class="pill">${plural(l.compteurs.pos, 'position')}</span>` : ''}${l.resultats?.totalTxt ? `<span class="pill">Résultat ${esc(l.resultats.totalTxt)}</span>` : ''}</div>` : ''}
+    ${(l.alertes||[]).length ? `<div class="sm ligne alerte">${ic('alert','s')}<span class="clamp2">${esc(l.alertes[0].texte)}</span></div>` : ''}
     <details ${folded ? '' : 'open'}><summary>Détails</summary>
       ${l.climat ? `<p class="sm muted">${esc(l.climat.resume)}</p>` : ''}
-      ${(l.alertes||[]).slice(1).map(x => `<div class="sm">⚠︎ ${esc(x.texte)}</div>`).join('')}
+      ${(l.alertes||[]).slice(1).map(x => `<div class="sm ligne alerte">${ic('alert','s')}<span>${esc(x.texte)}</span></div>`).join('')}
       ${(l.bureau||[]).map(x => `<div class="sm" style="margin-top:6px"><b>${esc(x.de||'')}</b> · ${esc(x.texte)} <span class="muted">${esc(ago(x.t))}</span></div>`).join('')}
       ${l.cles ? `<div class="xs muted">Champs : ${esc(l.cles.join(', '))}</div>` : ''}
     </details>`;
@@ -2453,7 +2581,7 @@ function liveCard(a, folded=true){
 
 function vToday(){
   const apps = tracked();
-  if(!apps.length) return empty('🧩', 'Aucune app suivie', 'Ajoute tes apps dans les Réglages.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
+  if(!apps.length) return empty(ic('apps'), 'Aucune app suivie', 'Ajoute tes apps dans les Réglages.', `<button class="btn primary" data-go="settings">Ouvrir les Réglages</button>`);
   const t = get('today', null), w = (get('weekly', [])||[])[0];
   const lives = apps.filter(a => C.apps[a.repo]?.live || C.apps[a.repo]?.liveErr);
   const week = allCommits().filter(c => Date.now() - new Date(c.date) < 7*864e5).length;
@@ -2461,41 +2589,41 @@ function vToday(){
   const lundi = new Date().getDay() === 1 && (!w || Date.now() - w.at > 5*864e5);
   const actions = t?.data?.actions || [];
   return `
-  <div class="hello"><h2>${esc(salut())} 👋</h2><p>${esc(dateFR(Date.now()).replace(/^./, c => c.toUpperCase()))}</p></div>
+  <div class="hello"><h2>${esc(salut())}</h2><p>${esc(dateFR(Date.now()).replace(/^./, c => c.toUpperCase()))}</p></div>
   <section class="kpis">
-    <div class="kpi"><b>${apps.length}</b><span>apps suivies</span></div>
-    <div class="kpi"><b>${nbTaches()}</b><span>tâches ouvertes</span></div>
-    <div class="kpi"><b>${week}</b><span>commits sur 7 jours</span></div>
-    <div class="kpi"><b>${s ? '🔥 ' + s : '0'}</b><span>${s > 1 ? 'jours d\'affilée' : 'jour d\'affilée'}</span></div>
+    <div class="kpi"><span class="kic">${ic('apps')}</span><b>${apps.length}</b><span>${apps.length > 1 ? 'apps' : 'app'}</span></div>
+    <div class="kpi"><span class="kic">${ic('tasks')}</span><b>${nbTaches()}</b><span>${nbTaches() > 1 ? 'tâches' : 'tâche'}</span></div>
+    <div class="kpi"><span class="kic">${ic('git')}</span><b>${week}</b><span>commits · 7 j</span></div>
+    <div class="kpi ${s ? 'feu' : ''}"><span class="kic">${ic('flame')}</span><b>${s || 0}</b><span>${s > 1 ? 'jours de suite' : 'jour de suite'}</span></div>
   </section>
   <div class="cols">
     <div>
       <section class="card hero">
         <div class="hd" style="position:relative;z-index:1"><h2>${ic('spark')} Que faire maintenant ?</h2>${t ? `<span class="xs" style="opacity:.8">${esc(ago(t.at))}</span>` : ''}</div>
-        ${t?.data?.resume ? `<p style="position:relative;z-index:1;margin:0 0 4px">${esc(t.data.resume)}</p>` : `<p style="position:relative;z-index:1;margin:0">Les 3 actions les plus utiles, avec leur consigne pour Claude.</p>`}
+        ${t?.data?.resume ? `<p style="position:relative;z-index:1;margin:0 0 4px">${esc(t.data.resume)}</p>` : `<p style="position:relative;z-index:1;margin:0">3 actions utiles, prêtes pour Claude.</p>`}
         ${actions.map((a, i) => `<div class="act"><span class="n">${i+1}</span><div style="flex:1">
-          <h4>${esc(a.titre)}</h4><div class="meta">${esc(a.app)} · ${esc(a.pourquoi)}${a.duree_min ? ` · ~${esc(a.duree_min)} min` : ''}</div>
+          <h4>${esc(a.titre)}</h4><div class="meta"><b>${esc(a.app)}</b>${a.duree_min ? ` · ${ic('clock','s')} ${esc(a.duree_min)} min` : ''}</div>${a.pourquoi ? `<div class="meta clamp2">${esc(a.pourquoi)}</div>` : ''}
           <div class="btns"><button class="btn sm" data-action="showAdvicePrompt" data-i="${i}">${ic('copy','s')} Consigne</button><button class="btn sm" data-action="adviceIssue" data-i="${i}">${ic('plus','s')} Tâche</button></div></div></div>`).join('')}
-        <div class="btns" style="position:relative;z-index:1"><button class="btn ${t ? 'sm' : 'primary'}" data-action="advise" ${busy.advise ? 'disabled' : ''}>${busy.advise ? spin('Le chef analyse…') : (t ? ic('sync','s') + ' Refaire' : ic('spark','s') + ' Analyser mes projets')}</button></div>
+        <div class="btns" style="position:relative;z-index:1"><button class="btn ${t ? 'sm' : 'primary'}" data-action="advise" ${busy.advise ? 'disabled' : ''}>${busy.advise ? spin('Analyse…') : (t ? ic('redo','s') + ' Refaire' : ic('spark','s') + ' Analyser')}</button></div>
       </section>
       <section class="card">
         <div class="hd"><h2>${ic('chart')} Bilan de la semaine</h2>${w ? `<span class="xs muted">${esc(ago(w.at))}</span>` : ''}</div>
-        ${busy.weekly ? `<div id="weeklyLive">${spin('Rédaction…')}</div>` : w ? `<details ${Date.now() - w.at < 36e5 ? 'open' : ''}><summary>Lire le bilan</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Avancées, blocages et cap de la semaine.</p>`}
-        ${lundi && !busy.weekly ? '<p class="sm ok">C\'est lundi : moment idéal pour le bilan.</p>' : ''}
-        <div class="btns"><button class="btn sm ${w ? '' : 'primary'}" data-action="weekly" ${busy.weekly ? 'disabled' : ''}>${w ? 'Refaire le bilan' : 'Faire le bilan'}</button>${w && !busy.weekly ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="weekly">${ic('plus','s')} En tirer des tâches</button>` : ''}</div>
+        ${busy.weekly ? `<div id="weeklyLive">${spin('Rédaction…')}</div>` : w ? `<details ${Date.now() - w.at < 36e5 ? 'open' : ''}><summary>Lire</summary>${md(w.text)}</details>` : `<p class="muted" style="margin:0">Avancées, blocages, cap.</p>`}
+        ${lundi && !busy.weekly ? `<p class="sm ok ligne">${ic('clock','s')} C'est lundi : bon moment pour le bilan.</p>` : ''}
+        <div class="btns"><button class="btn sm ${w ? '' : 'primary'}" data-action="weekly" ${busy.weekly ? 'disabled' : ''}>${w ? ic('redo','s') + ' Refaire' : 'Faire le bilan'}</button>${w && !busy.weekly ? `<button class="btn sm ghost" data-action="tasksFrom" data-src="weekly">${ic('plus','s')} Tâches</button>` : ''}</div>
       </section>
     </div>
     <div>
       ${(() => { const sn = compterSante(), s = C.sante; if(!s) return ''; const cls = sn.pb ? 'pb' : sn.att ? 'att' : 'ok';
-        return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros : tout fonctionne' : cls === 'pb' ? `Synchros : ${plural(sn.pb, 'problème')}` : `Synchros : ${plural(sn.att, 'point')} à surveiller`}</b><div class="xs muted">Vérifié ${esc(ago(s.at))}</div></div>${ic('chev','s')}</section>`; })()}
+        return `<section class="banner ${cls}" style="margin-top:12px;cursor:pointer" data-go="sync"><div class="bic">${ic(cls === 'ok' ? 'check' : cls === 'pb' ? 'x' : 'alert')}</div><div style="flex:1"><b>${cls === 'ok' ? 'Synchros OK' : cls === 'pb' ? plural(sn.pb, 'problème') : plural(sn.att, 'point') + ' à surveiller'}</b><div class="xs muted">Vérifié ${esc(ago(s.at))}</div></div>${ic('chev','s')}</section>`; })()}
       ${(() => { const ids = idees().filter(ouverte), ps = prompts().filter(p => !p.fait); if(!ids.length && !ps.length) return '';
         const n = k => ids.filter(x => avisAJour(x) && x.avis.verdict === k && x.statut !== 'prompt').length, att = ids.filter(x => !avisAJour(x)).length;
         return `<section class="card idtoday" data-action="idSeg" data-v="${ps.length ? 'prompts' : 'idees'}"><div class="hd"><h2>${ic('idea')} Idées</h2>${ic('chev','s')}</div>
-          <div class="kv">${ids.length ? `<span class="pill">${plural(ids.length, 'idée')} en cours</span>` : ''}${n('a_preciser') ? `<span class="vpill" style="--v:#f59e0b">${n('a_preciser')} à préciser</span>` : ''}${n('a_ameliorer') ? `<span class="vpill" style="--v:#8b5cf6">${n('a_ameliorer')} à améliorer</span>` : ''}${n('bonne') ? `<span class="vpill" style="--v:#10b981">${n('bonne')} validée${n('bonne') > 1 ? 's' : ''}</span>` : ''}${att ? `<span class="pill">${att} en lecture</span>` : ''}${ps.length ? `<span class="vpill" style="--v:#0ea5e9">${plural(ps.length, 'prompt')} à envoyer</span>` : ''}</div></section>`; })()}
+          <div class="kv">${ids.length ? `<span class="pill">${plural(ids.length, 'idée')}</span>` : ''}${n('a_preciser') ? `<span class="vpill" style="--v:#f59e0b">${n('a_preciser')} à préciser</span>` : ''}${n('a_ameliorer') ? `<span class="vpill" style="--v:#8b5cf6">${n('a_ameliorer')} à améliorer</span>` : ''}${n('bonne') ? `<span class="vpill" style="--v:#10b981">${n('bonne')} validée${n('bonne') > 1 ? 's' : ''}</span>` : ''}${att ? `<span class="pill">${att} en lecture</span>` : ''}${ps.length ? `<span class="vpill" style="--v:#0ea5e9">${plural(ps.length, 'prompt')}</span>` : ''}</div></section>`; })()}
       ${lives.map(a => `<section class="card live">${liveCard(a)}</section>`).join('')}
-      ${(C.pending||[]).length ? `<section class="card"><b>${plural(C.pending.length, 'idée')} en attente d'envoi</b><div class="sm muted">Envoi au retour du réseau.</div></section>` : ''}
+      ${(C.pending||[]).length ? `<section class="card ligne">${ic('cloudx')}<b>${plural(C.pending.length, 'idée')} à envoyer</b><span class="sm muted">au retour du réseau</span></section>` : ''}
       <section class="card">
-        <div class="hd"><h2>${ic('git')} Activité récente</h2></div>
+        <div class="hd"><h2>${ic('git')} Activité</h2></div>
         ${first ? '<div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel"></div>' : `<div class="feed">${allCommits().slice(0,6).map(c => `<a class="fi" href="${esc(c.url)}" target="_blank" rel="noopener">${avatar({emoji:c.emoji, couleur:c.c, repo:c.repo, name:c.app}, 's')}<span class="tx"><b>${esc(c.app)}</b> <span class="sm">${esc(c.msg)}</span></span><span class="when">${esc(ago(c.date))}</span></a>`).join('') || '<p class="muted sm">Aucune activité pour l\'instant.</p>'}</div>`}
       </section>
     </div>
