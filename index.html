@@ -895,7 +895,7 @@ html.verre .fpc{background:var(--g-bg);-webkit-backdrop-filter:var(--g-flou);bac
 <script src="lib/qrcode.js"></script>
 <script>
 "use strict";
-const VERSION = '4.3.2';
+const VERSION = '4.3.3';
 /* ================================================================
    Utilitaires
 ================================================================ */
@@ -1282,7 +1282,9 @@ async function listModels(force=false){
   const r = await fetch(GEM + '/models?pageSize=200', {headers:{'x-goog-api-key':L.geminiKey}});
   const d = await r.json().catch(() => ({}));
   if(!r.ok) throw new Error(gemErr(r.status, d));
-  C.models = (d.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes('generateContent')).map(m => m.name.replace(/^models\//,''));
+  const ok = (d.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes('generateContent'));
+  C.models = ok.map(m => m.name.replace(/^models\//,''));
+  C.modelMax = Object.fromEntries(ok.map(m => [m.name.replace(/^models\//,''), +m.outputTokenLimit || 0]));
   C.modelsAt = Date.now(); saveC();
   return C.models;
 }
@@ -1328,7 +1330,8 @@ async function garde(){
 }
 const DELAI_GEM = () => +window.__delaiGem || 70e3;
 function logGem(m, t0, err){ C.gemLog = [{t:Date.now(), m, ms:Math.round(performance.now() - t0), err:err || ''}, ...(C.gemLog || [])].slice(0, 15); saveC(); }
-async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null, pense=false}={}){
+let GEM_FIN = {raison:'', modele:''};
+async function gemini(input, {json=false, system=null, temperature=0.5, tier='fort', onText=null, signal=null, pense=false, maxTokens=0}={}){
   if(!L.geminiKey) throw new Error('Ajoute ta clé Gemini dans les Réglages');
   const contents = (typeof input === 'string' ? [{role:'user', parts:[{text:input}]}] : input).map(c => ({...c, parts:c.parts.map(p => p.text != null ? {...p, text:masquer(p.text)} : p)}));
   if(system && system.startsWith('Tu es le chef de projet')) system += leconsTexte();
@@ -1340,8 +1343,9 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
       const th = reflexion(m, pense); if(th) body.generationConfig.thinkingConfig = th;
       if(system) body.systemInstruction = {parts:[{text:system}]};
       if(json) body.generationConfig.responseMimeType = 'application/json';
+      if(maxTokens){ const lim = C.modelMax?.[m] || 8192; body.generationConfig.maxOutputTokens = Math.min(maxTokens, lim); }
       const enFlux = !!onText && !json;
-      let r, text = '', timeout = false, wd = 0;
+      let r, text = '', timeout = false, wd = 0, fin = '';
       const ctrl = new AbortController(), t0 = performance.now();
       const armer = ms => { clearTimeout(wd); wd = setTimeout(() => { timeout = true; ctrl.abort(); }, ms); };
       const onAbort = () => ctrl.abort();
@@ -1378,11 +1382,14 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
               while((i = buf.indexOf('\n')) >= 0){
                 const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
                 if(!line.startsWith('data:')) continue;
-                try{ const d = JSON.parse(line.slice(5)); const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{}
+                try{ const d = JSON.parse(line.slice(5)); if(d.candidates?.[0]?.finishReason) fin = d.candidates[0].finishReason; const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{}
               }
             }
+            const reste = buf.trim();   // dernier morceau sans saut de ligne final
+            if(reste.startsWith('data:')){ try{ const d = JSON.parse(reste.slice(5)); if(d.candidates?.[0]?.finishReason) fin = d.candidates[0].finishReason; const t = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join(''); if(t){ text += t; onText(text); } }catch{} }
           } else {
             const d = await r.json().catch(() => ({}));
+            fin = d.candidates?.[0]?.finishReason || '';
             text = (d.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||'').join('');
           }
         }catch(e){
@@ -1390,7 +1397,8 @@ async function gemini(input, {json=false, system=null, temperature=0.5, tier='fo
           throw e;
         }
       }finally{ clearTimeout(wd); signal?.removeEventListener('abort', onAbort); }
-      logGem(m, t0, text.trim() ? '' : 'réponse vide');
+      GEM_FIN = {raison:fin, modele:m};
+      logGem(m, t0, text.trim() ? (fin && fin !== 'STOP' ? 'arrêt : ' + fin : '') : 'réponse vide');
       text = text.trim();
       if(!text){ last = new Error('Réponse vide de Gemini'); break; }
       C.lastModel = m; C.gemErr = null; saveC();
@@ -1459,7 +1467,7 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
     if(r.status === 400 && /temperature/i.test(JSON.stringify(d)) && 'temperature' in body){ delete body.temperature; continue; }
     throw new Error(claudeErr(r.status, d));
   }
-  const u = {in:0, cw:0, cr:0, out:0}; let text = '';
+  const u = {in:0, cw:0, cr:0, out:0}; let text = '', arret = '';
   const compte = x => { if(!x) return; if(x.input_tokens != null) u.in = x.input_tokens; if(x.cache_creation_input_tokens != null) u.cw = x.cache_creation_input_tokens; if(x.cache_read_input_tokens != null) u.cr = x.cache_read_input_tokens; if(x.output_tokens != null) u.out = x.output_tokens; };
   if(body.stream){
     const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '';
@@ -1474,7 +1482,7 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
         try{
           const d = JSON.parse(line.slice(5));
           if(d.type === 'message_start') compte(d.message?.usage);
-          else if(d.type === 'message_delta') compte(d.usage);
+          else if(d.type === 'message_delta'){ compte(d.usage); if(d.delta?.stop_reason) arret = d.delta.stop_reason; }
           else if(d.type === 'content_block_delta' && d.delta?.type === 'text_delta'){ text += d.delta.text; onText(text); }
           else if(d.type === 'error') throw new Error(claudeErr(529, d));
         }catch(e){ if(/Claude/.test(e.message)) throw e; }
@@ -1482,10 +1490,10 @@ async function claude(input, {system='', max=8000, temperature=0.4, onText=null,
     }
   } else {
     const d = await r.json().catch(() => ({}));
-    compte(d.usage); text = (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+    compte(d.usage); arret = d.stop_reason || ''; text = (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
   }
   const eur = (u.in * PRIX_CLAUDE.in + u.cw * PRIX_CLAUDE.cw + u.cr * PRIX_CLAUDE.cr + u.out * PRIX_CLAUDE.out) / 1e6 * EUR_PAR_USD;
-  CLAUDE_LAST = {eur, modele};
+  CLAUDE_LAST = {eur, modele, arret};
   premiumNote(eur, quoi, modele);
   text = text.trim();
   if(!text) throw new Error('Réponse vide de Claude');
@@ -1751,23 +1759,42 @@ Réponds uniquement par le prompt, en markdown, première ligne « # Titre ». P
     const live = t => { const el = $('#promptLive'); if(el){ el.innerHTML = md(t); const sh = $('#modal .sheet'); if(sh && sh.scrollHeight - sh.scrollTop - sh.clientHeight < 240) sh.scrollTop = sh.scrollHeight; } };
     const sys = (budget, seuil) => `${ROLE_CHEF}\n\n${F.critique}\n\nModules de ta formation choisis pour ce prompt (sur ${F.total} h) :\n\n${formationPour(a, sujet, budget, ['prompts', 'agents-ia'], seuil)}`;
     const nettoie = t => t.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
-    let texte = null, cout = 0, relu = false;
+    let texte = null, cout = 0, relu = false, suites = 0;
+    // Un prompt est complet s'il a sa fin (sections finales du modèle) et que l'IA s'est arrêtée d'elle-même.
+    const complet = (t, coupe) => !coupe && /##\s*(À la fin|Points à trancher)/i.test(t) && !/[,:;(\-–]\s*$/.test(t.trim());
+    const SUITE = `Ton prompt s'est arrêté avant la fin. Continue EXACTEMENT là où il s'arrête (même au milieu d'une phrase), sans rien répéter ni réécrire, jusqu'à la toute fin du modèle (« ## À la fin » puis « ## Points à trancher »). Réponds uniquement par la suite.`;
+    const recoller = (a, b) => { b = nettoie(b); return a.replace(/\s+$/, '') + (/^[a-zà-ÿ,.;:)]/.test(b) ? ' ' : '\n') + b; };
     if(premium){
       try{
         const sysC = sys(60000, 3);
-        texte = nettoie(await claude(consigne, {system:sysC, max:8000, signal:PCTRL.signal, onText:live, quoi:'prompt'})); cout += CLAUDE_LAST.eur;
+        texte = nettoie(await claude(consigne, {system:sysC, max:16000, signal:PCTRL.signal, onText:live, quoi:'prompt'})); cout += CLAUDE_LAST.eur;
+        while(!complet(texte, CLAUDE_LAST.arret === 'max_tokens') && suites < 3){
+          suites++; ecritEtat('Le chef termine son prompt…', 'Suite ' + suites + ' : il reprend là où il s’est arrêté.');
+          const base = texte, suite = await claude([{role:'user', content:consigne}, {role:'assistant', content:base}, {role:'user', content:SUITE}], {system:sysC, max:16000, signal:PCTRL.signal, onText:t => live(recoller(base, t)), quoi:'suite'}); cout += CLAUDE_LAST.eur;
+          texte = recoller(base, suite);
+        }
         ecritEtat('Relecture critique…', 'Il vérifie les fichiers cités, les critères et le périmètre.');
         try{
-          const rev = nettoie(await claude([{role:'user', content:consigne}, {role:'assistant', content:texte}, {role:'user', content:RELECTURE}], {system:sysC, max:8000, signal:PCTRL.signal, onText:live, quoi:'relecture'})); cout += CLAUDE_LAST.eur;
-          if(/^#\s+\S/.test(rev) && rev.length > texte.length * 0.6){ texte = rev; relu = true; }
+          const brouillon = texte;
+          const rev = nettoie(await claude([{role:'user', content:consigne}, {role:'assistant', content:texte}, {role:'user', content:RELECTURE}], {system:sysC, max:16000, signal:PCTRL.signal, onText:live, quoi:'relecture'})); cout += CLAUDE_LAST.eur;
+          // la relecture ne remplace le brouillon que si elle est complète elle aussi
+          if(/^#\s+\S/.test(rev) && rev.length > texte.length * 0.6 && complet(rev, CLAUDE_LAST.arret === 'max_tokens')){ texte = rev; relu = true; } else live(brouillon);
         }catch(e){ if(e.name === 'AbortError') throw e; }
       }catch(e){ if(e.name === 'AbortError') throw e; premium = false; note = e.message; texte = null; }
     }
     if(!texte){
       if(note) ecritEtat('Le chef rédige avec Gemini…', note + ' : il continue avec le modèle gratuit.');
-      texte = await gemini(consigne, {system:sys(32000, 4), temperature:0.35, pense:true, signal:PCTRL.signal, onText:live});
+      const sysG = sys(32000, 4);
+      texte = nettoie(await gemini(consigne, {system:sysG, temperature:0.35, pense:true, signal:PCTRL.signal, onText:live, maxTokens:32768}));
+      while(!complet(texte, GEM_FIN.raison === 'MAX_TOKENS') && suites < 3){
+        suites++; ecritEtat('Le chef termine son prompt…', 'Suite ' + suites + ' : il reprend là où il s’est arrêté.');
+        const base = texte;
+        const suite = await gemini([{role:'user', parts:[{text:consigne}]}, {role:'model', parts:[{text:base}]}, {role:'user', parts:[{text:SUITE}]}], {system:sysG, temperature:0.3, signal:PCTRL.signal, onText:t => live(recoller(base, t)), maxTokens:32768});
+        texte = recoller(base, suite);
+      }
     }
-    p.moteur = premium ? 'claude' : 'gemini'; p.relu = relu; p.cout = +cout.toFixed(4);
+    p.moteur = premium ? 'claude' : 'gemini'; p.relu = relu; p.cout = +cout.toFixed(4); p.suites = suites;
+    p.incomplet = !complet(texte, false);
     p.raison = premium ? (qualite === 'maximale' ? 'qualité maximale demandée' : cx.raisons.join(', ')) : (note ? note : '');
     p.texte = texte.replace(/^```(?:markdown|md)?\s*\n/, '').replace(/\n```\s*$/, '').trim();
     p.titre = (p.texte.match(/^#\s+(.+)$/m) || [])[1]?.replace(/[*_`]/g, '').trim().slice(0, 100) || titreIdee(choisies[0]);
@@ -3065,6 +3092,7 @@ function promptSheet(id, edit=false){
     <div class="idh">${avatar(a, 's')}<span>${esc(a.name)} · ${esc(ago(p.cree))}${p.regen ? ' · refait' : ''}</span></div>
     <h2 class="idtitre">${esc(p.titre)}</h2>
     ${p.moteur ? `<p class="muted sm" style="margin:-4px 0 10px">${p.moteur === 'claude' ? 'Rédigé avec Claude' + (p.relu ? ' · relu' : '') + (p.cout ? ' · ' + eur2(p.cout) : '') : 'Rédigé avec Gemini'}${p.raison ? ' · ' + esc(p.raison) : ''}</p>` : ''}
+    ${p.incomplet ? `<p class="err sm" style="margin:0 0 10px">Ce prompt semble incomplet (la fin manque). Touche ↻ pour le refaire.</p>` : ''}
     <button class="faitrow ${p.fait ? 'on' : ''}" data-action="prFait" data-id="${esc(p.id)}"><span class="ck">${ic('check')}</span><span class="ft"><b>${p.fait ? 'Fait' : 'Marquer comme fait'}</b><small>${p.fait ? 'Réalisé ' + esc(ago(p.faitAt)) : p.copie ? 'Copié ' + esc(ago(p.copie)) + ' · à cocher quand Claude l’a réalisé' : 'À cocher quand Claude l’a réalisé'}</small></span></button>
     <div class="pacts"><button class="btn primary" data-action="prCopier" data-id="${esc(p.id)}">${ic('copy','s')} Copier</button>${navigator.share ? `<button class="btn" data-action="prPartager" data-id="${esc(p.id)}">${ic('share','s')} Partager</button>` : ''}<button class="ibtn" data-action="prModifier" data-id="${esc(p.id)}" aria-label="Modifier" title="Modifier">${ic('edit','s')}</button><button class="ibtn" data-action="prRefaire" data-id="${esc(p.id)}" aria-label="Refaire" title="Refaire">${ic('redo','s')}</button></div>
     <article class="pdoc">${md(p.texte.replace(/^\s*#\s+.+\n+/, ''), true)}</article>
